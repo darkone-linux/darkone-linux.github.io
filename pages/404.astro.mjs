@@ -1,5 +1,5 @@
 import { c as createComponent, r as renderComponent, b as renderTemplate } from '../chunks/astro/server_2-dkPZoT.mjs';
-import { $ as $$Common } from '../chunks/common_ty8SZwO1.mjs';
+import { $ as $$Common } from '../chunks/common_Ciz68dLX.mjs';
 export { renderers } from '../renderers.mjs';
 
 const prerender = true;

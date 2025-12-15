@@ -5,7 +5,7 @@ import { o as originPathnameSymbol, A as AstroError, F as ForbiddenRewrite, a as
 import 'clsx';
 import 'cookie';
 import 'html-escaper';
-import { u as useTranslations } from './chunks/translations_ByxA1pXe.mjs';
+import { u as useTranslations } from './chunks/translations_BbcdXfL8.mjs';
 
 function shouldAppendForwardSlash(trailingSlash, buildFormat) {
   switch (trailingSlash) {

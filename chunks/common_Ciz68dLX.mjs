@@ -1,10 +1,10 @@
 import { d as createAstro, c as createComponent, m as maybeRenderHead, u as unescapeHTML, b as renderTemplate, e as renderSlot, r as renderComponent, f as addAttribute, g as renderScript, h as Fragment, i as defineStyleVars, a as AstroUserError, s as spreadAttributes, j as renderHead } from './astro/server_2-dkPZoT.mjs';
-import { s as starlightConfig, a as stripTrailingSlash, b as stripLeadingSlash, c as stripHtmlExtension, e as ensureHtmlExtension, d as ensureTrailingSlash, p as project, B as BuiltInDefaultLocale, g as getCollection, f as getCollectionPathFromRoot, h as pickLang, i as stripLeadingAndTrailingSlashes, j as ensureLeadingSlash, k as stripExtension, l as getEntry, u as useTranslations, r as renderEntry } from './translations_ByxA1pXe.mjs';
+import { s as starlightConfig, a as stripTrailingSlash, b as stripLeadingSlash, c as stripHtmlExtension, e as ensureHtmlExtension, d as ensureTrailingSlash, p as project, B as BuiltInDefaultLocale, g as getCollection, f as getCollectionPathFromRoot, h as pickLang, i as stripLeadingAndTrailingSlashes, j as ensureLeadingSlash, k as stripExtension, l as getEntry, u as useTranslations, r as renderEntry } from './translations_BbcdXfL8.mjs';
 import { p as printHref } from './index.9f91b58d_Ciq5uIgq.mjs';
 import 'clsx';
-import { $ as $$Icon, a as $$LinkButton, b as $$Badge } from './Code_DUxCVe_s.mjs';
+import { $ as $$Icon, a as $$LinkButton, b as $$Badge } from './Code_CNRblSCt.mjs';
 import { _ as __ASTRO_IMAGE_IMPORT_Z26UXhl } from './nix-logo_wI34PJpX.mjs';
-import { $ as $$Image } from './_astro_assets_ZLSoR1oC.mjs';
+import { $ as $$Image } from './_astro_assets_Dk6HKaqQ.mjs';
 import * as z from 'zod';
 import yaml from 'js-yaml';
 import { klona } from 'klona/lite';
@@ -839,7 +839,7 @@ const makeAPI = (data) => {
   };
 };
 
-const api = makeAPI([["src/content/docs/ref/modules.mdx",1765668007000],["src/content/docs/doc/introduction.mdx",1762997596000],["src/content/docs/doc/specifications.mdx",1762882554000],["src/content/docs/doc/user-manual.mdx",1762882554000],["src/content/docs/doc/how-to.mdx",1762874440000],["src/content/docs/index.mdx",1762476929000],["src/content/docs/doc/user-manual.md",1759348093000],["src/content/docs/changelog.md",1741374635000],["src/content/docs/doc/contribute.md",1741374635000],["src/content/docs/ref/host-profiles.md",1741374635000],["src/content/docs/ref/themes.md",1741374635000],["src/content/docs/ref/user-profiles.md",1741374635000],["src/content/docs/thanks.md",1741374635000],["src/content/docs/ref/modules.md",1741365864000],["src/content/docs/changelog/001-alpha.md",1740927611000],["src/content/docs/doc/how-to.md",1738627891000],["src/content/docs/about.md",1737754087000],["src/content/docs/doc/getting-started.md",1737754087000],["src/content/docs/doc/introduction.md",1737754087000],["src/content/docs/doc/specifications.md",1737754087000],["src/content/docs/ref/index.md",1737754087000]]);const getNewestCommitDate = api.getNewestCommitDate;
+const api = makeAPI([["src/content/docs/ref/modules.mdx",1765817851000],["src/content/docs/doc/introduction.mdx",1762997596000],["src/content/docs/doc/specifications.mdx",1762882554000],["src/content/docs/doc/user-manual.mdx",1762882554000],["src/content/docs/doc/how-to.mdx",1762874440000],["src/content/docs/index.mdx",1762476929000],["src/content/docs/doc/user-manual.md",1759348093000],["src/content/docs/changelog.md",1741374635000],["src/content/docs/doc/contribute.md",1741374635000],["src/content/docs/ref/host-profiles.md",1741374635000],["src/content/docs/ref/themes.md",1741374635000],["src/content/docs/ref/user-profiles.md",1741374635000],["src/content/docs/thanks.md",1741374635000],["src/content/docs/ref/modules.md",1741365864000],["src/content/docs/changelog/001-alpha.md",1740927611000],["src/content/docs/doc/how-to.md",1738627891000],["src/content/docs/about.md",1737754087000],["src/content/docs/doc/getting-started.md",1737754087000],["src/content/docs/doc/introduction.md",1737754087000],["src/content/docs/doc/specifications.md",1737754087000],["src/content/docs/ref/index.md",1737754087000]]);const getNewestCommitDate = api.getNewestCommitDate;
 
 const version = "0.36.2";
 

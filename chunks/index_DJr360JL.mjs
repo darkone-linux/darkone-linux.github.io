@@ -1,5 +1,5 @@
 import { l as createVNode, h as Fragment, _ as __astro_tag_component__ } from './astro/server_2-dkPZoT.mjs';
-import { c as $$Card, d as $$CardGrid } from './Code_DUxCVe_s.mjs';
+import { c as $$Card, d as $$CardGrid } from './Code_CNRblSCt.mjs';
 import 'clsx';
 
 const frontmatter = {
