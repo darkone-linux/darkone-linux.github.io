@@ -348,6 +348,11 @@ bridges.</p>
 as the user’s real matrix account. Required sops secrets:
 <code dir="auto">mautrix-doublepuppet-as-token</code> and <code dir="auto">mautrix-doublepuppet-hs-token</code>
 (<code dir="auto">openssl rand -hex 32</code> each).</p>
+<p>Every bridge’s appservice as/hs tokens are sops-provided rather than
+auto-generated: the registration file becomes a pure function of the
+secrets, so resetting a bridge’s state dir never invalidates the
+registration synapse has loaded (which would otherwise require a registration
+wipe + synapse restart and produce “as_token was not accepted” errors).</p>
 <ul>
 <li><strong>enable</strong> <code dir="auto">bool</code> Enable matrix (synapse) service</li>
 <li><strong>bridges.whatsapp.enable</strong> <code dir="auto">bool</code> Mautrix WhatsApp bridge (login by QR code).</li>
