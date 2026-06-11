@@ -183,10 +183,10 @@ field, <code dir="auto">main</code> by default). Examples: <code dir="auto">rest
 jobs: the backup runs in dry mode, no snapshot is created.</p></div> </aside>
 
 <div class="sl-heading-wrapper level-h2"><h2 id="repository-isolation">Repository isolation</h2><a class="sl-anchor-link" href="#repository-isolation"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24"><path fill="currentcolor" d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 0 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 1 0-1.42-1.42Zm8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 0 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 1 0 1.42 1.42l3.88-3.89a4.49 4.49 0 0 0 0-6.33ZM8.83 15.17a1 1 0 0 0 1.1.22 1 1 0 0 0 .32-.22l4.92-4.92a1 1 0 0 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42Z"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Repository isolation”</span></a></div>
-<p>The REST server runs with private repositories (<code dir="auto">privateRepos = true</code>): each
-host can only access the repository whose path starts with its own hostname. The
-module automatically matches the REST account (<code dir="auto">&#x3C;host></code>) to the repository
-prefix (<code dir="auto">&#x3C;root>/&#x3C;host>/...</code>), so isolation is permanent — no setting to enable.
+<p>The REST server runs with private repositories (<code dir="auto">privateRepos = true</code>): each host
+only accesses the repository whose path starts with its own hostname. The
+module automatically aligns the REST account (<code dir="auto">&#x3C;hôte></code>) with the repository prefix
+(<code dir="auto">&#x3C;racine>/&#x3C;hôte>/...</code>), so isolation is permanent → no configuration needed.
 An attempt to access another host’s repository returns a <strong>403</strong> error.</p>
 
 <div class="sl-heading-wrapper level-h2"><h2 id="restoring">Restoring</h2><a class="sl-anchor-link" href="#restoring"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24"><path fill="currentcolor" d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 0 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 1 0-1.42-1.42Zm8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 0 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 1 0 1.42 1.42l3.88-3.89a4.49 4.49 0 0 0 0-6.33ZM8.83 15.17a1 1 0 0 0 1.1.22 1 1 0 0 0 .32-.22l4.92-4.92a1 1 0 0 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42Z"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Restoring”</span></a></div>

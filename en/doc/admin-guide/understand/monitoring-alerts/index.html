@@ -138,8 +138,8 @@ a configuration where Grafana has no data source. You can enable <code dir="auto
 dedicated bot (<code dir="auto">@alertbot:domain.tld</code>) that posts to both rooms.</p>
 
 <div class="sl-heading-wrapper level-h2"><h2 id="node-classes">Node classes</h2><a class="sl-anchor-link" href="#node-classes"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24"><path fill="currentcolor" d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 0 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 1 0-1.42-1.42Zm8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 0 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 1 0 1.42 1.42l3.88-3.89a4.49 4.49 0 0 0 0-6.33ZM8.83 15.17a1 1 0 0 0 1.1.22 1 1 0 0 0 .32-.22l4.92-4.92a1 1 0 0 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42Z"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Node classes”</span></a></div>
-<p>The severity of a failure depends on the node’s <strong>importance</strong>. A critical
-server going down is an incident; a workstation powered off is a mere info.</p>
+<p>The severity of a failure depends on the <strong>importance</strong> of the node. A critical
+server going down is an incident ; a powered-off workstation, a simple info.</p>
 
 
 
@@ -165,17 +165,16 @@ server going down is an incident; a workstation powered off is a mere info.</p>
 
 
 
-<table><thead><tr><th>Class</th><th>Who</th><th>Effect</th></tr></thead><tbody><tr><td>critical</td><td><code dir="auto">gateway</code>, <code dir="auto">hcs</code>, <code dir="auto">server</code> profiles</td><td>failures as <code dir="auto">critical</code></td></tr><tr><td>non-critical</td><td>desktops, laptops</td><td>failures as <code dir="auto">warning</code></td></tr><tr><td>disabled</td><td>—</td><td>no alerts on this node</td></tr></tbody></table>
-<p>The default class follows the host’s profile; you can override it with a
-<strong>feature</strong>:</p>
+<table><thead><tr><th>Class</th><th>Who</th><th>Effect</th></tr></thead><tbody><tr><td>critical</td><td><code dir="auto">gateway</code>, <code dir="auto">hcs</code>, <code dir="auto">server</code> profiles</td><td>failures in <code dir="auto">critical</code></td></tr><tr><td>non-critical</td><td>desktops, laptops</td><td>failures in <code dir="auto">warning</code></td></tr><tr><td>disabled</td><td></td><td>no alert on this node</td></tr></tbody></table>
+<p>The default class follows the host profile ; it can be overridden with a <strong>feature</strong> :</p>
 <ul>
-<li><code dir="auto">alert-critical</code>: raises the node to critical level.</li>
-<li><code dir="auto">alert-non-critical</code>: lowers it.</li>
-<li><code dir="auto">alert-disabled</code>: excludes it from alerts.</li>
+<li><code dir="auto">alert-critical</code> : raises the node to critical level.</li>
+<li><code dir="auto">alert-non-critical</code> : lowers it.</li>
+<li><code dir="auto">alert-disabled</code> : removes it from alerts.</li>
 </ul>
-<p>Like <code dir="auto">monitoring-node:&#x3C;zone></code>, these features accept an owner zone:
-<code dir="auto">alert-critical:main</code> makes an external node (typically the HCS) monitored by
-the <code dir="auto">main</code> zone.</p>
+<p>Like <code dir="auto">monitoring-node:&#x3C;zone></code>, these features accept an owner zone :
+<code dir="auto">alert-critical:main</code> makes a node (typically the HCS) monitored by the
+<code dir="auto">main</code> zone.</p>
 
 <div class="sl-heading-wrapper level-h2"><h2 id="what-is-monitored">What is monitored</h2><a class="sl-anchor-link" href="#what-is-monitored"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24"><path fill="currentcolor" d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 0 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 1 0-1.42-1.42Zm8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 0 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 1 0 1.42 1.42l3.88-3.89a4.49 4.49 0 0 0 0-6.33ZM8.83 15.17a1 1 0 0 0 1.1.22 1 1 0 0 0 .32-.22l4.92-4.92a1 1 0 0 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42Z"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “What is monitored”</span></a></div>
 <p>Rules are derived from what each node declares; nothing to list by hand.</p>

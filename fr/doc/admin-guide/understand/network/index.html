@@ -147,11 +147,11 @@ rejoignent le réseau via Tailscale.</li>
 
 <table><thead><tr><th>Nom</th><th>Forme</th><th>Portée</th><th>Exemple</th></tr></thead><tbody><tr><td><strong>Nom simple</strong></td><td><code dir="auto">&#x3C;hôte></code></td><td>Tout le réseau interne</td><td><code dir="auto">serveur</code></td></tr><tr><td><strong>FQDN de zone</strong></td><td><code dir="auto">&#x3C;nom>.&#x3C;zone>.&#x3C;domaine></code></td><td>Tout le réseau interne</td><td><code dir="auto">cloud.maison.domain.tld</code></td></tr><tr><td><strong>Service global</strong></td><td><code dir="auto">&#x3C;nom>.&#x3C;domaine></code></td><td>Internet inclus</td><td><code dir="auto">git.domain.tld</code></td></tr></tbody></table>
 <ul>
-<li><strong>Noms simples</strong> — ce sont les <strong>machines</strong> (hôtes déclarés). Résolus partout
+<li><strong>Noms simples</strong> : ce sont les <strong>machines</strong> (hôtes déclarés). Résolus partout
 sur le réseau, vers l’adresse réelle de la machine, quelle que soit sa zone.</li>
-<li><strong>FQDN de zone</strong> — ce sont les <strong>services d’une zone</strong>. Ils pointent vers la
+<li><strong>FQDN de zone</strong> : ce sont les <strong>services d’une zone</strong>. Ils pointent vers la
 passerelle de cette zone, qui les sert via son proxy inverse.</li>
-<li><strong>Services globaux</strong> — les services marqués <code dir="auto">global</code> dans <code dir="auto">etc/config.yaml</code>.
+<li><strong>Services globaux</strong> : les services marqués <code dir="auto">global</code> dans <code dir="auto">etc/config.yaml</code>.
 Exposés sur le HCS avec un <strong>DNS public</strong> : joignables depuis n’importe où.</li>
 </ul>
 <p>Qui résout quoi :</p>
