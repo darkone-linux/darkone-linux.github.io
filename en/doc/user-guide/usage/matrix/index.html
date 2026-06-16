@@ -118,63 +118,121 @@ device.</p>
 If in doubt, ask the administrator.</p></div> </aside>
 
 <div class="sl-heading-wrapper level-h2"><h2 id="bridges-to-whatsapp-telegram-and-others">Bridges to WhatsApp, Telegram, and others</h2><a class="sl-anchor-link" href="#bridges-to-whatsapp-telegram-and-others"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24"><path fill="currentcolor" d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 0 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 1 0-1.42-1.42Zm8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 0 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 1 0 1.42 1.42l3.88-3.89a4.49 4.49 0 0 0 0-6.33ZM8.83 15.17a1 1 0 0 0 1.1.22 1 1 0 0 0 .32-.22l4.92-4.92a1 1 0 0 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42Z"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Bridges to WhatsApp, Telegram, and others”</span></a></div>
-<p>A <strong>bridge</strong> connects Matrix to an external messaging service. Once my bridge
-is activated, my WhatsApp, Telegram or Messenger conversations appear in
-Element as ordinary rooms: I read and reply from Element, and my contacts see
+<p>A <strong>bridge</strong> connects Matrix to an external messaging service. Once the bridge
+is activated, my WhatsApp, Telegram, or Messenger conversations appear in
+Element as regular rooms: I read and reply from Element, while my contacts see
 no difference.</p>
+<p>These bridges are built on the <a href="https://docs.mau.fi/bridges/go/setup.html" target="_blank" rel="nofollow">mautrix<span> 🡕</span></a>
+project, the reference in the field. Each bridge has its own official documentation
+page, linked in the sections below.</p>
 <img alt="Diagram" decoding="async" loading="lazy" src="/d2/docs/en/doc/user-guide/usage/matrix-0.svg" width="920" height="165">
-<p>Each bridge is operated by a <strong>bot</strong>: a special contact that I send commands
-to. The principle is the same for all:</p>
+<p>Each bridge is operated by a <strong>bot</strong>: a special contact I send commands to. The
+principle is the same for all:</p>
 <ol role="list" class="sl-steps">
 <li>
-<p>In Element, I start a <strong>direct conversation</strong> with the bridge’s bot (for
+<p>In Element, I start a <strong>direct conversation</strong> with the bridge bot (for
 example <code dir="auto">@whatsappbot:domain.tld</code>).</p>
 </li>
 <li>
-<p>I send it <code dir="auto">login</code> and follow its instructions (scan a QR code, give my
-number…).</p>
+<p>I send it <code dir="auto">login</code> and follow its instructions (scan a QR code, provide my
+phone number…).</p>
 </li>
 <li>
-<p>That’s it: my conversations arrive as they come. Each person connects
-<strong>their own account</strong>, without interfering with other users on the
-network.</p>
+<p>That’s it: my conversations appear gradually. Each user connects <strong>their own
+account</strong>, without interfering with other users on the network.</p>
 </li>
 </ol>
-<aside aria-label="What about privacy?" class="starlight-aside starlight-aside--note"> <p class="starlight-aside__title" aria-hidden="true"> <svg aria-hidden="true" class="starlight-aside__icon astro-c6vsoqas" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M12 11a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0v-4a1 1 0 0 0-1-1Zm.38-3.92a1 1 0 0 0-.76 0 1 1 0 0 0-.33.21 1.15 1.15 0 0 0-.21.33 1 1 0 0 0 .21 1.09c.097.088.209.16.33.21A1 1 0 0 0 13 8a1.05 1.05 0 0 0-.29-.71 1 1 0 0 0-.33-.21ZM12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 18a8 8 0 1 1 0-16.001A8 8 0 0 1 12 20Z"/></svg>What about privacy? </p>  <div class="starlight-aside__content"><p>The bridge decrypts messages to pass them from one world to another: it’s
+<aside aria-label="What about privacy?" class="starlight-aside starlight-aside--note"> <p class="starlight-aside__title" aria-hidden="true"> <svg aria-hidden="true" class="starlight-aside__icon astro-c6vsoqas" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M12 11a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0v-4a1 1 0 0 0-1-1Zm.38-3.92a1 1 0 0 0-.76 0 1 1 0 0 0-.33.21 1.15 1.15 0 0 0-.21.33 1 1 0 0 0 .21 1.09c.097.088.209.16.33.21A1 1 0 0 0 13 8a1.05 1.05 0 0 0-.29-.71 1 1 0 0 0-.33-.21ZM12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 18a8 8 0 1 1 0-16.001A8 8 0 0 1 12 20Z"/></svg>What about privacy? </p>  <div class="starlight-aside__content"><p>The bridge decrypts messages to relay them from one world to another: this is
 unavoidable, but everything happens on <strong>our server</strong>, not in some unknown
 cloud. If in doubt about a command, send <code dir="auto">help</code> to the bot.</p></div> </aside>
 
 <div class="sl-heading-wrapper level-h3"><h3 id="whatsapp">WhatsApp</h3><a class="sl-anchor-link" href="#whatsapp"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24"><path fill="currentcolor" d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 0 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 1 0-1.42-1.42Zm8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 0 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 1 0 1.42 1.42l3.88-3.89a4.49 4.49 0 0 0 0-6.33ZM8.83 15.17a1 1 0 0 0 1.1.22 1 1 0 0 0 .32-.22l4.92-4.92a1 1 0 0 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42Z"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “WhatsApp”</span></a></div>
-<p>Bot : <code dir="auto">@whatsappbot:domain.tld</code>. Send <code dir="auto">login</code>, choose the
-<strong>QR-code</strong> method, then on the phone : WhatsApp → Settings → <strong>Linked
-devices</strong> → Link a device, and scan the code displayed in Element.
-The phone must remain on and connected from time to time, just like
-WhatsApp Web.</p>
+<p>The WhatsApp bridge connects as a <strong>linked device</strong>, exactly like WhatsApp Web.
+Simple and reliable.</p>
+<ol role="list" class="sl-steps">
+<li>
+<p>Start a direct conversation with <code dir="auto">@whatsappbot:domain.tld</code> and send it
+<code dir="auto">login qr</code>.</p>
+</li>
+<li>
+<p>On the phone: WhatsApp → Settings → <strong>Linked devices</strong> → Link a device,
+then scan the QR code displayed in Element.</p>
+</li>
+</ol>
+<aside aria-label="Keep the phone within reach" class="starlight-aside starlight-aside--tip"> <p class="starlight-aside__title" aria-hidden="true"> <svg aria-hidden="true" class="starlight-aside__icon astro-c6vsoqas" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path fill-rule="evenodd" d="M1.44 8.855v-.001l3.527-3.516c.34-.344.802-.541 1.285-.548h6.649l.947-.947c3.07-3.07 6.207-3.072 7.62-2.868a1.821 1.821 0 0 1 1.557 1.557c.204 1.413.203 4.55-2.868 7.62l-.946.946v6.649a1.845 1.845 0 0 1-.549 1.286l-3.516 3.528a1.844 1.844 0 0 1-3.11-.944l-.858-4.275-4.52-4.52-2.31-.463-1.964-.394A1.847 1.847 0 0 1 .98 10.693a1.843 1.843 0 0 1 .46-1.838Zm5.379 2.017-3.873-.776L6.32 6.733h4.638l-4.14 4.14Zm8.403-5.655c2.459-2.46 4.856-2.463 5.89-2.33.134 1.035.13 3.432-2.329 5.891l-6.71 6.71-3.561-3.56 6.71-6.711Zm-1.318 15.837-.776-3.873 4.14-4.14v4.639l-3.364 3.374Z" clip-rule="evenodd"/><path d="M9.318 18.345a.972.972 0 0 0-1.86-.561c-.482 1.435-1.687 2.204-2.934 2.619a8.22 8.22 0 0 1-1.23.302c.062-.365.157-.79.303-1.229.415-1.247 1.184-2.452 2.62-2.935a.971.971 0 1 0-.62-1.842c-.12.04-.236.084-.35.13-2.02.828-3.012 2.588-3.493 4.033a10.383 10.383 0 0 0-.51 2.845l-.001.016v.063c0 .536.434.972.97.972H2.24a7.21 7.21 0 0 0 .878-.065c.527-.063 1.248-.19 2.02-.447 1.445-.48 3.205-1.472 4.033-3.494a5.828 5.828 0 0 0 .147-.407Z"/></svg>Keep the phone within reach </p>  <div class="starlight-aside__content"><p>Like WhatsApp Web, the phone must reconnect from time to time: beyond
+<strong>two weeks</strong> offline, the linked device is disconnected and you need to
+repeat the process. Alternative without scanning: <code dir="auto">login phone</code> displays a
+code to enter on the phone.</p></div> </aside>
+<p>📖 <a href="https://docs.mau.fi/bridges/go/whatsapp/authentication.html" target="_blank" rel="nofollow">Official WhatsApp bridge documentation<span> 🡕</span></a></p>
 
 <div class="sl-heading-wrapper level-h3"><h3 id="signal">Signal</h3><a class="sl-anchor-link" href="#signal"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24"><path fill="currentcolor" d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 0 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 1 0-1.42-1.42Zm8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 0 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 1 0 1.42 1.42l3.88-3.89a4.49 4.49 0 0 0 0-6.33ZM8.83 15.17a1 1 0 0 0 1.1.22 1 1 0 0 0 .32-.22l4.92-4.92a1 1 0 0 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42Z"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Signal”</span></a></div>
-<p>Bot : <code dir="auto">@signalbot:domain.tld</code>. Send <code dir="auto">login</code>, choose the
-<strong>QR-code</strong> method, then on the phone : Signal → Settings → <strong>Linked
-devices</strong> → Add, and scan the code displayed in Element.</p>
+<p>The Signal bridge connects as an additional <strong>linked device</strong>, without
+touching the phone’s existing connection.</p>
+<ol role="list" class="sl-steps">
+<li>
+<p>Start a direct conversation with <code dir="auto">@signalbot:domain.tld</code> and send it
+<code dir="auto">login</code>.</p>
+</li>
+<li>
+<p>On the phone: Signal → Settings → <strong>Linked devices</strong> → Add, then scan the
+QR code displayed in Element.</p>
+</li>
+</ol>
+<aside aria-label="Message history" class="starlight-aside starlight-aside--note"> <p class="starlight-aside__title" aria-hidden="true"> <svg aria-hidden="true" class="starlight-aside__icon astro-c6vsoqas" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M12 11a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0v-4a1 1 0 0 0-1-1Zm.38-3.92a1 1 0 0 0-.76 0 1 1 0 0 0-.33.21 1.15 1.15 0 0 0-.21.33 1 1 0 0 0 .21 1.09c.097.088.209.16.33.21A1 1 0 0 0 13 8a1.05 1.05 0 0 0-.29-.71 1 1 0 0 0-.33-.21ZM12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 18a8 8 0 1 1 0-16.001A8 8 0 0 1 12 20Z"/></svg>Message history </p>  <div class="starlight-aside__content"><p>When connecting, Signal may offer to <strong>transfer conversation history</strong>.
+Otherwise, rooms fill up as new messages come in.</p></div> </aside>
+<p>📖 <a href="https://docs.mau.fi/bridges/go/signal/authentication.html" target="_blank" rel="nofollow">Official Signal bridge documentation<span> 🡕</span></a></p>
 
 <div class="sl-heading-wrapper level-h3"><h3 id="telegram">Telegram</h3><a class="sl-anchor-link" href="#telegram"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24"><path fill="currentcolor" d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 0 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 1 0-1.42-1.42Zm8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 0 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 1 0 1.42 1.42l3.88-3.89a4.49 4.49 0 0 0 0-6.33ZM8.83 15.17a1 1 0 0 0 1.1.22 1 1 0 0 0 .32-.22l4.92-4.92a1 1 0 0 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42Z"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Telegram”</span></a></div>
-<p>Bot : <code dir="auto">@telegrambot:domain.tld</code>. Send <code dir="auto">login</code>, then my <strong>phone
-number</strong> in international format (<code dir="auto">+33612345678</code>). Telegram sends me a
-verification code, which I forward to the bot. If my account has a
-“two-step” password, the bot will ask for it too.</p>
+<p>The Telegram bridge connects with my <strong>phone number</strong>, like another Telegram
+client.</p>
+<ol role="list" class="sl-steps">
+<li>
+<p>Start a direct conversation with <code dir="auto">@telegrambot:domain.tld</code> and send it
+<code dir="auto">login phone +33612345678</code> (number in international format).</p>
+</li>
+<li>
+<p>Enter the <strong>verification code</strong> sent by Telegram, then, if my account has a
+“two-step” password, that password.</p>
+</li>
+</ol>
+<aside aria-label="Where does the code arrive?" class="starlight-aside starlight-aside--note"> <p class="starlight-aside__title" aria-hidden="true"> <svg aria-hidden="true" class="starlight-aside__icon astro-c6vsoqas" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M12 11a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0v-4a1 1 0 0 0-1-1Zm.38-3.92a1 1 0 0 0-.76 0 1 1 0 0 0-.33.21 1.15 1.15 0 0 0-.21.33 1 1 0 0 0 .21 1.09c.097.088.209.16.33.21A1 1 0 0 0 13 8a1.05 1.05 0 0 0-.29-.71 1 1 0 0 0-.33-.21ZM12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 18a8 8 0 1 1 0-16.001A8 8 0 0 1 12 20Z"/></svg>Where does the code arrive? </p>  <div class="starlight-aside__content"><p>Telegram does <strong>not send</strong> the code by SMS: it displays it in an already open
+Telegram session (phone or desktop). So you need an already connected Telegram
+client. Alternative: <code dir="auto">login qr</code> to scan a QR code.</p></div> </aside>
+<p>📖 <a href="https://docs.mau.fi/bridges/go/telegram/authentication.html" target="_blank" rel="nofollow">Official Telegram bridge documentation<span> 🡕</span></a></p>
 
 <div class="sl-heading-wrapper level-h3"><h3 id="messenger-facebook">Messenger (Facebook)</h3><a class="sl-anchor-link" href="#messenger-facebook"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24"><path fill="currentcolor" d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 0 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 1 0-1.42-1.42Zm8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 0 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 1 0 1.42 1.42l3.88-3.89a4.49 4.49 0 0 0 0-6.33ZM8.83 15.17a1 1 0 0 0 1.1.22 1 1 0 0 0 .32-.22l4.92-4.92a1 1 0 0 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42Z"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Messenger (Facebook)”</span></a></div>
-<p>Bot : <code dir="auto">@messengerbot:domain.tld</code>. Send <code dir="auto">login</code> and follow the
-instructions : connection is done by retrieving <strong>cookies</strong> from an
-open session on <code dir="auto">messenger.com</code> using a desktop browser. This is the
-most technical connection ; feel free to ask the administrator
-for help.</p>
+<p>The Messenger bridge connects by reusing the <strong>cookies</strong> of a session open in a
+browser. This is the most technical connection of all.</p>
+<ol role="list" class="sl-steps">
+<li>
+<p>Start a direct conversation with <code dir="auto">@messengerbot:domain.tld</code> and send it
+<code dir="auto">login</code>.</p>
+</li>
+<li>
+<p>Log in to <code dir="auto">messenger.com</code> in a private window, then follow the bot’s
+instructions to hand over the session cookies.</p>
+</li>
+</ol>
+<aside aria-label="Tricky step" class="starlight-aside starlight-aside--caution"> <p class="starlight-aside__title" aria-hidden="true"> <svg aria-hidden="true" class="starlight-aside__icon astro-c6vsoqas" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M12 16a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm10.67 1.47-8.05-14a3 3 0 0 0-5.24 0l-8 14A3 3 0 0 0 3.94 22h16.12a3 3 0 0 0 2.61-4.53Zm-1.73 2a1 1 0 0 1-.88.51H3.94a1 1 0 0 1-.88-.51 1 1 0 0 1 0-1l8-14a1 1 0 0 1 1.78 0l8.05 14a1 1 0 0 1 .05 1.02v-.02ZM12 8a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V9a1 1 0 0 0-1-1Z"/></svg>Tricky step </p>  <div class="starlight-aside__content"><p>Retrieving cookies requires using the browser’s <strong>developer tools</strong>. If in
+doubt, ask the administrator for help. Enabling <strong>two-factor authentication</strong>
+on the Facebook account limits blocks.</p></div> </aside>
+<p>📖 <a href="https://docs.mau.fi/bridges/go/meta/authentication.html" target="_blank" rel="nofollow">Official Meta (Messenger) bridge documentation<span> 🡕</span></a></p>
 
 <div class="sl-heading-wrapper level-h3"><h3 id="discord">Discord</h3><a class="sl-anchor-link" href="#discord"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24"><path fill="currentcolor" d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 0 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 1 0-1.42-1.42Zm8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 0 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 1 0 1.42 1.42l3.88-3.89a4.49 4.49 0 0 0 0-6.33ZM8.83 15.17a1 1 0 0 0 1.1.22 1 1 0 0 0 .32-.22l4.92-4.92a1 1 0 0 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42Z"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Discord”</span></a></div>
-<p>Bot : <code dir="auto">@discordbot:domain.tld</code>. Send <code dir="auto">login-qr</code> and scan the
-QR code with the <strong>Discord</strong> app on your phone (Settings → Scan
+<p>The Discord bridge connects with a simple QR code scan.</p>
+<ol role="list" class="sl-steps">
+<li>
+<p>Start a direct conversation with <code dir="auto">@discordbot:domain.tld</code> and send it
+<code dir="auto">login-qr</code>.</p>
+</li>
+<li>
+<p>Scan the QR code with the <strong>Discord</strong> app on your phone (Settings → Scan
 QR code).</p>
+</li>
+</ol>
 <aside aria-label="Optional bridge" class="starlight-aside starlight-aside--caution"> <p class="starlight-aside__title" aria-hidden="true"> <svg aria-hidden="true" class="starlight-aside__icon astro-c6vsoqas" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M12 16a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm10.67 1.47-8.05-14a3 3 0 0 0-5.24 0l-8 14A3 3 0 0 0 3.94 22h16.12a3 3 0 0 0 2.61-4.53Zm-1.73 2a1 1 0 0 1-.88.51H3.94a1 1 0 0 1-.88-.51 1 1 0 0 1 0-1l8-14a1 1 0 0 1 1.78 0l8.05 14a1 1 0 0 1 .05 1.02v-.02ZM12 8a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V9a1 1 0 0 0-1-1Z"/></svg>Optional bridge </p>  <div class="starlight-aside__content"><p>The Discord bridge is not enabled by default. If it does not respond, ask the
 administrator to enable it.</p></div> </aside>
+<p>📖 <a href="https://docs.mau.fi/bridges/go/discord/authentication.html" target="_blank" rel="nofollow">Official Discord bridge documentation<span> 🡕</span></a></p>
 
 <div class="sl-heading-wrapper level-h3"><h3 id="useful-commands">Useful commands</h3><a class="sl-anchor-link" href="#useful-commands"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24"><path fill="currentcolor" d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 0 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 1 0-1.42-1.42Zm8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 0 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 1 0 1.42 1.42l3.88-3.89a4.49 4.49 0 0 0 0-6.33ZM8.83 15.17a1 1 0 0 0 1.1.22 1 1 0 0 0 .32-.22l4.92-4.92a1 1 0 0 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42Z"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Useful commands”</span></a></div>
 <p>Send to the bridge’s bot, in its direct conversation :</p>

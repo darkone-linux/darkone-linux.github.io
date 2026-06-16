@@ -122,6 +122,9 @@ En cas de doute, demander à l’administrateur.</p></div> </aside>
 mon pont activé, mes conversations WhatsApp, Telegram ou Messenger
 apparaissent dans Element comme des salons ordinaires : je lis et je
 réponds depuis Element, mes correspondants ne voient aucune différence.</p>
+<p>Ces ponts reposent sur le projet <a href="https://docs.mau.fi/bridges/go/setup.html" target="_blank" rel="nofollow">mautrix<span> 🡕</span></a>,
+la référence du domaine. Chaque pont a sa propre page de documentation
+officielle, vers laquelle renvoient les sections ci-dessous.</p>
 <img alt="Diagram" decoding="async" loading="lazy" src="/d2/docs/fr/doc/user-guide/usage/matrix-0.svg" width="968" height="165">
 <p>Chaque pont est piloté par un <strong>robot</strong> (« bot ») : un contact spécial à
 qui j’envoie des commandes. Le principe est le même pour tous :</p>
@@ -145,36 +148,93 @@ c’est inévitable, mais tout se passe sur <strong>notre serveur</strong>, pas 
 cloud inconnu. En cas de doute sur une commande, envoyer <code dir="auto">help</code> au bot.</p></div> </aside>
 
 <div class="sl-heading-wrapper level-h3"><h3 id="whatsapp">WhatsApp</h3><a class="sl-anchor-link" href="#whatsapp"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24"><path fill="currentcolor" d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 0 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 1 0-1.42-1.42Zm8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 0 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 1 0 1.42 1.42l3.88-3.89a4.49 4.49 0 0 0 0-6.33ZM8.83 15.17a1 1 0 0 0 1.1.22 1 1 0 0 0 .32-.22l4.92-4.92a1 1 0 0 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42Z"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section intitulée « WhatsApp »</span></a></div>
-<p>Bot : <code dir="auto">@whatsappbot:domain.tld</code>. Envoyer <code dir="auto">login</code>, choisir la méthode
-<strong>QR-code</strong>, puis sur le téléphone : WhatsApp → Réglages → <strong>Appareils
-connectés</strong> → Connecter un appareil, et scanner le code affiché dans Element.
-Le téléphone doit rester allumé et connecté de temps en temps, comme pour
-WhatsApp Web.</p>
+<p>Le pont WhatsApp se connecte comme un <strong>appareil lié</strong>, exactement comme
+WhatsApp Web. Simple et fiable.</p>
+<ol role="list" class="sl-steps">
+<li>
+<p>Démarrer une conversation directe avec <code dir="auto">@whatsappbot:domain.tld</code> et lui
+envoyer <code dir="auto">login qr</code>.</p>
+</li>
+<li>
+<p>Sur le téléphone : WhatsApp → Réglages → <strong>Appareils connectés</strong> →
+Connecter un appareil, puis scanner le QR-code affiché dans Element.</p>
+</li>
+</ol>
+<aside aria-label="Garder le téléphone à portée" class="starlight-aside starlight-aside--tip"> <p class="starlight-aside__title" aria-hidden="true"> <svg aria-hidden="true" class="starlight-aside__icon astro-c6vsoqas" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path fill-rule="evenodd" d="M1.44 8.855v-.001l3.527-3.516c.34-.344.802-.541 1.285-.548h6.649l.947-.947c3.07-3.07 6.207-3.072 7.62-2.868a1.821 1.821 0 0 1 1.557 1.557c.204 1.413.203 4.55-2.868 7.62l-.946.946v6.649a1.845 1.845 0 0 1-.549 1.286l-3.516 3.528a1.844 1.844 0 0 1-3.11-.944l-.858-4.275-4.52-4.52-2.31-.463-1.964-.394A1.847 1.847 0 0 1 .98 10.693a1.843 1.843 0 0 1 .46-1.838Zm5.379 2.017-3.873-.776L6.32 6.733h4.638l-4.14 4.14Zm8.403-5.655c2.459-2.46 4.856-2.463 5.89-2.33.134 1.035.13 3.432-2.329 5.891l-6.71 6.71-3.561-3.56 6.71-6.711Zm-1.318 15.837-.776-3.873 4.14-4.14v4.639l-3.364 3.374Z" clip-rule="evenodd"/><path d="M9.318 18.345a.972.972 0 0 0-1.86-.561c-.482 1.435-1.687 2.204-2.934 2.619a8.22 8.22 0 0 1-1.23.302c.062-.365.157-.79.303-1.229.415-1.247 1.184-2.452 2.62-2.935a.971.971 0 1 0-.62-1.842c-.12.04-.236.084-.35.13-2.02.828-3.012 2.588-3.493 4.033a10.383 10.383 0 0 0-.51 2.845l-.001.016v.063c0 .536.434.972.97.972H2.24a7.21 7.21 0 0 0 .878-.065c.527-.063 1.248-.19 2.02-.447 1.445-.48 3.205-1.472 4.033-3.494a5.828 5.828 0 0 0 .147-.407Z"/></svg>Garder le téléphone à portée </p>  <div class="starlight-aside__content"><p>Comme WhatsApp Web, le téléphone doit se reconnecter de temps en temps :
+au-delà de <strong>deux semaines</strong> hors ligne, l’appareil lié est déconnecté et il
+faut refaire la manipulation. Variante sans scan : <code dir="auto">login phone</code> affiche un
+code à saisir sur le téléphone.</p></div> </aside>
+<p>📖 <a href="https://docs.mau.fi/bridges/go/whatsapp/authentication.html" target="_blank" rel="nofollow">Documentation officielle du pont WhatsApp<span> 🡕</span></a></p>
 
 <div class="sl-heading-wrapper level-h3"><h3 id="signal">Signal</h3><a class="sl-anchor-link" href="#signal"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24"><path fill="currentcolor" d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 0 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 1 0-1.42-1.42Zm8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 0 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 1 0 1.42 1.42l3.88-3.89a4.49 4.49 0 0 0 0-6.33ZM8.83 15.17a1 1 0 0 0 1.1.22 1 1 0 0 0 .32-.22l4.92-4.92a1 1 0 0 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42Z"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section intitulée « Signal »</span></a></div>
-<p>Bot : <code dir="auto">@signalbot:domain.tld</code>. Envoyer <code dir="auto">login</code>, choisir la méthode
-<strong>QR-code</strong>, puis sur le téléphone : Signal → Paramètres → <strong>Appareils
-liés</strong> → Ajouter, et scanner le code affiché dans Element.</p>
+<p>Le pont Signal se relie comme un <strong>appareil lié</strong> supplémentaire, sans toucher
+à la connexion existante du téléphone.</p>
+<ol role="list" class="sl-steps">
+<li>
+<p>Démarrer une conversation directe avec <code dir="auto">@signalbot:domain.tld</code> et lui
+envoyer <code dir="auto">login</code>.</p>
+</li>
+<li>
+<p>Sur le téléphone : Signal → Paramètres → <strong>Appareils liés</strong> → Ajouter,
+puis scanner le QR-code affiché dans Element.</p>
+</li>
+</ol>
+<aside aria-label="Historique des messages" class="starlight-aside starlight-aside--note"> <p class="starlight-aside__title" aria-hidden="true"> <svg aria-hidden="true" class="starlight-aside__icon astro-c6vsoqas" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M12 11a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0v-4a1 1 0 0 0-1-1Zm.38-3.92a1 1 0 0 0-.76 0 1 1 0 0 0-.33.21 1.15 1.15 0 0 0-.21.33 1 1 0 0 0 .21 1.09c.097.088.209.16.33.21A1 1 0 0 0 13 8a1.05 1.05 0 0 0-.29-.71 1 1 0 0 0-.33-.21ZM12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 18a8 8 0 1 1 0-16.001A8 8 0 0 1 12 20Z"/></svg>Historique des messages </p>  <div class="starlight-aside__content"><p>À la connexion, Signal peut proposer de <strong>transférer l’historique</strong> des
+conversations. À défaut, les salons se remplissent au fil des nouveaux
+messages.</p></div> </aside>
+<p>📖 <a href="https://docs.mau.fi/bridges/go/signal/authentication.html" target="_blank" rel="nofollow">Documentation officielle du pont Signal<span> 🡕</span></a></p>
 
 <div class="sl-heading-wrapper level-h3"><h3 id="telegram">Telegram</h3><a class="sl-anchor-link" href="#telegram"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24"><path fill="currentcolor" d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 0 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 1 0-1.42-1.42Zm8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 0 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 1 0 1.42 1.42l3.88-3.89a4.49 4.49 0 0 0 0-6.33ZM8.83 15.17a1 1 0 0 0 1.1.22 1 1 0 0 0 .32-.22l4.92-4.92a1 1 0 0 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42Z"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section intitulée « Telegram »</span></a></div>
-<p>Bot : <code dir="auto">@telegrambot:domain.tld</code>. Envoyer <code dir="auto">login</code>, puis mon <strong>numéro de
-téléphone</strong> au format international (<code dir="auto">+33612345678</code>). Telegram m’envoie un
-code de vérification, que je transmets au bot. Si mon compte a un mot de
-passe « deux étapes », le bot me le demandera aussi.</p>
+<p>Le pont Telegram se connecte avec mon <strong>numéro de téléphone</strong>, comme un client
+Telegram de plus.</p>
+<ol role="list" class="sl-steps">
+<li>
+<p>Démarrer une conversation directe avec <code dir="auto">@telegrambot:domain.tld</code> et lui
+envoyer <code dir="auto">login phone +33612345678</code> (numéro au format international).</p>
+</li>
+<li>
+<p>Saisir le <strong>code de vérification</strong> envoyé par Telegram, puis, si mon compte
+a un mot de passe « deux étapes », ce mot de passe.</p>
+</li>
+</ol>
+<aside aria-label="Où arrive le code ?" class="starlight-aside starlight-aside--note"> <p class="starlight-aside__title" aria-hidden="true"> <svg aria-hidden="true" class="starlight-aside__icon astro-c6vsoqas" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M12 11a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0v-4a1 1 0 0 0-1-1Zm.38-3.92a1 1 0 0 0-.76 0 1 1 0 0 0-.33.21 1.15 1.15 0 0 0-.21.33 1 1 0 0 0 .21 1.09c.097.088.209.16.33.21A1 1 0 0 0 13 8a1.05 1.05 0 0 0-.29-.71 1 1 0 0 0-.33-.21ZM12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 18a8 8 0 1 1 0-16.001A8 8 0 0 1 12 20Z"/></svg>Où arrive le code ? </p>  <div class="starlight-aside__content"><p>Telegram <strong>n’envoie pas</strong> le code par SMS : il l’affiche dans une session
+Telegram déjà ouverte (téléphone ou ordinateur). Il faut donc avoir un client
+Telegram déjà connecté. Variante : <code dir="auto">login qr</code> pour scanner un QR-code.</p></div> </aside>
+<p>📖 <a href="https://docs.mau.fi/bridges/go/telegram/authentication.html" target="_blank" rel="nofollow">Documentation officielle du pont Telegram<span> 🡕</span></a></p>
 
 <div class="sl-heading-wrapper level-h3"><h3 id="messenger-facebook">Messenger (Facebook)</h3><a class="sl-anchor-link" href="#messenger-facebook"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24"><path fill="currentcolor" d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 0 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 1 0-1.42-1.42Zm8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 0 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 1 0 1.42 1.42l3.88-3.89a4.49 4.49 0 0 0 0-6.33ZM8.83 15.17a1 1 0 0 0 1.1.22 1 1 0 0 0 .32-.22l4.92-4.92a1 1 0 0 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42Z"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section intitulée « Messenger (Facebook) »</span></a></div>
-<p>Bot : <code dir="auto">@messengerbot:domain.tld</code>. Envoyer <code dir="auto">login</code> et suivre les
-instructions : la connexion se fait en récupérant les <strong>cookies</strong> d’une
-session ouverte sur <code dir="auto">messenger.com</code> depuis un navigateur d’ordinateur. C’est
-la connexion la plus technique ; ne pas hésiter à demander un coup
-de main à l’administrateur.</p>
+<p>Le pont Messenger se connecte en réutilisant les <strong>cookies</strong> d’une session
+ouverte dans un navigateur. C’est la connexion la plus technique de toutes.</p>
+<ol role="list" class="sl-steps">
+<li>
+<p>Démarrer une conversation directe avec <code dir="auto">@messengerbot:domain.tld</code> et lui
+envoyer <code dir="auto">login</code>.</p>
+</li>
+<li>
+<p>Se connecter sur <code dir="auto">messenger.com</code> dans une fenêtre privée, puis suivre les
+instructions du bot pour lui transmettre les cookies de la session.</p>
+</li>
+</ol>
+<aside aria-label="Étape délicate" class="starlight-aside starlight-aside--caution"> <p class="starlight-aside__title" aria-hidden="true"> <svg aria-hidden="true" class="starlight-aside__icon astro-c6vsoqas" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M12 16a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm10.67 1.47-8.05-14a3 3 0 0 0-5.24 0l-8 14A3 3 0 0 0 3.94 22h16.12a3 3 0 0 0 2.61-4.53Zm-1.73 2a1 1 0 0 1-.88.51H3.94a1 1 0 0 1-.88-.51 1 1 0 0 1 0-1l8-14a1 1 0 0 1 1.78 0l8.05 14a1 1 0 0 1 .05 1.02v-.02ZM12 8a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V9a1 1 0 0 0-1-1Z"/></svg>Étape délicate </p>  <div class="starlight-aside__content"><p>Récupérer les cookies passe par les <strong>outils de développement</strong> du navigateur.
+En cas de doute, demander un coup de main à l’administrateur. Activer la
+<strong>double authentification</strong> sur le compte Facebook limite les blocages.</p></div> </aside>
+<p>📖 <a href="https://docs.mau.fi/bridges/go/meta/authentication.html" target="_blank" rel="nofollow">Documentation officielle du pont Meta (Messenger)<span> 🡕</span></a></p>
 
 <div class="sl-heading-wrapper level-h3"><h3 id="discord">Discord</h3><a class="sl-anchor-link" href="#discord"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24"><path fill="currentcolor" d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 0 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 1 0-1.42-1.42Zm8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 0 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 1 0 1.42 1.42l3.88-3.89a4.49 4.49 0 0 0 0-6.33ZM8.83 15.17a1 1 0 0 0 1.1.22 1 1 0 0 0 .32-.22l4.92-4.92a1 1 0 0 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42Z"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section intitulée « Discord »</span></a></div>
-<p>Bot : <code dir="auto">@discordbot:domain.tld</code>. Envoyer <code dir="auto">login-qr</code> et scanner le
-QR-code avec l’application <strong>Discord</strong> du téléphone (Réglages → Scanner le
-QR code).</p>
+<p>Le pont Discord se connecte d’un simple scan de QR-code.</p>
+<ol role="list" class="sl-steps">
+<li>
+<p>Démarrer une conversation directe avec <code dir="auto">@discordbot:domain.tld</code> et lui
+envoyer <code dir="auto">login-qr</code>.</p>
+</li>
+<li>
+<p>Scanner le QR-code avec l’application <strong>Discord</strong> du téléphone (Réglages →
+Scanner le QR code).</p>
+</li>
+</ol>
 <aside aria-label="Pont optionnel" class="starlight-aside starlight-aside--caution"> <p class="starlight-aside__title" aria-hidden="true"> <svg aria-hidden="true" class="starlight-aside__icon astro-c6vsoqas" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M12 16a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm10.67 1.47-8.05-14a3 3 0 0 0-5.24 0l-8 14A3 3 0 0 0 3.94 22h16.12a3 3 0 0 0 2.61-4.53Zm-1.73 2a1 1 0 0 1-.88.51H3.94a1 1 0 0 1-.88-.51 1 1 0 0 1 0-1l8-14a1 1 0 0 1 1.78 0l8.05 14a1 1 0 0 1 .05 1.02v-.02ZM12 8a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V9a1 1 0 0 0-1-1Z"/></svg>Pont optionnel </p>  <div class="starlight-aside__content"><p>Le pont Discord n’est pas activé par défaut. S’il ne répond pas, demander à
 l’administrateur de l’activer.</p></div> </aside>
+<p>📖 <a href="https://docs.mau.fi/bridges/go/discord/authentication.html" target="_blank" rel="nofollow">Documentation officielle du pont Discord<span> 🡕</span></a></p>
 
 <div class="sl-heading-wrapper level-h3"><h3 id="commandes-utiles">Commandes utiles</h3><a class="sl-anchor-link" href="#commandes-utiles"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24"><path fill="currentcolor" d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 0 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 1 0-1.42-1.42Zm8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 0 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 1 0 1.42 1.42l3.88-3.89a4.49 4.49 0 0 0 0-6.33ZM8.83 15.17a1 1 0 0 0 1.1.22 1 1 0 0 0 .32-.22l4.92-4.92a1 1 0 0 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42Z"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section intitulée « Commandes utiles »</span></a></div>
 <p>À envoyer au bot d’un pont, dans sa conversation directe :</p>
