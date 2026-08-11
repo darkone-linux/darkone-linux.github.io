@@ -158,7 +158,7 @@ Schedule during off-peak hours. Frequent false positives on /etc/resolv.conf,
 (the store changes). Plan a baseline update procedure.</p></div></aside>
 <ul>
 <li><strong>enable</strong> <code dir="auto">bool</code> Enable ANSSI HIDS integrity — AIDE (R76–R77).</li>
-<li><strong>aideRemoteCopy</strong> <code dir="auto">nullOr ( submodule { options = { host = lib.mkOption { type = str; description = "Remote host for the AIDE database copy."; }; sshKeyFile = lib.mkOption { type = path; description = "Path to the private SSH key for the remote copy."; }; }; } )</code> Remote copy of the GPG-signed AIDE database (R77). null = disabled.
+<li><strong>aideRemoteCopy</strong> <code dir="auto">nullOr submodule</code> Remote copy of the GPG-signed AIDE database (R77). null = disabled.
 <ul>
 <li><strong>host</strong> <code dir="auto">str</code> Remote host for the AIDE database copy.</li>
 <li><strong>sshKeyFile</strong> <code dir="auto">path</code> Path to the private SSH key for the remote copy.</li>
