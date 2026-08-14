@@ -121,6 +121,15 @@ servir.</p>
 <table><thead><tr><th>Usage</th><th>Mécanisme</th><th>Effet</th></tr></thead><tbody><tr><td><strong>Session, sudo, écran de connexion</strong></td><td>pam_u2f (<code dir="auto">sufficient</code>)</td><td>Toucher la clé remplace le mot de passe</td></tr><tr><td><strong>Disques chiffrés (LUKS)</strong></td><td>FIDO2 <code dir="auto">hmac-secret</code></td><td>Déverrouillage au boot en touchant la clé</td></tr><tr><td><strong>SSO (Kanidm)</strong></td><td>Passkey WebAuthn</td><td>Connexion sans mot de passe aux services</td></tr><tr><td><strong>Vaultwarden</strong></td><td>WebAuthn (2FA)</td><td>Second facteur du coffre-fort</td></tr></tbody></table>
 <aside aria-label="Aucun risque de verrouillage" class="starlight-aside starlight-aside--note"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 11a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0v-4a1 1 0 0 0-1-1Zm.38-3.92a1 1 0 0 0-.76 0 1 1 0 0 0-.33.21 1.15 1.15 0 0 0-.21.33 1 1 0 0 0 .21 1.09c.097.088.209.16.33.21A1 1 0 0 0 13 8a1.05 1.05 0 0 0-.29-.71 1 1 0 0 0-.33-.21ZM12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 18a8 8 0 1 1 0-16.001A8 8 0 0 1 12 20Z"></path></svg>Aucun risque de verrouillage</p><div class="starlight-aside__content"><p>Le mot de passe de session (sops) et la passphrase LUKS d’installation ne sont
 <strong>jamais supprimés</strong> : sans clé (perdue, oubliée), tout fonctionne comme avant.</p></div></aside>
+<aside aria-label="Le toucher au boot n’est pas contournable" class="starlight-aside starlight-aside--caution"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 16a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm10.67 1.47-8.05-14a3 3 0 0 0-5.24 0l-8 14A3 3 0 0 0 3.94 22h16.12a3 3 0 0 0 2.61-4.53Zm-1.73 2a1 1 0 0 1-.88.51H3.94a1 1 0 0 1-.88-.51 1 1 0 0 1 0-1l8-14a1 1 0 0 1 1.78 0l8.05 14a1 1 0 0 1 .05 1.02v-.02ZM12 8a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V9a1 1 0 0 0-1-1Z"></path></svg>Le toucher au boot n’est pas contournable</p><div class="starlight-aside__content"><p>Le déverrouillage LUKS repose sur l’extension FIDO2 <code dir="auto">hmac-secret</code> : la clé
+<strong>recalcule</strong> le secret du keyslot à chaque démarrage, à partir d’un sel stocké
+en clair dans l’en-tête LUKS.</p><p>Les YubiKey <strong>imposent</strong> la présence utilisateur pour cette extension. Une
+demande sans toucher est rejetée (<code dir="auto">FIDO_ERR_UP_REQUIRED</code>) avant même la
+recherche du credential. Règle du firmware, pas réglage : systemd réactive la
+présence de lui-même, à l’enrôlement comme au déverrouillage.</p><p>Pour un hôte qui doit redémarrer seul (passerelle, machine sans écran), la voie
+est le <strong>TPM2</strong> (<code dir="auto">systemd-cryptenroll --tpm2-device=auto</code>), qui cohabite avec
+les keyslots FIDO2 dans le même en-tête LUKS. Contrepartie : le disque s’ouvre
+sans humain, donc volé <strong>avec</strong> sa carte mère il reste déchiffrable.</p></div></aside>
 
 <div class="sl-heading-wrapper level-h2"><h2 id="les-quatre-moyens-de-connexion-kanidm">Les quatre moyens de connexion Kanidm</h2><a class="sl-anchor-link" href="#les-quatre-moyens-de-connexion-kanidm"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section intitulée « Les quatre moyens de connexion Kanidm »</span></a></div>
 <p>Un compte Kanidm expose plusieurs moyens d’authentification, indépendants les
@@ -335,6 +344,8 @@ correspondants sont supprimés. Penser aussi à retirer la passkey côté Kanidm
 <ul>
 <li>Le TOTP reste disponible côté web (Kanidm, Vaultwarden), pas au login local.</li>
 <li>Déverrouillage LUKS <strong>sans code PIN</strong> (touche seule) dans cette version.</li>
+<li>Déverrouillage LUKS <strong>sans toucher</strong> hors de portée d’une YubiKey (limite
+matérielle, voir plus haut) ; le TPM2 n’est pas encore intégré au framework.</li>
 <li>À venir : clés SSH FIDO2 (<code dir="auto">ed25519-sk</code>) et signature git, mode « second
 facteur obligatoire » par hôte, déchiffrement sops admin conditionné à la
 clé (<code dir="auto">age-plugin-fido2-hmac</code>).</li>

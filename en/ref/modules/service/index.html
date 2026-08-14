@@ -215,7 +215,10 @@ proxy is a separate concern: it caches the <em>public</em> binary cache
 <li>the harmonia instances of <em>its own zone</em> (highest priority, LAN), then</li>
 <li>any harmonia flagged <code dir="auto">global</code> (typically on the HCS, over the tailnet), then</li>
 <li>the zone’s <code dir="auto">nix-cache</code> proxy (public cache).</li>
-</ul><p>Other zones’ non-global harmonia are never used. Harmonia’s signature is
+</ul><p>That order is pinned client-side with <code dir="auto">?priority=</code> on each substituter URL
+(see <code dir="auto">nix-cache.nix</code>), because the <code dir="auto">priority</code> set below is identical on every
+instance and Nix sorts substituters by advertised priority, not by list order.</p><p>A host running harmonia does <strong>not</strong> get its own instance as a substituter: it
+would only ever serve paths its local store already has.</p><p>Other zones’ non-global harmonia are never used. Harmonia’s signature is
 passed through unchanged, so every host trusts the deployment-wide harmonia
 public key (<code dir="auto">usr/secrets/harmonia.pub</code>). Transport is plain HTTP on the
 trusted LAN / VPN: integrity comes from the NAR signature, not from TLS.</p></div></aside>
