@@ -88,7 +88,7 @@ Pour l’exploitation au quotidien, voir
 <p>Tout est porté par <code dir="auto">dnf/modules/service/matrix.nix</code>, avec deux modules
 satellites : <code dir="auto">element.nix</code> (client web statique) et <code dir="auto">turn.nix</code> (relais
 coturn pour l’audio/vidéo).</p>
-<img alt="Diagram" decoding="async" loading="lazy" src="/d2/docs/fr/doc/admin-guide/understand/matrix-0.svg" width="1068" height="919">
+<img alt="Diagram" decoding="async" loading="lazy" src="/d2/docs/fr/doc/admin-guide/understand/matrix-0.svg" width="1155" height="1705">
 <ul>
 <li><strong>Caddy</strong> route <code dir="auto">/_matrix/*</code> et <code dir="auto">/_synapse/client/*</code> vers Synapse et sert
 les fichiers <code dir="auto">/.well-known/matrix/{client,server}</code> (découverte des clients
@@ -99,7 +99,13 @@ locale (créée avec collation <code dir="auto">C</code> par une unité <code di
 <code dir="auto">darkone.service.idm.oauth2.matrix</code>, <em>local part</em> dérivée du
 <code dir="auto">preferred_username</code> (voir <a href="/fr/doc/admin-guide/understand/auth-idm/">Authentification &#x26; IDM</a>).</li>
 <li><strong>coturn</strong> est branché automatiquement si le service <code dir="auto">turn</code> est déclaré
-(<code dir="auto">turn_uris</code>, secret partagé via sops).</li>
+(<code dir="auto">turn_uris</code>, secret partagé via sops). Il relaie les appels à deux des
+clients historiques, seule pile qu’Element Classic sache utiliser.</li>
+<li><strong>MatrixRTC</strong> (<code dir="auto">matrixRtc.enable</code>) ajoute la pile Element Call : un SFU
+LiveKit et son service d’autorisation, servis sur le vhost Matrix sous
+<code dir="auto">/livekit/sfu</code> et <code dir="auto">/livekit/jwt</code>. Le client échange un jeton OpenID de
+Synapse contre un JWT LiveKit, puis envoie son média <strong>directement</strong> au SFU,
+hors du proxy. Requis par Element X, qui ne connaît pas l’autre pile.</li>
 </ul>
 
 <div class="sl-heading-wrapper level-h2"><h2 id="anatomie-du-module">Anatomie du module</h2><a class="sl-anchor-link" href="#anatomie-du-module"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section intitulée « Anatomie du module »</span></a></div>
@@ -331,7 +337,8 @@ racine (pages de connexion, <code dir="auto">/account</code>, <code dir="auto">/
 compatibilité <code dir="auto">/_matrix/client/&#x3C;version>/{login,logout,refresh}</code>, sous-chemins
 compris (<code dir="auto">logout/all</code> et l’ancien <code dir="auto">login/sso/redirect</code> des clients pré-OIDC,
 auxquels Synapse répond <code dir="auto">M_UNRECOGNIZED</code> une fois délégué) ; Synapse garde
-<code dir="auto">/_matrix/*</code> et <code dir="auto">/_synapse/*</code>. Aucun sous-domaine ni DNS supplémentaire.</li>
+<code dir="auto">/_matrix/*</code> et <code dir="auto">/_synapse/*</code>. Aucun sous-domaine ni DNS supplémentaire — le
+backend MatrixRTC s’y greffe de la même façon, sous <code dir="auto">/livekit/*</code>.</li>
 <li><strong>Kanidm reste la source d’identité</strong> : MAS devient le client OIDC à la
 place de Synapse (mêmes identifiant et secret), déclaré comme fournisseur
 amont sous un ULID fixe. Synapse ne fait plus que demander à MAS de valider
@@ -361,6 +368,11 @@ par l’utilisateur système du pont. Liste complète dans
 registre <code dir="auto">dnf/config/network.nix</code> ; les ports appservice par défaut des
 autres ponts (29318, 29319, 29328) y sont listés en <code dir="auto">reserved</code> pour éviter
 toute collision future.</li>
+<li><strong>Ports MatrixRTC</strong> : le registre porte aussi <code dir="auto">livekit</code>, <code dir="auto">livekitJwt</code> et les
+bornes média <code dir="auto">livekitRtcUdpStart</code>/<code dir="auto">End</code>. Deux valeurs par défaut amont y sont
+écartées volontairement : le service d’autorisation quitte 8080 (pris
+par headscale) et la plage média passe sous celle de coturn, qu’elle
+chevauchait.</li>
 <li><strong>Statuts WhatsApp</strong> : <code dir="auto">network.enable_status_broadcast = false</code> dans la
 config du pont, sinon le bridge recrée indéfiniment le salon
 « WhatsApp Status Broadcast » pour chaque utilisateur.</li>

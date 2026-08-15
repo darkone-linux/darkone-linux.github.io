@@ -85,20 +85,14 @@ For day-to-day operation, see
 <a href="/en/doc/admin-guide/operate/matrix/">Matrix et les ponts</a>.</p>
 
 <div class="sl-heading-wrapper level-h2"><h2 id="overview">Overview</h2><a class="sl-anchor-link" href="#overview"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Overview”</span></a></div>
-<p>Everything is handled by <code dir="auto">dnf/modules/service/matrix.nix</code>, with two satellite
-modules : <code dir="auto">element.nix</code> (static web client) and <code dir="auto">turn.nix</code> (coturn relay
-for audio/video).</p>
-<img alt="Diagram" decoding="async" loading="lazy" src="/d2/docs/en/doc/admin-guide/understand/matrix-0.svg" width="1068" height="919">
+<p>Everything is provided by <code dir="auto">dnf/modules/service/matrix.nix</code>, with two satellite modules : <code dir="auto">element.nix</code> (static web client) and <code dir="auto">turn.nix</code> (coturn relay for audio/video).</p>
+<img alt="Diagram" decoding="async" loading="lazy" src="/d2/docs/en/doc/admin-guide/understand/matrix-0.svg" width="1154" height="1705">
 <ul>
-<li><strong>Caddy</strong> routes <code dir="auto">/_matrix/*</code> and <code dir="auto">/_synapse/client/*</code> to Synapse and serves
-<code dir="auto">/.well-known/matrix/{client,server}</code> files (client discovery and federation).</li>
-<li><strong>Synapse</strong> listens on <code dir="auto">dnfConfig.network.ports.matrix</code>, local PostgreSQL
-database (created with <code dir="auto">C</code> collation by a <code dir="auto">matrix-db-init</code> unit).</li>
-<li><strong>Kanidm</strong> provides authentication : OIDC client provisioned via
-<code dir="auto">darkone.service.idm.oauth2.matrix</code>, <em>local part</em> derived from
-<code dir="auto">preferred_username</code> (see <a href="/en/doc/admin-guide/understand/auth-idm/">Authentication &#x26; IDM</a>).</li>
-<li><strong>coturn</strong> is wired automatically if the <code dir="auto">turn</code> service is declared
-(<code dir="auto">turn_uris</code>, shared secret via sops).</li>
+<li><strong>Caddy</strong> routes <code dir="auto">/_matrix/*</code> and <code dir="auto">/_synapse/client/*</code> to Synapse and serves the <code dir="auto">/.well-known/matrix/{client,server}</code> files (client discovery and federation).</li>
+<li><strong>Synapse</strong> listens on <code dir="auto">dnfConfig.network.ports.matrix</code>, with a local PostgreSQL base (created with <code dir="auto">C</code> collation by a <code dir="auto">matrix-db-init</code> unit).</li>
+<li><strong>Kanidm</strong> provides authentication : OIDC client provisioned via <code dir="auto">darkone.service.idm.oauth2.matrix</code>, <em>local part</em> derived from <code dir="auto">preferred_username</code> (see <a href="/en/doc/admin-guide/understand/auth-idm/">Authentication &#x26; IDM</a>).</li>
+<li><strong>coturn</strong> is wired up automatically if the <code dir="auto">turn</code> service is declared (<code dir="auto">turn_uris</code>, shared secret via sops). It relays calls for two of the legacy clients, the only stack Element Classic knows how to use.</li>
+<li><strong>MatrixRTC</strong> (<code dir="auto">matrixRtc.enable</code>) adds the Element Call stack : a LiveKit SFU and its authorization service, served on the Matrix vhost under <code dir="auto">/livekit/sfu</code> and <code dir="auto">/livekit/jwt</code>. The client exchanges an OpenID token from Synapse for a LiveKit JWT, then sends its media <strong>directly</strong> to the SFU, outside the proxy. Required by Element X, which doesn’t know the other stack.</li>
 </ul>
 
 <div class="sl-heading-wrapper level-h2"><h2 id="module-anatomy">Module anatomy</h2><a class="sl-anchor-link" href="#module-anatomy"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Module anatomy”</span></a></div>
@@ -317,50 +311,34 @@ disabled (see
 <a href="/en/doc/admin-guide/operate/matrix/#opening-the-network-to-federation">the operations guide</a>).</p>
 
 <div class="sl-heading-wrapper level-h2"><h2 id="next-generation-authentication-mas">Next-generation authentication (MAS)</h2><a class="sl-anchor-link" href="#next-generation-authentication-mas"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Next-generation authentication (MAS)”</span></a></div>
-<p>Optional (<code dir="auto">darkone.service.matrix.mas.enable</code>), the
-<a href="https://element-hq.github.io/matrix-authentication-service/" target="_blank" rel="nofollow">Matrix Authentication Service<span> 🡕</span></a>
-(MAS) offloads <strong>all</strong> authentication from Synapse: login, accounts, sessions,
-the <code dir="auto">/account</code> self-service portal. It is the foundation of
-<a href="https://element.io/app/" target="_blank" rel="nofollow">Element X<span> 🡕</span></a> (QR-code login) and the official path,
-since Synapse’s built-in authentication is end-of-life.</p>
+<p>Optional (<code dir="auto">darkone.service.matrix.mas.enable</code>), the <a href="https://element-hq.github.io/matrix-authentication-service/" target="_blank" rel="nofollow">Matrix Authentication Service<span> 🡕</span></a> (MAS) moves <strong>all</strong> authentication out of Synapse : sign-in, accounts, sessions, the self-service <code dir="auto">/account</code> portal. It is the foundation of <a href="https://element.io/app/" target="_blank" rel="nofollow">Element X<span> 🡕</span></a> (QR code sign-in) and the official path, as Synapse’s internal authentication is end-of-life.</p>
 <img alt="Diagram" decoding="async" loading="lazy" src="/d2/docs/en/doc/admin-guide/understand/matrix-2.svg" width="418" height="1092">
 <ul>
-<li><strong>A single vhost</strong>: MAS shares <code dir="auto">matrix.domain.tld</code>. Caddy routes the root
-(login pages, <code dir="auto">/account</code>, <code dir="auto">/oauth2/*</code>) and the whole compatibility surface
-<code dir="auto">/_matrix/client/&#x3C;version>/{login,logout,refresh}</code>, sub-paths included
-(<code dir="auto">logout/all</code> and the legacy <code dir="auto">login/sso/redirect</code> of pre-OIDC clients, to
-which Synapse answers <code dir="auto">M_UNRECOGNIZED</code> once delegated); Synapse keeps
-<code dir="auto">/_matrix/*</code> and <code dir="auto">/_synapse/*</code>. No extra subdomain or DNS.</li>
-<li><strong>Kanidm stays the identity source</strong>: MAS becomes the OIDC client instead of
-Synapse (same client ID and secret), declared as an upstream provider under a
-fixed ULID. Synapse now only asks MAS to validate each token (shared secret,
-loopback).</li>
-<li><strong>Automatic discovery</strong>: connected to MAS, Synapse serves <code dir="auto">auth_metadata</code>
-itself (<a href="https://github.com/matrix-org/matrix-spec-proposals/pull/2965" target="_blank" rel="nofollow">MSC2965<span> 🡕</span></a>).
-Clients find MAS without any <code dir="auto">.well-known</code> change.</li>
-<li><strong>Bridges unchanged</strong>: registrations and double puppeting work identically.
-Only adaptation, automatic: bridges manage their e2ee devices via
-<a href="https://github.com/matrix-org/matrix-spec-proposals/pull/4190" target="_blank" rel="nofollow">MSC4190<span> 🡕</span></a>,
-since the appservice <code dir="auto">/login</code> API no longer exists.</li>
-<li><strong>Friends</strong>: token-based registration moves from Synapse to MAS
-(<code dir="auto">friendRegistration.enable</code> remains the switch); password accounts keep
-working via the compatibility layer.</li>
+<li><strong>Single vhost</strong> : MAS shares <code dir="auto">matrix.domain.tld</code>. Caddy routes the root to it (sign-in pages, <code dir="auto">/account</code>, <code dir="auto">/oauth2/*</code>) and the whole compatibility surface <code dir="auto">/_matrix/client/&#x3C;version>/{login,logout,refresh}</code>, subpaths included (<code dir="auto">logout/all</code> and the legacy <code dir="auto">login/sso/redirect</code> of pre-OIDC clients, to which Synapse answers <code dir="auto">M_UNRECOGNIZED</code> once delegated) ; Synapse keeps <code dir="auto">/_matrix/*</code> and <code dir="auto">/_synapse/*</code>. No extra subdomain or DNS — the MatrixRTC backend attaches the same way, under <code dir="auto">/livekit/*</code>.</li>
+<li><strong>Kanidm remains the identity source</strong> : MAS becomes the OIDC client instead of Synapse (same identifier and secret), declared as an upstream provider under a fixed ULID. Synapse only asks MAS to validate each token (shared secret, loopback).</li>
+<li><strong>Automatic discovery</strong> : connected to MAS, Synapse itself serves <code dir="auto">auth_metadata</code> (<a href="https://github.com/matrix-org/matrix-spec-proposals/pull/2965" target="_blank" rel="nofollow">MSC2965<span> 🡕</span></a>). Clients find MAS without modifying the <code dir="auto">.well-known</code>.</li>
+<li><strong>Bridges unchanged</strong> : registrations and double puppeting work identically. Only adaptation, automatic : bridges manage their e2ee devices via <a href="https://github.com/matrix-org/matrix-spec-proposals/pull/4190" target="_blank" rel="nofollow">MSC4190<span> 🡕</span></a>, since the appservice <code dir="auto">/login</code> API no longer exists.</li>
+<li><strong>Friends</strong> : token-based registration switches from Synapse to MAS (<code dir="auto">friendRegistration.enable</code> remains the switch) ; password accounts keep working through the compatibility layer.</li>
 </ul>
-<p>Activation and migration: see
-<a href="/en/doc/admin-guide/operate/matrix/#permissions">the operations guide</a>.</p>
+<p>Activation and migration : see <a href="/en/doc/admin-guide/operate/matrix/#enabling-mas">the operations guide</a>.</p>
 
 <div class="sl-heading-wrapper level-h2"><h2 id="secrets-and-ports">Secrets and ports</h2><a class="sl-anchor-link" href="#secrets-and-ports"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Secrets and ports”</span></a></div>
 <ul>
-<li><strong>Secrets</strong> : declared by block in <code dir="auto">matrix.nix</code> (<code dir="auto">sops.secrets.*</code>), and
-assembled into environment files by <code dir="auto">sops.templates.*</code> owned
-by the bridge’s system user. Full list in
+<li><strong>Secrets</strong> : declared in blocks in <code dir="auto">matrix.nix</code> (<code dir="auto">sops.secrets.*</code>), and
+assembled into environment files by <code dir="auto">sops.templates.*</code> owned by the
+bridge’s system user. Complete list in
 <a href="/en/doc/admin-guide/operate/matrix/#required-secrets">the operations page</a>.</li>
-<li><strong>Ports</strong> : <code dir="auto">matrix</code>, <code dir="auto">matrixTelegram</code> and <code dir="auto">matrixDiscord</code> are set by the
-<code dir="auto">dnf/config/network.nix</code> registry ; the default appservice ports of
-other bridges (29318, 29319, 29328) are listed there as <code dir="auto">reserved</code> to prevent
+<li><strong>Ports</strong> : <code dir="auto">matrix</code>, <code dir="auto">matrixTelegram</code> and <code dir="auto">matrixDiscord</code> are fixed by the
+registry <code dir="auto">dnf/config/network.nix</code> ; the default appservice ports of the
+other bridges (29318, 29319, 29328) are listed there as <code dir="auto">reserved</code> to avoid
 any future collision.</li>
+<li><strong>MatrixRTC ports</strong> : the registry also carries <code dir="auto">livekit</code>, <code dir="auto">livekitJwt</code> and
+the media bounds <code dir="auto">livekitRtcUdpStart</code>/<code dir="auto">End</code>. Two upstream default values are
+deliberately discarded there : the authorization service leaves 8080
+(taken by headscale) and the media range drops below coturn’s, which it
+overlapped.</li>
 <li><strong>WhatsApp statuses</strong> : <code dir="auto">network.enable_status_broadcast = false</code> in the
-bridge config, otherwise the bridge endlessly recreates the
+bridge config, otherwise the bridge indefinitely recreates the
 “WhatsApp Status Broadcast” room for each user.</li>
 </ul>
 
