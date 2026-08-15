@@ -344,15 +344,31 @@ un wipe d’enregistrement + redémarrage de synapse et produirait des erreurs
 « as_token was not accepted »).</p>
 
 <div class="sl-heading-wrapper level-h4"><h4 id="fédération">Fédération</h4><a class="sl-anchor-link" href="#fédération"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section intitulée « Fédération »</span></a></div>
-<p>La fédération se configure via <code dir="auto">darkone.service.matrix.federation</code> :</p>
+<p>La fédération se configure via <code dir="auto">darkone.service.matrix.federation</code> :</p>
 <ul>
-<li><code dir="auto">enable = false</code> : bloque toute fédération (liste blanche de domaines vide).</li>
-<li><code dir="auto">enable = true; whitelist = [ ]</code> : fédération ouverte avec tous les serveurs.</li>
-<li><code dir="auto">enable = true; whitelist = [ "ami.org" ]</code> : liste blanche (entrant + sortant).</li>
+<li><code dir="auto">enable = false</code> : bloque toute fédération (liste blanche de domaines vide).</li>
+<li><code dir="auto">enable = true; whitelist = [ ]</code> : fédération ouverte avec tous les serveurs.</li>
+<li><code dir="auto">enable = true; whitelist = [ "ami.org" ]</code> : liste blanche (entrante + sortante).</li>
 </ul>
-<p>La découverte reste verrouillée quoi qu’il arrive (salons absents des répertoires distants, profils privés en fédération), donc le réseau est joignable mais pas cherchable.</p>
-<aside aria-label="Sûr pour les enfants" class="starlight-aside starlight-aside--caution"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 16a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm10.67 1.47-8.05-14a3 3 0 0 0-5.24 0l-8 14A3 3 0 0 0 3.94 22h16.12a3 3 0 0 0 2.61-4.53Zm-1.73 2a1 1 0 0 1-.88.51H3.94a1 1 0 0 1-.88-.51 1 1 0 0 1 0-1l8-14a1 1 0 0 1 1.78 0l8.05 14a1 1 0 0 1 .05 1.02v-.02ZM12 8a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V9a1 1 0 0 0-1-1Z"></path></svg>Sûr pour les enfants</p><div class="starlight-aside__content"><p>La fédération ouverte permet à n’importe quel serveur fédéré d’écrire en MP ou d’inviter des utilisateurs locaux. Pour un réseau familial, ne renseignez <code dir="auto">whitelist</code> qu’avec des serveurs de confiance.</p></div></aside>
-<p>L’auto-inscription d’amis (<code dir="auto">friendRegistration.enable</code>) ouvre des comptes locaux à mot de passe, protégés par jeton, à côté des utilisateurs OIDC Kanidm. Sans MAS, la création d’un jeton passe par l’API admin de Synapse (un admin de serveur est requis) ; avec MAS, créez-le sur l’hôte avec <code dir="auto">sudo dnf-mas manage issue-user-registration-token</code>.</p>
+<p>La découverte reste verrouillée dans tous les cas (salles absentes des
+annuaires distants, profils privés sur la fédération), donc le réseau est
+joignable mais pas recherchable.</p>
+<aside aria-label="Sans risque pour les enfants" class="starlight-aside starlight-aside--caution"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 16a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm10.67 1.47-8.05-14a3 3 0 0 0-5.24 0l-8 14A3 3 0 0 0 3.94 22h16.12a3 3 0 0 0 2.61-4.53Zm-1.73 2a1 1 0 0 1-.88.51H3.94a1 1 0 0 1-.88-.51 1 1 0 0 1 0-1l8-14a1 1 0 0 1 1.78 0l8.05 14a1 1 0 0 1 .05 1.02v-.02ZM12 8a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V9a1 1 0 0 0-1-1Z"></path></svg>Sans risque pour les enfants</p><div class="starlight-aside__content"><p>Une fédération ouverte laisse n’importe quel serveur fédéré envoyer des MP ou
+inviter des utilisateurs locaux. Pour un réseau familial, remplissez
+<code dir="auto">whitelist</code> avec uniquement les serveurs de confiance.</p></div></aside>
+<p>L’auto-inscription des proches (<code dir="auto">friendRegistration.enable</code>) ouvre des comptes
+locaux protégés par jeton aux côtés des utilisateurs OIDC Kanidm. Sans MAS, la
+frappe d’un jeton passe par l’API admin de Synapse (un admin serveur est
+requis) ; avec MAS, frappez-le sur l’hôte avec
+<code dir="auto">sudo dnf-mas manage issue-user-registration-token</code>.</p>
+<aside aria-label="Un seul espace de noms, identifiants permanents" class="starlight-aside starlight-aside--caution"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 16a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm10.67 1.47-8.05-14a3 3 0 0 0-5.24 0l-8 14A3 3 0 0 0 3.94 22h16.12a3 3 0 0 0 2.61-4.53Zm-1.73 2a1 1 0 0 1-.88.51H3.94a1 1 0 0 1-.88-.51 1 1 0 0 1 0-1l8-14a1 1 0 0 1 1.78 0l8.05 14a1 1 0 0 1 .05 1.02v-.02ZM12 8a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V9a1 1 0 0 0-1-1Z"></path></svg>Un seul espace de noms, identifiants permanents</p><div class="starlight-aside__content"><p>Les proches et les utilisateurs déclarés tirent du même espace de noms
+<code dir="auto">localpart</code>, et un identifiant matrix n’est jamais libéré (unique dans
+<code dir="auto">users</code> de MAS, la désactivation le conserve). Déclarer un utilisateur dont le
+<code dir="auto">localpart</code> a déjà été pris par un proche fait échouer leur première connexion
+SSO : <code dir="auto">on_conflict</code> reste sur <code dir="auto">fail</code> ci-dessous, puisque toute autre
+valeur remettrait le compte existant à quiconque enregistre un nom
+correspondant en amont. Procédure de fusion dans le guide admin
+(<code dir="auto">operate/matrix.mdx</code>).</p></div></aside>
 
 <div class="sl-heading-wrapper level-h4"><h4 id="authentification-nouvelle-génération-mas">Authentification nouvelle génération (MAS)</h4><a class="sl-anchor-link" href="#authentification-nouvelle-génération-mas"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section intitulée « Authentification nouvelle génération (MAS) »</span></a></div>
 <p><code dir="auto">mas.enable</code> délègue toute l’authentification à Matrix Authentication Service

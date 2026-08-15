@@ -322,6 +322,14 @@ jeton</strong> (<code dir="auto">friendRegistration.enable</code>). Sans jeton, 
 sur l’hôte avec <code dir="auto">dnf-mas</code>, ou via l’API d’administration Synapse quand MAS est
 désactivé (voir
 <a href="/fr/doc/admin-guide/operate/matrix/#inscrire-des-amis">le guide d’exploitation</a>).</p>
+<p>Surtout, les deux origines puisent dans <strong>le même espace de noms</strong>, et un
+identifiant Matrix est définitif : la table <code dir="auto">users</code> de MAS impose son
+unicité et une désactivation ne le libère jamais. Déclarer un utilisateur dont
+l’identifiant est déjà pris par un ami fait donc échouer sa première connexion
+SSO — MAS refuse de rattacher tout seul
+(<code dir="auto">claims_imports.localpart.on_conflict</code> laissé sur <code dir="auto">fail</code>, sinon n’importe
+quel homonyme prendrait le contrôle du compte). Résolution :
+<a href="/fr/doc/admin-guide/operate/matrix/#collision-didentifiant-avec-un-utilisateur-d%C3%A9clar%C3%A9">collision d’identifiant</a>.</p>
 
 <div class="sl-heading-wrapper level-h2"><h2 id="authentification-nouvelle-génération-mas">Authentification nouvelle génération (MAS)</h2><a class="sl-anchor-link" href="#authentification-nouvelle-génération-mas"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section intitulée « Authentification nouvelle génération (MAS) »</span></a></div>
 <p>Optionnel (<code dir="auto">darkone.service.matrix.mas.enable</code>), le
