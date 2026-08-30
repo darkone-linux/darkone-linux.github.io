@@ -281,6 +281,19 @@ d’abord la zone où se trouve la machine d’administration, à partir de sa
 <strong>passerelle par défaut réelle</strong> et non de sa zone déclarée (un portable
 d’administration est précisément ce qui se déplace), puis en déduisent l’adresse
 de la cible.</p>
+<p>Cette adresse est ensuite <strong>vérifiée avant d’être utilisée</strong> : une
+réservation dit où la machine <em>serait</em> si elle était branchée ici, ce qui est
+juste pendant l’installation et faux dès qu’elle est rentrée chez elle. Si rien
+ne répond à l’adresse réservée, l’outillage retombe sur le nom de l’hôte
+lorsque celui-ci répond — port 22, ou 2222 pour une machine chiffrée en attente
+dans son initrd. Si rien ne répond nulle part, l’adresse réservée est conservée :
+c’est celle sur laquelle l’installateur apparaîtra.</p>
+<aside aria-label="Recettes de gestion hors zone" class="starlight-aside starlight-aside--caution"><p class="starlight-aside__title" aria-hidden="true"><svg aria-hidden="true" class="starlight-aside__icon astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M12 16a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm10.67 1.47-8.05-14a3 3 0 0 0-5.24 0l-8 14A3 3 0 0 0 3.94 22h16.12a3 3 0 0 0 2.61-4.53Zm-1.73 2a1 1 0 0 1-.88.51H3.94a1 1 0 0 1-.88-.51 1 1 0 0 1 0-1l8-14a1 1 0 0 1 1.78 0l8.05 14a1 1 0 0 1 .05 1.02v-.02ZM12 8a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V9a1 1 0 0 0-1-1Z"/></svg>Recettes de gestion hors zone</p><div class="starlight-aside__content"><p>Avant cette vérification, <code dir="auto">just enter</code> et <code dir="auto">just luks</code> visaient l’adresse
+réservée même pour un hôte resté chez lui, joint par le VPN. <code dir="auto">just enter</code>
+abandonnait ; <code dir="auto">just luks</code> avertissait puis sortait avec 0, alors que
+Colmena — qui s’adresse aux nœuds par leur nom — déployait sans rien remarquer.
+Un <code dir="auto">just apply</code> lancé derrière installait donc un chargeur de démarrage sans la
+clé d’hôte de l’initrd, et donc sans déverrouillage LUKS à distance.</p></div></aside>
 <p>Reste le déploiement : <a href="https://colmena.cli.rs/" target="_blank" rel="nofollow">Colmena<span> 🡕</span></a> s’adresse à un
 nœud par son nom, qui désigne l’adresse d’origine. Pour un hôte en visite,
 <code dir="auto">just configure</code> pose donc une redirection SSH temporaire, retirée en fin

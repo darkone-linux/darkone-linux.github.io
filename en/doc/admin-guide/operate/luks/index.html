@@ -181,29 +181,36 @@ old slot and enrolls the new one, without ever touching the
 installation keyslot.</p>
 
 <div class="sl-heading-wrapper level-h2"><h2 id="unlocking-at-boot">Unlocking at boot</h2><a class="sl-anchor-link" href="#unlocking-at-boot"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Unlocking at boot”</span></a></div>
-<p>On site, two possible actions at the console:</p>
+<p>On site, two gestures are possible in front of the console:</p>
 <ul>
-<li><strong>Enrolled YubiKey plugged in</strong>: touch the key when the LED blinks
-(<code dir="auto">fido2-device=auto</code>), nothing to type;</li>
-<li><strong>at the keyboard</strong>: type the per-host, shared, or installation
-passphrase.</li>
+<li><strong>Enrolled YubiKey plugged in</strong>: touch the key when the LED blinks, nothing
+to type. The CID is read from the LUKS2 token metadata, no <code dir="auto">crypttab</code> option
+is needed;</li>
+<li><strong>on the keyboard</strong>: type the per-host passphrase, the shared one, or the
+installation one.</li>
 </ul>
-<p>Remotely, the initrd starts a <strong>dedicated sshd on port 2222</strong>, with its
-own persistent host key, accessible only with the deployment key <code dir="auto">nix</code>.
-The entry point stays the same as in normal times:</p>
-<div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Fenêtre de terminal</span></figcaption><pre data-language="sh"><code><div class="ec-line"><div class="code"><span style="--0:#82AAFF;--1:#3B61B0">just</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">reboot</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">&#x3C;host></span><span style="--0:#D6DEEB;--1:#403F53">     </span><span style="--0:#919F9F;--1:#5F636F"># or any other cause of restart</span></div></div><div class="ec-line"><div class="code"><span style="--0:#82AAFF;--1:#3B61B0">just</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">enter</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">&#x3C;host></span><span style="--0:#D6DEEB;--1:#403F53">      </span><span style="--0:#919F9F;--1:#5F636F"># detects the initrd wait and presents the prompt</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copier dans le presse-papiers" data-copied="Copié !" data-code="just reboot <host>     # or any other cause of restartjust enter <host>      # detects the initrd wait and presents the prompt"><div></div></button></div></figure></div>
-<p>When port 22 does not answer, <code dir="auto">just enter</code> probes port 2222 on the explicit
-IP (if provided), the host name, then the <strong>WAN IP recorded in the
-manifest</strong>, and answers the LUKS prompt via <code dir="auto">systemd-tty-ask-password-agent</code>.
-Once the passphrase is typed, the boot continues and port 22 comes back.</p>
-<aside aria-label="Why the WAN IP?" class="starlight-aside starlight-aside--note"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 11a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0v-4a1 1 0 0 0-1-1Zm.38-3.92a1 1 0 0 0-.76 0 1 1 0 0 0-.33.21 1.15 1.15 0 0 0-.21.33 1 1 0 0 0 .21 1.09c.097.088.209.16.33.21A1 1 0 0 0 13 8a1.05 1.05 0 0 0-.29-.71 1 1 0 0 0-.33-.21ZM12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 18a8 8 0 1 1 0-16.001A8 8 0 0 1 12 20Z"></path></svg>Why the WAN IP?</p><div class="starlight-aside__content"><p>The VPN of a zone dies with its gateway: when the latter waits for its
-passphrase, only its WAN side is reachable. Its initrd also replicates
-the production addressing (static IP on the <code dir="auto">lan0</code> bridge, DHCP on the WAN
-side), since it is itself the DHCP server its initrd would otherwise wait
-for. The other hosts simply do DHCP on their wired interfaces.</p></div></aside>
+<aside aria-label="Never write fido2-device= in crypttab" class="starlight-aside starlight-aside--caution"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 16a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm10.67 1.47-8.05-14a3 3 0 0 0-5.24 0l-8 14A3 3 0 0 0 3.94 22h16.12a3 3 0 0 0 2.61-4.53Zm-1.73 2a1 1 0 0 1-.88.51H3.94a1 1 0 0 1-.88-.51 1 1 0 0 1 0-1l8-14a1 1 0 0 1 1.78 0l8.05 14a1 1 0 0 1 .05 1.02v-.02ZM12 8a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V9a1 1 0 0 0-1-1Z"></path></svg>Never write <code dir="auto">fido2-device=</code> in crypttab</p><div class="starlight-aside__content"><p>With this option, a <strong>plugged-in but untouched</strong> key makes
+<code dir="auto">systemd-cryptsetup</code> exit with an error instead of offering the passphrase: no
+prompt, neither on the console nor on port 2222, and the initrd drops to
+<code dir="auto">emergency</code>. A power outage on a host with nobody in front of it is then enough
+to immobilize it.</p><p>Without the option, the key is tried exactly the same way — then, if nobody
+touches it, boot falls back to the passphrase after about thirty seconds.
+The framework therefore never writes it.</p></div></aside>
+<p>Remotely, the initrd starts a <strong>dedicated sshd on port 2222</strong>, with its own
+persistent host key, accessible only with the <code dir="auto">nix</code> deployment key. The entry
+point stays the same as usual:</p>
+<div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Fenêtre de terminal</span></figcaption><pre data-language="sh"><code><div class="ec-line"><div class="code"><span style="--0:#82AAFF;--1:#3B61B0">just</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">reboot</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">&#x3C;hôte></span><span style="--0:#D6DEEB;--1:#403F53">     </span><span style="--0:#919F9F;--1:#5F636F"># ou toute autre cause de redémarrage</span></div></div><div class="ec-line"><div class="code"><span style="--0:#82AAFF;--1:#3B61B0">just</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">enter</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">&#x3C;hôte></span><span style="--0:#D6DEEB;--1:#403F53">      </span><span style="--0:#919F9F;--1:#5F636F"># détecte l'attente en initrd et présente le prompt</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copier dans le presse-papiers" data-copied="Copié !" data-code="just reboot <hôte>     # ou toute autre cause de redémarragejust enter <hôte>      # détecte l&#x27;attente en initrd et présente le prompt"><div></div></button></div></figure></div>
+<p>When port 22 does not answer, <code dir="auto">just enter</code> probes port 2222 on the explicit IP
+(if provided), the host name, then the <strong>WAN IP recorded in the manifest</strong>, and
+answers the LUKS prompt via <code dir="auto">systemd-tty-ask-password-agent</code>. Once the
+passphrase is entered, boot resumes and port 22 comes back.</p>
+<aside aria-label="Why the WAN IP?" class="starlight-aside starlight-aside--note"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 11a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0v-4a1 1 0 0 0-1-1Zm.38-3.92a1 1 0 0 0-.76 0 1 1 0 0 0-.33.21 1.15 1.15 0 0 0-.21.33 1 1 0 0 0 .21 1.09c.097.088.209.16.33.21A1 1 0 0 0 13 8a1.05 1.05 0 0 0-.29-.71 1 1 0 0 0-.33-.21ZM12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 18a8 8 0 1 1 0-16.001A8 8 0 0 1 12 20Z"></path></svg>Why the WAN IP?</p><div class="starlight-aside__content"><p>A zone’s VPN dies with its gateway: when the gateway is waiting for its
+passphrase, only its WAN side is reachable. Its initrd also replicates the
+production addressing (static IP on the <code dir="auto">lan0</code> bridge, DHCP on the WAN side),
+since it is itself the DHCP server that its initrd would otherwise wait for.
+The other hosts simply use DHCP on their wired interfaces.</p></div></aside>
 <aside aria-label="Laptops on Wi-Fi" class="starlight-aside starlight-aside--note"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 11a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0v-4a1 1 0 0 0-1-1Zm.38-3.92a1 1 0 0 0-.76 0 1 1 0 0 0-.33.21 1.15 1.15 0 0 0-.21.33 1 1 0 0 0 .21 1.09c.097.088.209.16.33.21A1 1 0 0 0 13 8a1.05 1.05 0 0 0-.29-.71 1 1 0 0 0-.33-.21ZM12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 18a8 8 0 1 1 0-16.001A8 8 0 0 1 12 20Z"></path></svg>Laptops on Wi-Fi</p><div class="starlight-aside__content"><p>No network in initrd without a cable: an encrypted laptop unlocks at the
-console (passphrase or YubiKey), remote unlocking does not
-apply.</p></div></aside>
+console (passphrase or YubiKey), remote unlocking does not apply.</p></div></aside>
 
 <div class="sl-heading-wrapper level-h2"><h2 id="under-the-hood">Under the hood</h2><a class="sl-anchor-link" href="#under-the-hood"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Under the hood”</span></a></div>
 
