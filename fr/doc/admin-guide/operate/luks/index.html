@@ -181,20 +181,32 @@ l’ancien slot et enrôle la nouvelle, sans jamais toucher au keyslot
 d’installation.</p>
 
 <div class="sl-heading-wrapper level-h2"><h2 id="déverrouiller-au-démarrage">Déverrouiller au démarrage</h2><a class="sl-anchor-link" href="#déverrouiller-au-démarrage"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section intitulée « Déverrouiller au démarrage »</span></a></div>
-<p>Sur place, deux gestes possibles devant la console :</p>
-<ul>
-<li><strong>YubiKey enrôlée branchée</strong> : toucher la clé quand la diode clignote, rien
-à taper. La CID est lue dans les métadonnées du token LUKS2, aucune option
-<code dir="auto">crypttab</code> n’est nécessaire ;</li>
-<li><strong>au clavier</strong> : taper la passphrase par hôte, la partagée, ou celle
-d’installation.</li>
-</ul>
-<aside aria-label="Ne jamais écrire fido2-device= dans crypttab" class="starlight-aside starlight-aside--caution"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 16a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm10.67 1.47-8.05-14a3 3 0 0 0-5.24 0l-8 14A3 3 0 0 0 3.94 22h16.12a3 3 0 0 0 2.61-4.53Zm-1.73 2a1 1 0 0 1-.88.51H3.94a1 1 0 0 1-.88-.51 1 1 0 0 1 0-1l8-14a1 1 0 0 1 1.78 0l8.05 14a1 1 0 0 1 .05 1.02v-.02ZM12 8a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V9a1 1 0 0 0-1-1Z"></path></svg>Ne jamais écrire <code dir="auto">fido2-device=</code> dans crypttab</p><div class="starlight-aside__content"><p>Avec cette option, une clé <strong>branchée mais non touchée</strong> fait sortir
-<code dir="auto">systemd-cryptsetup</code> en erreur au lieu de proposer la passphrase : aucun prompt,
-ni sur la console ni sur le port 2222, et l’initrd bascule en <code dir="auto">emergency</code>. Une
-coupure de courant sur un hôte sans personne devant suffit alors à l’immobiliser.</p><p>Sans l’option, la clé est essayée exactement pareil — puis, si personne ne
-touche, le démarrage retombe sur la passphrase après une trentaine de secondes.
-Le framework ne l’écrit donc jamais.</p></div></aside>
+<p>Tout hôte chiffré suit la même séquence, sans rien à régler :</p>
+<ol>
+<li><strong>YubiKey</strong> — une clé enrôlée et branchée fait clignoter sa diode : la
+toucher ouvre le volume, rien à taper. Aucune clé branchée, l’étape dure
+~6 s ; une clé que personne ne touche, ~30 s (limite du firmware).</li>
+<li><strong>Passphrase</strong> — une invite est ensuite posée, <strong>sans limite de temps</strong>.
+Elle accepte la passphrase par hôte, la partagée ou celle d’installation.</li>
+</ol>
+<p>L’invite de l’étape 2 est <strong>une seule et même demande</strong>, servie en parallèle
+sur la console physique (<code dir="auto">/dev/tty1</code>) et par ssh sur le port 2222. Rien à
+choisir, aucune fenêtre à rater : le premier qui répond ouvre le volume.</p>
+<aside aria-label="Comment la clé est essayée" class="starlight-aside starlight-aside--note"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 11a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0v-4a1 1 0 0 0-1-1Zm.38-3.92a1 1 0 0 0-.76 0 1 1 0 0 0-.33.21 1.15 1.15 0 0 0-.21.33 1 1 0 0 0 .21 1.09c.097.088.209.16.33.21A1 1 0 0 0 13 8a1.05 1.05 0 0 0-.29-.71 1 1 0 0 0-.33-.21ZM12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 18a8 8 0 1 1 0-16.001A8 8 0 0 1 12 20Z"></path></svg>Comment la clé est essayée</p><div class="starlight-aside__content"><p><code dir="auto">fido2-device=</code> n’est pas écrit dans l’entrée <code dir="auto">crypttab</code> mais dans une <strong>unité
+initrd séparée</strong>, <code dir="auto">yubikey-luks-unlock-&#x3C;volume></code>, ordonnée avant
+<code dir="auto">systemd-cryptsetup@&#x3C;volume></code> et seulement reliée à elle par un <code dir="auto">Wants=</code> :
+elle a le droit d’échouer, et son échec ne change rien au démarrage.</p><p>Cette séparation évite deux défauts qui se contredisent :</p><ul>
+<li><strong>l’option dans le <code dir="auto">crypttab</code> tue le démarrage</strong> quand une clé est branchée
+sans que personne la touche : <code dir="auto">systemd-cryptsetup</code> sort en erreur au lieu de
+proposer la passphrase, aucun prompt n’est posé — ni console, ni port 2222 —
+et l’initrd bascule en <code dir="auto">emergency</code>. Une coupure de courant sur un hôte sans
+personne devant suffisait à l’immobiliser ;</li>
+<li><strong>sans l’option, le token n’est essayé que s’il est déjà énuméré</strong>. Or
+<code dir="auto">hidraw0</code> apparaît environ une seconde après le lancement de
+<code dir="auto">systemd-cryptsetup</code> : jamais à temps. La clé cesse alors de déverrouiller
+quoi que ce soit, en silence, et sans rien dans le journal.</li>
+</ul><p>Ce que l’option apporte réellement, c’est l’<strong>attente</strong> du périphérique
+(<code dir="auto">token-timeout=</code>, réglé à 5 s).</p></div></aside>
 <p>À distance, l’initrd démarre un <strong>sshd dédié sur le port 2222</strong>, avec sa
 propre clé d’hôte persistante, accessible uniquement avec la clé de
 déploiement <code dir="auto">nix</code>. Le point d’entrée reste le même qu’en temps normal :</p>

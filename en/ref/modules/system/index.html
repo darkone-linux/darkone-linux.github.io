@@ -397,8 +397,9 @@ LUKS support keys on the LUKS volumes found in the host disko config
 (<code dir="auto">usr/machines/&#x3C;host>/disko.nix</code>, imported at runtime).</p></div></aside>
 <aside aria-label="No lockout by design" class="starlight-aside starlight-aside--caution"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 16a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm10.67 1.47-8.05-14a3 3 0 0 0-5.24 0l-8 14A3 3 0 0 0 3.94 22h16.12a3 3 0 0 0 2.61-4.53Zm-1.73 2a1 1 0 0 1-.88.51H3.94a1 1 0 0 1-.88-.51 1 1 0 0 1 0-1l8-14a1 1 0 0 1 1.78 0l8.05 14a1 1 0 0 1 .05 1.02v-.02ZM12 8a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V9a1 1 0 0 0-1-1Z"></path></svg>No lockout by design</p><div class="starlight-aside__content"><p>The install passphrase keyslot and the sops session passwords are never
 touched: losing a key at worst falls back to passphrase/password. This holds
-at boot too, which is why no <code dir="auto">fido2-device=</code> option is written to crypttab —
-see the comment on the initrd block below.</p></div></aside>
+at boot too: the FIDO2 attempt runs in a unit of its own that is allowed to
+fail, so an unusable, untouched or absent key always ends on the passphrase
+prompt — see the comment on the initrd block below.</p></div></aside>
 <aside aria-label="The boot touch cannot be waived" class="starlight-aside starlight-aside--caution"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 16a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm10.67 1.47-8.05-14a3 3 0 0 0-5.24 0l-8 14A3 3 0 0 0 3.94 22h16.12a3 3 0 0 0 2.61-4.53Zm-1.73 2a1 1 0 0 1-.88.51H3.94a1 1 0 0 1-.88-.51 1 1 0 0 1 0-1l8-14a1 1 0 0 1 1.78 0l8.05 14a1 1 0 0 1 .05 1.02v-.02ZM12 8a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V9a1 1 0 0 0-1-1Z"></path></svg>The boot touch cannot be waived</p><div class="starlight-aside__content"><p>YubiKeys enforce user presence for the <code dir="auto">hmac-secret</code> extension: an assertion
 requesting <code dir="auto">up=false</code> is refused with <code dir="auto">FIDO_ERR_UP_REQUIRED</code> before the
 credential is even matched. The touch is a hardware rule, not a token
