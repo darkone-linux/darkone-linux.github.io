@@ -90,19 +90,19 @@ the machine. See <a href="#opening-your-own-session-login">Open your own session
 (<code dir="auto">login</code>)</a>.</p>
 
 <div class="sl-heading-wrapper level-h2"><h2 id="enabling-a-host">Enabling a host</h2><a class="sl-anchor-link" href="#enabling-a-host"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Enabling a host”</span></a></div>
-<p>Remote desktop is an explicit opt-in. It is enabled through the <code dir="auto">remote-desktop</code>
-<strong>feature</strong> in <code dir="auto">etc/config.yaml</code>:</p>
+<p>Remote desktop is an explicit opt-in. It is enabled via the <strong>feature</strong>
+<code dir="auto">remote-desktop</code> in <code dir="auto">etc/config.yaml</code> :</p>
 <div class="expressive-code"><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="yaml"><code><div class="ec-line"><div class="code"><span class="indent"><span style="--0:#D6DEEB;--1:#403F53">  </span></span><span style="--0:#D6DEEB;--1:#403F53">- </span><span style="--0:#7FDBCA;--1:#111111">hostname</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#ECC48D;--1:#984E4D">clemence</span><span style="--0:#D9F5DD;--1:#111111">"</span></div></div><div class="ec-line"><div class="code"><span class="indent">    </span><span style="--0:#7FDBCA;--1:#111111">profile</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#ECC48D;--1:#984E4D">umi</span><span style="--0:#D9F5DD;--1:#111111">"</span></div></div><div class="ec-line"><div class="code"><span class="indent">    </span><span style="--0:#7FDBCA;--1:#111111">features</span><span style="--0:#D6DEEB;--1:#403F53">: [</span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#ECC48D;--1:#984E4D">remote-desktop</span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#D6DEEB;--1:#403F53">, </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#ECC48D;--1:#984E4D">nfs-client</span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#D6DEEB;--1:#403F53">]</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copier dans le presse-papiers" data-copied="Copié !" data-code="  - hostname: &#x22;clemence&#x22;    profile: &#x22;umi&#x22;    features: [&#x22;remote-desktop&#x22;, &#x22;nfs-client&#x22;]"><div></div></button></div></figure></div>
 <p>Then <code dir="auto">just generate</code> and <code dir="auto">just apply clemence</code>. A host without this feature
-cannot be troubleshooted, and the configuration states in black and white which
-ones can.</p>
+cannot be troubleshooted, and the configuration explicitly lists which ones
+can.</p>
 <aside aria-label="Templated host groups" class="starlight-aside starlight-aside--tip"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path fill-rule="evenodd" d="M1.44 8.855v-.001l3.527-3.516c.34-.344.802-.541 1.285-.548h6.649l.947-.947c3.07-3.07 6.207-3.072 7.62-2.868a1.821 1.821 0 0 1 1.557 1.557c.204 1.413.203 4.55-2.868 7.62l-.946.946v6.649a1.845 1.845 0 0 1-.549 1.286l-3.516 3.528a1.844 1.844 0 0 1-3.11-.944l-.858-4.275-4.52-4.52-2.31-.463-1.964-.394A1.847 1.847 0 0 1 .98 10.693a1.843 1.843 0 0 1 .46-1.838Zm5.379 2.017-3.873-.776L6.32 6.733h4.638l-4.14 4.14Zm8.403-5.655c2.459-2.46 4.856-2.463 5.89-2.33.134 1.035.13 3.432-2.329 5.891l-6.71 6.71-3.561-3.56 6.71-6.711Zm-1.318 15.837-.776-3.873 4.14-4.14v4.639l-3.364 3.374Z" clip-rule="evenodd"></path><path d="M9.318 18.345a.972.972 0 0 0-1.86-.561c-.482 1.435-1.687 2.204-2.934 2.619a8.22 8.22 0 0 1-1.23.302c.062-.365.157-.79.303-1.229.415-1.247 1.184-2.452 2.62-2.935a.971.971 0 1 0-.62-1.842c-.12.04-.236.084-.35.13-2.02.828-3.012 2.588-3.493 4.033a10.383 10.383 0 0 0-.51 2.845l-.001.016v.063c0 .536.434.972.97.972H2.24a7.21 7.21 0 0 0 .878-.065c.527-.063 1.248-.19 2.02-.447 1.445-.48 3.205-1.472 4.033-3.494a5.828 5.828 0 0 0 .147-.407Z"></path></svg>Templated host groups</p><div class="starlight-aside__content"><p>A feature is inherited by all hosts in a <code dir="auto">range:</code> or <code dir="auto">hosts:</code> group, which
-covers an entire family of identical workstations in one line:</p><div class="expressive-code"><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="yaml"><code><div class="ec-line"><div class="code"><span class="indent"><span style="--0:#D6DEEB;--1:#403F53">  </span></span><span style="--0:#D6DEEB;--1:#403F53">- </span><span style="--0:#7FDBCA;--1:#111111">hostname</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#ECC48D;--1:#984E4D">fd-%'02s</span><span style="--0:#D9F5DD;--1:#111111">"</span></div></div><div class="ec-line"><div class="code"><span class="indent">    </span><span style="--0:#7FDBCA;--1:#111111">profile</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#ECC48D;--1:#984E4D">desktop</span><span style="--0:#D9F5DD;--1:#111111">"</span></div></div><div class="ec-line"><div class="code"><span class="indent">    </span><span style="--0:#7FDBCA;--1:#111111">range</span><span style="--0:#D6DEEB;--1:#403F53">: [</span><span style="--0:#F78C6C;--1:#AA0982">1</span><span style="--0:#D6DEEB;--1:#403F53">, </span><span style="--0:#F78C6C;--1:#AA0982">2</span><span style="--0:#D6DEEB;--1:#403F53">]</span></div></div><div class="ec-line"><div class="code"><span class="indent">    </span><span style="--0:#7FDBCA;--1:#111111">features</span><span style="--0:#D6DEEB;--1:#403F53">: [</span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#ECC48D;--1:#984E4D">monitoring-node</span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#D6DEEB;--1:#403F53">, </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#ECC48D;--1:#984E4D">nfs-client</span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#D6DEEB;--1:#403F53">, </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#ECC48D;--1:#984E4D">remote-desktop</span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#D6DEEB;--1:#403F53">]</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copier dans le presse-papiers" data-copied="Copié !" data-code="  - hostname: &#x22;fd-%&#x27;02s&#x22;    profile: &#x22;desktop&#x22;    range: [1, 2]    features: [&#x22;monitoring-node&#x22;, &#x22;nfs-client&#x22;, &#x22;remote-desktop&#x22;]"><div></div></button></div></figure></div><p>This is why <code dir="auto">features</code> is chosen over <code dir="auto">services</code>: the <code dir="auto">services:</code> block of a
-templated group is <strong>not</strong> propagated to generated hosts.</p></div></aside>
-<aside aria-label="This is not trivial" class="starlight-aside starlight-aside--caution"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 16a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm10.67 1.47-8.05-14a3 3 0 0 0-5.24 0l-8 14A3 3 0 0 0 3.94 22h16.12a3 3 0 0 0 2.61-4.53Zm-1.73 2a1 1 0 0 1-.88.51H3.94a1 1 0 0 1-.88-.51 1 1 0 0 1 0-1l8-14a1 1 0 0 1 1.78 0l8.05 14a1 1 0 0 1 .05 1.02v-.02ZM12 8a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V9a1 1 0 0 0-1-1Z"></path></svg>This is not trivial</p><div class="starlight-aside__content"><p>Attaching to a session means seeing — and in <code dir="auto">rw</code>, driving — the screen of
-someone who is likely sitting in front of it. GNOME shows a sharing indicator
-for the whole duration, but <strong>nothing asks for their consent</strong>.
-Reserve this activation for workstations where this is the intended use.</p></div></aside>
+covers an entire family of identical machines in a single line:</p><div class="expressive-code"><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="yaml"><code><div class="ec-line"><div class="code"><span class="indent"><span style="--0:#D6DEEB;--1:#403F53">  </span></span><span style="--0:#D6DEEB;--1:#403F53">- </span><span style="--0:#7FDBCA;--1:#111111">hostname</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#ECC48D;--1:#984E4D">fd-%'02s</span><span style="--0:#D9F5DD;--1:#111111">"</span></div></div><div class="ec-line"><div class="code"><span class="indent">    </span><span style="--0:#7FDBCA;--1:#111111">profile</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#ECC48D;--1:#984E4D">desktop</span><span style="--0:#D9F5DD;--1:#111111">"</span></div></div><div class="ec-line"><div class="code"><span class="indent">    </span><span style="--0:#7FDBCA;--1:#111111">range</span><span style="--0:#D6DEEB;--1:#403F53">: [</span><span style="--0:#F78C6C;--1:#AA0982">1</span><span style="--0:#D6DEEB;--1:#403F53">, </span><span style="--0:#F78C6C;--1:#AA0982">2</span><span style="--0:#D6DEEB;--1:#403F53">]</span></div></div><div class="ec-line"><div class="code"><span class="indent">    </span><span style="--0:#7FDBCA;--1:#111111">features</span><span style="--0:#D6DEEB;--1:#403F53">: [</span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#ECC48D;--1:#984E4D">monitoring-node</span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#D6DEEB;--1:#403F53">, </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#ECC48D;--1:#984E4D">nfs-client</span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#D6DEEB;--1:#403F53">, </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#ECC48D;--1:#984E4D">remote-desktop</span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#D6DEEB;--1:#403F53">]</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copier dans le presse-papiers" data-copied="Copié !" data-code="  - hostname: &#x22;fd-%&#x27;02s&#x22;    profile: &#x22;desktop&#x22;    range: [1, 2]    features: [&#x22;monitoring-node&#x22;, &#x22;nfs-client&#x22;, &#x22;remote-desktop&#x22;]"><div></div></button></div></figure></div><p>This is why <code dir="auto">features</code> was chosen over <code dir="auto">services</code>: the <code dir="auto">services:</code> block of a
+templated group is <strong>not</strong> propagated to the generated hosts.</p></div></aside>
+<aside aria-label="This is not trivial" class="starlight-aside starlight-aside--caution"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 16a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm10.67 1.47-8.05-14a3 3 0 0 0-5.24 0l-8 14A3 3 0 0 0 3.94 22h16.12a3 3 0 0 0 2.61-4.53Zm-1.73 2a1 1 0 0 1-.88.51H3.94a1 1 0 0 1-.88-.51 1 1 0 0 1 0-1l8-14a1 1 0 0 1 1.78 0l8.05 14a1 1 0 0 1 .05 1.02v-.02ZM12 8a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V9a1 1 0 0 0-1-1Z"></path></svg>This is not trivial</p><div class="starlight-aside__content"><p>Connecting to a session means seeing (and controlling in <code dir="auto">rw</code>) the screen of
+someone who is most likely sitting right in front of it. GNOME displays a
+sharing indicator for the entire duration, but <strong>nothing asks for the user’s
+consent</strong>. Reserve activation for machines where this is the intended use.</p></div></aside>
 
 <div class="sl-heading-wrapper level-h2"><h2 id="the-three-modes">The three modes</h2><a class="sl-anchor-link" href="#the-three-modes"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “The three modes”</span></a></div>
 
@@ -130,16 +130,16 @@ Reserve this activation for workstations where this is the intended use.</p></di
 
 
 
-<table><thead><tr><th>Mode</th><th>Effect</th><th>Applied by</th></tr></thead><tbody><tr><td><code dir="auto">ro</code> (default)</td><td>You see the user’s screen, your inputs are ignored</td><td>The remote server</td></tr><tr><td><code dir="auto">rw</code></td><td>The same screen, keyboard and mouse forwarded</td><td>The remote server</td></tr><tr><td><code dir="auto">login</code></td><td>A GDM login screen, then a session of your own</td><td>—</td></tr></tbody></table>
-<p>The <code dir="auto">ro</code>/<code dir="auto">rw</code> filtering is done <strong>host-side</strong>, not by the client: a hacked
-client cannot turn a <code dir="auto">ro</code> into a <code dir="auto">rw</code>.</p>
-<aside aria-label="ro and rw never open a session" class="starlight-aside starlight-aside--caution"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 16a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm10.67 1.47-8.05-14a3 3 0 0 0-5.24 0l-8 14A3 3 0 0 0 3.94 22h16.12a3 3 0 0 0 2.61-4.53Zm-1.73 2a1 1 0 0 1-.88.51H3.94a1 1 0 0 1-.88-.51 1 1 0 0 1 0-1l8-14a1 1 0 0 1 1.78 0l8.05 14a1 1 0 0 1 .05 1.02v-.02ZM12 8a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V9a1 1 0 0 0-1-1Z"></path></svg><code dir="auto">ro</code> and <code dir="auto">rw</code> never open a session</p><div class="starlight-aside__content"><p>Without anyone logged in, they have no screen to mirror and fail outright.
-Asking to observe a user must not drop you off somewhere else without saying
-so — it is <code dir="auto">login</code>, and only <code dir="auto">login</code>, that opens a new session.</p></div></aside>
+<table><thead><tr><th>Mode</th><th>Effect</th><th>Applied by</th></tr></thead><tbody><tr><td><code dir="auto">ro</code> (default)</td><td>You see the user’s screen, your inputs are ignored</td><td>The remote server</td></tr><tr><td><code dir="auto">rw</code></td><td>Same screen, keyboard and mouse forwarded</td><td>The remote server</td></tr><tr><td><code dir="auto">login</code></td><td>A GDM login screen, then a session of your own</td><td></td></tr></tbody></table>
+<p>The <code dir="auto">ro</code>/<code dir="auto">rw</code> filtering is done <strong>on the host side</strong>, not by the client: a
+modified client cannot turn <code dir="auto">ro</code> into <code dir="auto">rw</code>.</p>
+<aside aria-label="ro and rw never open a session" class="starlight-aside starlight-aside--caution"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 16a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm10.67 1.47-8.05-14a3 3 0 0 0-5.24 0l-8 14A3 3 0 0 0 3.94 22h16.12a3 3 0 0 0 2.61-4.53Zm-1.73 2a1 1 0 0 1-.88.51H3.94a1 1 0 0 1-.88-.51 1 1 0 0 1 0-1l8-14a1 1 0 0 1 1.78 0l8.05 14a1 1 0 0 1 .05 1.02v-.02ZM12 8a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V9a1 1 0 0 0-1-1Z"></path></svg><code dir="auto">ro</code> and <code dir="auto">rw</code> never open a session</p><div class="starlight-aside__content"><p>With no one connected, they have no screen to reflect and fail outright.
+Asking to observe a user must not silently drop you elsewhere without telling
+you: it is <code dir="auto">login</code>, and only <code dir="auto">login</code>, that opens a new session.</p></div></aside>
 
 <div class="sl-heading-wrapper level-h2"><h2 id="window-shortcuts">Window shortcuts</h2><a class="sl-anchor-link" href="#window-shortcuts"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Window shortcuts”</span></a></div>
-<p>The client is <code dir="auto">sdl-freerdp</code>. Its shortcuts use <strong>Right Shift</strong> as the modifier
-— not <code dir="auto">Ctrl+Alt</code> like the old X11 client:</p>
+<p>The client is <code dir="auto">sdl-freerdp</code>. Its shortcuts use <strong>Right Shift</strong> as the
+modifier, unlike the old X11 client which used <code dir="auto">Ctrl+Alt</code> :</p>
 
 
 
@@ -169,66 +169,66 @@ so — it is <code dir="auto">login</code>, and only <code dir="auto">login</cod
 
 
 
-<table><thead><tr><th>Shortcut</th><th>Effect</th></tr></thead><tbody><tr><td><code dir="auto">Right Shift</code> + <code dir="auto">Enter</code></td><td>Fullscreen (and back)</td></tr><tr><td><code dir="auto">Right Shift</code> + <code dir="auto">G</code></td><td>Capture keyboard/mouse. When captured, <code dir="auto">Alt+Tab</code> and the other shortcuts go to the remote workstation; when released, they come back to yours</td></tr><tr><td><code dir="auto">Right Shift</code> + <code dir="auto">R</code></td><td>Allow / block window resizing</td></tr><tr><td><code dir="auto">Right Shift</code> + <code dir="auto">M</code></td><td>Minimize the window</td></tr><tr><td><code dir="auto">Right Shift</code> + <code dir="auto">D</code></td><td>Disconnect cleanly</td></tr></tbody></table>
-<aside aria-label="Getting back to your machine" class="starlight-aside starlight-aside--tip"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path fill-rule="evenodd" d="M1.44 8.855v-.001l3.527-3.516c.34-.344.802-.541 1.285-.548h6.649l.947-.947c3.07-3.07 6.207-3.072 7.62-2.868a1.821 1.821 0 0 1 1.557 1.557c.204 1.413.203 4.55-2.868 7.62l-.946.946v6.649a1.845 1.845 0 0 1-.549 1.286l-3.516 3.528a1.844 1.844 0 0 1-3.11-.944l-.858-4.275-4.52-4.52-2.31-.463-1.964-.394A1.847 1.847 0 0 1 .98 10.693a1.843 1.843 0 0 1 .46-1.838Zm5.379 2.017-3.873-.776L6.32 6.733h4.638l-4.14 4.14Zm8.403-5.655c2.459-2.46 4.856-2.463 5.89-2.33.134 1.035.13 3.432-2.329 5.891l-6.71 6.71-3.561-3.56 6.71-6.711Zm-1.318 15.837-.776-3.873 4.14-4.14v4.639l-3.364 3.374Z" clip-rule="evenodd"></path><path d="M9.318 18.345a.972.972 0 0 0-1.86-.561c-.482 1.435-1.687 2.204-2.934 2.619a8.22 8.22 0 0 1-1.23.302c.062-.365.157-.79.303-1.229.415-1.247 1.184-2.452 2.62-2.935a.971.971 0 1 0-.62-1.842c-.12.04-.236.084-.35.13-2.02.828-3.012 2.588-3.493 4.033a10.383 10.383 0 0 0-.51 2.845l-.001.016v.063c0 .536.434.972.97.972H2.24a7.21 7.21 0 0 0 .878-.065c.527-.063 1.248-.19 2.02-.447 1.445-.48 3.205-1.472 4.033-3.494a5.828 5.828 0 0 0 .147-.407Z"></path></svg>Getting back to your machine</p><div class="starlight-aside__content"><p>In fullscreen with keyboard capture active, <code dir="auto">Right Shift</code> always stays
+<table><thead><tr><th>Shortcut</th><th>Effect</th></tr></thead><tbody><tr><td><code dir="auto">Right Shift</code> + <code dir="auto">Enter</code></td><td>Full screen (and back)</td></tr><tr><td><code dir="auto">Right Shift</code> + <code dir="auto">G</code></td><td>Keyboard/mouse capture. When captured, <code dir="auto">Alt+Tab</code> and other shortcuts are sent to the remote machine; when released, they return to yours</td></tr><tr><td><code dir="auto">Right Shift</code> + <code dir="auto">R</code></td><td>Allow / block window resizing</td></tr><tr><td><code dir="auto">Right Shift</code> + <code dir="auto">M</code></td><td>Minimize the window</td></tr><tr><td><code dir="auto">Right Shift</code> + <code dir="auto">D</code></td><td>Disconnect cleanly</td></tr></tbody></table>
+<aside aria-label="Getting back to your machine" class="starlight-aside starlight-aside--tip"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path fill-rule="evenodd" d="M1.44 8.855v-.001l3.527-3.516c.34-.344.802-.541 1.285-.548h6.649l.947-.947c3.07-3.07 6.207-3.072 7.62-2.868a1.821 1.821 0 0 1 1.557 1.557c.204 1.413.203 4.55-2.868 7.62l-.946.946v6.649a1.845 1.845 0 0 1-.549 1.286l-3.516 3.528a1.844 1.844 0 0 1-3.11-.944l-.858-4.275-4.52-4.52-2.31-.463-1.964-.394A1.847 1.847 0 0 1 .98 10.693a1.843 1.843 0 0 1 .46-1.838Zm5.379 2.017-3.873-.776L6.32 6.733h4.638l-4.14 4.14Zm8.403-5.655c2.459-2.46 4.856-2.463 5.89-2.33.134 1.035.13 3.432-2.329 5.891l-6.71 6.71-3.561-3.56 6.71-6.711Zm-1.318 15.837-.776-3.873 4.14-4.14v4.639l-3.364 3.374Z" clip-rule="evenodd"></path><path d="M9.318 18.345a.972.972 0 0 0-1.86-.561c-.482 1.435-1.687 2.204-2.934 2.619a8.22 8.22 0 0 1-1.23.302c.062-.365.157-.79.303-1.229.415-1.247 1.184-2.452 2.62-2.935a.971.971 0 1 0-.62-1.842c-.12.04-.236.084-.35.13-2.02.828-3.012 2.588-3.493 4.033a10.383 10.383 0 0 0-.51 2.845l-.001.016v.063c0 .536.434.972.97.972H2.24a7.21 7.21 0 0 0 .878-.065c.527-.063 1.248-.19 2.02-.447 1.445-.48 3.205-1.472 4.033-3.494a5.828 5.828 0 0 0 .147-.407Z"></path></svg>Getting back to your machine</p><div class="starlight-aside__content"><p>In full screen with keyboard capture active, <code dir="auto">Right Shift</code> is always
 intercepted locally: <code dir="auto">Right Shift</code> + <code dir="auto">Enter</code> brings you back, no matter what.
 Closing the window disarms the session on the host.</p></div></aside>
 
 <div class="sl-heading-wrapper level-h2"><h2 id="resolution-and-sharpness">Resolution and sharpness</h2><a class="sl-anchor-link" href="#resolution-and-sharpness"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Resolution and sharpness”</span></a></div>
 <p>The window opens at the <strong>native resolution of the remote screen</strong>: one remote
-pixel for one local pixel, so no resampling and no blur.</p>
-<p>Any other size goes through scaling, which softens the image — that is the
-price of free resizing. To get back to 1:1:</p>
+pixel per local pixel, so no resampling and no blurring.</p>
+<p>Any other size goes through scaling, which softens the image; this is the price
+of free resizing. To restore 1:1:</p>
 <ul>
-<li><code dir="auto">Right Shift</code> + <code dir="auto">Enter</code>: fullscreen is exact if your screen has the same
-resolution as the one in front of you;</li>
-<li>otherwise, bring the window back to its opening size.</li>
+<li><code dir="auto">Right Shift</code> + <code dir="auto">Enter</code>: full screen is exact if your monitor has the same
+resolution as the remote one;</li>
+<li>otherwise, bring the window back to its original size.</li>
 </ul>
 <p>If the remote screen is larger than yours, the window overflows and your window
-manager constrains it: the image is then reduced, so softened.
-Fullscreen remains the best compromise in this case.</p>
+manager constrains it: the image is then downscaled and therefore softened.
+Full screen remains the best compromise in this case.</p>
 
 <div class="sl-heading-wrapper level-h2"><h2 id="opening-your-own-session-login">Opening your own session (<code dir="auto">login</code>)</h2><a class="sl-anchor-link" href="#opening-your-own-session-login"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Opening your own session (login)”</span></a></div>
-<p><code dir="auto">just rd &#x3C;host> login</code> arms the <strong>system daemon</strong> of <code dir="auto">gnome-remote-desktop</code> and
-shows you the GDM login screen. You authenticate with your usual account, and
-GDM opens a session for you. This is the mode to use when no one is logged in
-on the workstation — but it also works equally well when someone is, without
-changing anything displayed on the monitor.</p>
-<p>The system daemon is already installed and idle on every GNOME host, exactly
-like the user daemon: nothing new is added, you arm it then you disarm it. It
-is also the only one able to work without an unlocked keyring, which a machine
-where no one is logged in obviously cannot provide.</p>
-<aside aria-label="This is not the machine’s screen" class="starlight-aside starlight-aside--caution"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 16a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm10.67 1.47-8.05-14a3 3 0 0 0-5.24 0l-8 14A3 3 0 0 0 3.94 22h16.12a3 3 0 0 0 2.61-4.53Zm-1.73 2a1 1 0 0 1-.88.51H3.94a1 1 0 0 1-.88-.51 1 1 0 0 1 0-1l8-14a1 1 0 0 1 1.78 0l8.05 14a1 1 0 0 1 .05 1.02v-.02ZM12 8a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V9a1 1 0 0 0-1-1Z"></path></svg>This is not the machine’s screen</p><div class="starlight-aside__content"><p>GDM opens a <strong>new and screenless session</strong>, alongside what is displayed on the
-monitor. So you do not see the physical screen: you are on your own, not on
-someone else’s. To troubleshoot a user, it is <code dir="auto">ro</code> or <code dir="auto">rw</code> that you need.</p><p>Mirroring the GDM greeter itself is not possible: the user daemon only accepts
-its credentials from a keyring, and the greeter’s session does not have one.</p></div></aside>
-<p>Good to know: that session is a <em>virtual</em> monitor, which the server can resize.
-So it is your client that sets the resolution, and the display is sharp at 100%
-without any adjustment.</p>
+<p><code dir="auto">just rd &#x3C;host> login</code> arms the <strong>system daemon</strong> of <code dir="auto">gnome-remote-desktop</code>
+and presents you with the GDM login screen. You authenticate with your usual
+account, and GDM opens a session for you. This is the mode to use when no one
+is logged in on the machine, but it also works just as well when someone is,
+without changing anything displayed on the monitor.</p>
+<p>The system daemon is already installed and inert on every GNOME host, exactly
+like the user daemon: nothing new is added, it is armed then disarmed. It is
+also the only one that can work without an unlocked keyring, which a machine
+with no one logged in obviously cannot provide.</p>
+<aside aria-label="This is not the machine’s screen" class="starlight-aside starlight-aside--caution"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 16a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm10.67 1.47-8.05-14a3 3 0 0 0-5.24 0l-8 14A3 3 0 0 0 3.94 22h16.12a3 3 0 0 0 2.61-4.53Zm-1.73 2a1 1 0 0 1-.88.51H3.94a1 1 0 0 1-.88-.51 1 1 0 0 1 0-1l8-14a1 1 0 0 1 1.78 0l8.05 14a1 1 0 0 1 .05 1.02v-.02ZM12 8a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V9a1 1 0 0 0-1-1Z"></path></svg>This is not the machine’s screen</p><div class="starlight-aside__content"><p>GDM opens a <strong>new, screenless session</strong> alongside whatever is displayed on the
+monitor. You are therefore not seeing the physical screen: you are on your own
+machine, not on someone else’s. To troubleshoot a user, you need <code dir="auto">ro</code> or <code dir="auto">rw</code>.</p><p>Reflecting the GDM greeter itself is not possible: the user daemon only
+accepts credentials from a keyring, and the greeter session does not have one.</p></div></aside>
+<p>Worth knowing: that session uses a <em>virtual monitor</em> that the server can
+resize. So it is your client that imposes the resolution, and the display is
+100 % sharp without any adjustment.</p>
 
 <div class="sl-heading-wrapper level-h2"><h2 id="what-actually-happens">What actually happens</h2><a class="sl-anchor-link" href="#what-actually-happens"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “What actually happens”</span></a></div>
 <ol>
-<li>The command connects to the host over SSH under the <code dir="auto">nix</code> identity, like all
-of the fleet’s administration commands.</li>
-<li>It arms the session there: RDP server configuration, ephemeral TLS
-certificate, random single-use credentials.</li>
-<li>It mounts an <strong>SSH tunnel</strong> to the RDP port, which remains closed to the
+<li>The command connects to the host via SSH as the <code dir="auto">nix</code> identity, like all
+fleet administration commands.</li>
+<li>It arms the session on the host: RDP server configuration, ephemeral TLS
+certificate, random one-time credentials.</li>
+<li>It sets up an <strong>SSH tunnel</strong> to the RDP port, which remained closed to the
 network.</li>
 <li>It launches the FreeRDP client under your own account, on <code dir="auto">127.0.0.1</code>.</li>
-<li>When the window closes, everything is disarmed and the host’s original
+<li>On window close, everything is disarmed and the host’s original
 configuration is restored.</li>
 </ol>
-<p>Nothing is ever exposed on the network: the fleet’s firewall stays
-deny-by-default, no rule is added, even temporarily. The RDP server only
-listens for the duration of the session, and the only path to reach it is the
-tunnel.</p>
-<p>The certificate is self-signed and regenerated at every session, in the
+<p>Nothing is ever exposed on the network: the fleet firewall remains
+deny-by-default, no rule is added, not even temporarily. The RDP server only
+listens for the duration of the session, and the only way to reach it is
+through the tunnel.</p>
+<p>The certificate is self-signed and regenerated on every session, in the
 machine’s volatile memory. Its fingerprint is captured over SSH and pinned in
 the client: the machine’s identity is therefore guaranteed by the SSH channel
-itself, which binds it more tightly than a certified domain name would.</p>
+itself, binding it more tightly than a certified domain name ever could.</p>
 <p>On the login screen, the fingerprint is not pinned: the system daemon hands
-over to the login session, which presents a certificate of its own — pinning
-the first one would break the second step. It is then the tunnel, and it
+off to the login session, which presents its own certificate. Pinning the
+first one would break the second step. It is then the tunnel, and the tunnel
 alone, that carries the trust.</p>
 
 <div class="sl-heading-wrapper level-h2"><h2 id="automatic-shutdown">Automatic shutdown</h2><a class="sl-anchor-link" href="#automatic-shutdown"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Automatic shutdown”</span></a></div>
@@ -269,34 +269,34 @@ brutally: access cannot stay open by accident.</p>
 
 <div class="sl-heading-wrapper level-h2"><h2 id="known-limitations">Known limitations</h2><a class="sl-anchor-link" href="#known-limitations"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Known limitations”</span></a></div>
 <ul>
-<li><strong>One session at a time</strong> per host. A second attempt is refused as long as
-the first one is not closed.</li>
-<li><strong>Several graphical sessions open</strong> on the same host: in <code dir="auto">ro</code>/<code dir="auto">rw</code>, the
+<li><strong>One session at a time</strong> per host. A second attempt is refused until the
+first one is closed.</li>
+<li><strong>Multiple graphical sessions open</strong> on the same host: in <code dir="auto">ro</code>/<code dir="auto">rw</code>, the
 command refuses to guess and lists what it found. <code dir="auto">login</code> is not affected, it
 does not look at existing sessions.</li>
-<li><strong>Screen sharing already enabled</strong> on the target session: the command does
-not touch it and stops. This is intentional — a configuration set by hand
-must not be overwritten then “restored” the wrong way.</li>
+<li><strong>Screen sharing already active</strong> on the target session: the command does not
+touch it and stops. This is intentional: a manually applied configuration
+must not be overwritten then “restored” incorrectly.</li>
 <li>No sound, no shared clipboard, no file transfer.</li>
-<li><strong>Manual resizing of the window does not respect the proportions.</strong>
-The opening size, on the other hand, is correct.</li>
-<li><strong><code dir="auto">gnome-remote-desktop</code> is rebuilt</strong> on the affected hosts (see the
-following section). The build is cached, but a <code dir="auto">just update</code> that moves
-GNOME can make the patch fail, noisily.</li>
+<li><strong>Manual window resizing does not preserve proportions.</strong> The opening size,
+however, is correct.</li>
+<li><strong><code dir="auto">gnome-remote-desktop</code> is rebuilt</strong> on the affected hosts (see next
+section). The build is cached, but a <code dir="auto">just update</code> that bumps GNOME may
+cause the patch to fail, noisily.</li>
 </ul>
 
 <div class="sl-heading-wrapper level-h2"><h2 id="the-users-pointer">The user’s pointer</h2><a class="sl-anchor-link" href="#the-users-pointer"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “The user’s pointer”</span></a></div>
-<p>As shipped, <code dir="auto">gnome-remote-desktop</code> forwards the <em>shape</em> of the cursor but never
-its <em>position</em> when it mirrors a physical screen: the client therefore draws
-the remote cursor at the location of <strong>your</strong> mouse. In <code dir="auto">rw</code> this is not
-noticeable since you are the one driving it, but in <code dir="auto">ro</code> you do not see at all
-where the user is pointing — which empties the observation of its value.</p>
-<p>DNF fixes this by patching the server so that it asks mutter to embed the
-pointer in the image (<em>embedded</em> cursor mode, already used upstream for
-virtual monitors). One line of code, and cursor metadata stops being emitted —
-so no second stray cursor.</p>
-<p>The price is a local recompilation of <code dir="auto">gnome-remote-desktop</code> on each
-troubleshootable host. To do without it:</p>
+<p>As shipped, <code dir="auto">gnome-remote-desktop</code> transmits the <em>shape</em> of the cursor but
+never its <em>position</em> when reflecting a physical screen: the client therefore
+draws the remote cursor at the location of <strong>your</strong> mouse. In <code dir="auto">rw</code> this is
+not visible since you are driving it, but in <code dir="auto">ro</code> you cannot see at all where
+the user is pointing, which defeats the purpose of observing.</p>
+<p>DNF fixes this by patching the server to ask mutter to embed the pointer in
+the image (<em>embedded</em> cursor mode, already used upstream for virtual monitors).
+A single line of code, and cursor metadata stops being emitted, so no spurious
+second cursor.</p>
+<p>The trade-off is a local rebuild of <code dir="auto">gnome-remote-desktop</code> on each host that
+can be troubleshooted. To opt out:</p>
 <div class="expressive-code"><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="nix"><code><div class="ec-line"><div class="code"><span style="--0:#D7DBE0;--1:#403F53">darkone</span><span style="--0:#7FDBCA;--1:#096E72">.</span><span style="--0:#D7DBE0;--1:#403F53">graphic</span><span style="--0:#7FDBCA;--1:#096E72">.</span><span style="--0:#D7DBE0;--1:#403F53">remote-desktop</span><span style="--0:#7FDBCA;--1:#096E72">.</span><span style="--1:#403F53"><span style="--0:#D7DBE0">embedCursor</span><span style="--0:#D6DEEB"> </span></span><span style="--0:#FFFFFF;--1:#984E4D">=</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#82AAFF;--1:#3B61B0">false</span><span style="--0:#FFFFFF;--1:#984E4D">;</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copier dans le presse-papiers" data-copied="Copié !" data-code="darkone.graphic.remote-desktop.embedCursor = false;"><div></div></button></div></figure></div>
 
 <div class="sl-heading-wrapper level-h2"><h2 id="troubleshooting">Troubleshooting</h2><a class="sl-anchor-link" href="#troubleshooting"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Troubleshooting”</span></a></div>
