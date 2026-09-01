@@ -358,6 +358,24 @@ a write to a locked key aborts the whole home-manager <code dir="auto">dconf loa
 Screen locking stays enabled GNOME-side (locked by the DNF gnome module);
 <code dir="auto">idle-delay = 0</code> avoids triggering it, and the Cinnamon session has its
 own lock fully disabled.</p></div></aside>
+<aside aria-label="Login keyring: two modes, decided by the host" class="starlight-aside starlight-aside--caution"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 16a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm10.67 1.47-8.05-14a3 3 0 0 0-5.24 0l-8 14A3 3 0 0 0 3.94 22h16.12a3 3 0 0 0 2.61-4.53Zm-1.73 2a1 1 0 0 1-.88.51H3.94a1 1 0 0 1-.88-.51 1 1 0 0 1 0-1l8-14a1 1 0 0 1 1.78 0l8.05 14a1 1 0 0 1 .05 1.02v-.02ZM12 8a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V9a1 1 0 0 0-1-1Z"></path></svg>Login keyring: two modes, decided by the host</p><div class="starlight-aside__content"><p>An autologin session types no password, so PAM has nothing to hand to
+gnome-keyring and every secret-using app pops a gcr prompt the gaze user
+cannot answer. How that is avoided depends on the host:</p><ul>
+<li><strong>Unencrypted host</strong>: the login keyring is seeded with an empty password,
+which gnome-keyring stores in plain text and unlocks on its own (it tries
+an empty password before prompting). Any pre-existing password-protected
+keyring is deleted — its passphrase is untypable here, so it can only
+produce the prompt forever. Autologin already grants the whole session to
+whoever boots the machine, so this costs no real confidentiality.</li>
+<li><strong>Encrypted host</strong> (<code dir="auto">darkone.system.luks.volumes</code> non-empty): nothing is
+seeded. The passphrase typed at boot is cached in the kernel keyring and
+handed to gnome-keyring by <code dir="auto">pam_gdm</code>, so the keyring stays encrypted with
+it. This is the only mode that protects the secrets at rest.</li>
+</ul><p>Gotcha, encrypted hosts only: rotating the LUKS passphrase (sops value
+changed, <code dir="auto">luks-passphrase-sync</code>) leaves the keyring on the old one — GNOME
+then reports “The password you use to log in to your computer no longer
+matches that of your login keyring”. Delete
+<code dir="auto">~/.local/share/keyrings/login.keyring</code> and log in again.</p></div></aside>
 <ul>
 <li><strong>enable</strong> <code dir="auto">bool</code> Gaze-driven input configuration (Talon + Onboard)</li>
 <li><strong>enableTalonAutostart</strong> <code dir="auto">bool</code> Start Talon on session login (talon must be in PATH).</li>

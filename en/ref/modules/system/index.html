@@ -151,50 +151,85 @@ keymap, XKB layout, and Nextcloud phone region defaults.</p></div></aside>
 <div class="sl-heading-wrapper level-h3"><h3 id="-darkonesystemluks">⚙ darkone.system.luks</h3><a class="sl-anchor-link" href="#-darkonesystemluks"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “⚙ darkone.system.luks”</span></a></div>
 <p>LUKS passphrase policy &#x26; remote unlock: shared + per-host passphrases, initrd SSH.</p>
 <p>Completes <code dir="auto">modules/system/yubikey.nix</code> (FIDO2 keyslots) with the passphrase
-side of the fleet LUKS policy. <code dir="auto">just luks &#x3C;host></code> provisions a host
-(idempotent, also called by <code dir="auto">just configure</code>): it records it in the
-<strong>public</strong> manifest <code dir="auto">usr/secrets/luks.json</code> (committed), stores the
-per-host passphrase in sops (<code dir="auto">luks/&#x3C;host>/passphrase</code>), ensures the shared
-<code dir="auto">luks-passphrase</code> exists, pre-generates the initrd SSH host key on the
-target and, when no managed passphrase unlocks the volume yet, bootstraps
-the shared keyslot with the install passphrase. The module then keeps
-everything converged at each apply:</p>
+side of the fleet LUKS policy. Every encrypted volume carries exactly two
+managed passphrases, plus one keyslot per enrolled YubiKey:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Keyslot</th><th>Secret</th><th>Audience</th></tr></thead><tbody><tr><td>shared</td><td>sops <code dir="auto">luks-passphrase</code></td><td>the fleet admin. Also <strong>authorizes</strong> keyslot operations (<code dir="auto">luksAddKey</code> / <code dir="auto">luksKillSlot</code>) for the units below, and is the key disko formats the disk with.</td></tr><tr><td>per-host</td><td>sops <code dir="auto">luks/&#x3C;host>/passphrase</code></td><td>the user of that one machine, without handing over the fleet.</td></tr><tr><td>FIDO2</td><td>registry <code dir="auto">usr/secrets/yubikeys.json</code></td><td>one slot per key, on every encrypted host.</td></tr></tbody></table>
+<p>Two managed passphrases and not one, because they serve different people —
+and because a rotation of either stays authorized by the other, so the sync
+unit is never left without an authorizer (it adds the new slot before killing
+the old one).</p>
+<p>There is no separate “install passphrase”: <code dir="auto">just install</code> formats the volume
+through <code dir="auto">nixos-anywhere --disk-encryption-keys</code> with the shared passphrase, so
+the format keyslot <em>is</em> the shared keyslot.</p>
+<p><code dir="auto">just luks &#x3C;host></code> provisions a host (idempotent, also called by
+<code dir="auto">just configure</code>); its <code dir="auto">pre</code> phase runs offline and is called by <code dir="auto">just install</code>
+before the build. It records the host in the <strong>public</strong> manifest
+<code dir="auto">usr/secrets/luks.json</code> (committed), stores the per-host passphrase and the
+initrd SSH host key in sops, and ensures the shared <code dir="auto">luks-passphrase</code> exists.
+<code dir="auto">just luks &#x3C;host> show</code> prints the keyslot table and audits remote unlock.
+The module then keeps everything converged at each apply:</p>
 <ul>
 <li><strong>keyslots</strong>: a oneshot service syncs the shared and per-host passphrases
 into every disko-declared LUKS2 header. A changed sops value rotates the
 corresponding keyslot (old slot killed, new one added). Keyslot operations
-are authorized by whichever managed passphrase still unlocks the volume,
-so one of them must remain valid — the disko install keyslot is never
-touched and remains the last-resort fallback.</li>
+are authorized by whichever managed passphrase still unlocks the volume, so
+one of them must remain valid. Slots outside its ledger (FIDO2, manual
+enrollments) are never touched.</li>
 <li><strong>remote unlock</strong>: initrd sshd on a dedicated port (2222), own persistent
 host key (<code dir="auto">/var/lib/luks-initrd/</code>), root login with the <code dir="auto">nix</code> deploy key
-(<code dir="auto">usr/secrets/nix.pub</code>). <code dir="auto">just enter &#x3C;host></code> detects a host waiting in
-initrd and answers the passphrase prompt via
-<code dir="auto">systemd-tty-ask-password-agent</code>, falling back to the WAN IP recorded in
-the manifest when the VPN route died with the host. Regular hosts DHCP on
-wired interfaces (a laptop on Wi-Fi has no initrd network and falls back
-to console unlock); zone gateways replicate their production layout
-instead — static LAN IP on the lan0 bridge, DHCP on the WAN side — since
-they are themselves the DHCP server their initrd would otherwise wait on.</li>
+(<code dir="auto">usr/secrets/nix.pub</code>). <code dir="auto">just unlock &#x3C;host></code> answers the passphrase prompt
+without a human (through the <code dir="auto">dnf-unlock</code> helper shipped in the initrd);
+<code dir="auto">just enter &#x3C;host></code> is the interactive path. Both fall back to the WAN IP
+recorded in the manifest when the VPN route died with the host. Regular
+hosts DHCP on wired interfaces (a laptop on Wi-Fi has no initrd network and
+falls back to console unlock); zone gateways replicate their production
+layout instead — static LAN IP on the lan0 bridge, DHCP on the WAN side —
+since they are themselves the DHCP server their initrd would otherwise wait
+on.</li>
 </ul>
 <aside aria-label="Zero configuration" class="starlight-aside starlight-aside--note"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 11a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0v-4a1 1 0 0 0-1-1Zm.38-3.92a1 1 0 0 0-.76 0 1 1 0 0 0-.33.21 1.15 1.15 0 0 0-.21.33 1 1 0 0 0 .21 1.09c.097.088.209.16.33.21A1 1 0 0 0 13 8a1.05 1.05 0 0 0-.29-.71 1 1 0 0 0-.33-.21ZM12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 18a8 8 0 1 1 0-16.001A8 8 0 0 1 12 20Z"></path></svg>Zero configuration</p><div class="starlight-aside__content"><p>Enabled by default but fully inert until the host appears in
 <code dir="auto">usr/secrets/luks.json</code> AND declares a LUKS volume in its disko config.
 Existing encrypted hosts are unaffected until <code dir="auto">just luks &#x3C;host></code> is run.</p></div></aside>
-<aside aria-label="Provision before you apply" class="starlight-aside starlight-aside--caution"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 16a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm10.67 1.47-8.05-14a3 3 0 0 0-5.24 0l-8 14A3 3 0 0 0 3.94 22h16.12a3 3 0 0 0 2.61-4.53Zm-1.73 2a1 1 0 0 1-.88.51H3.94a1 1 0 0 1-.88-.51 1 1 0 0 1 0-1l8-14a1 1 0 0 1 1.78 0l8.05 14a1 1 0 0 1 .05 1.02v-.02ZM12 8a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V9a1 1 0 0 0-1-1Z"></path></svg>Provision before you apply</p><div class="starlight-aside__content"><p>The initrd host key must exist on the target when the bootloader is
-installed (initrd secrets are appended at that point, <em>before</em> activation).
-<code dir="auto">just luks &#x3C;host></code> creates it over SSH; never add a host to <code dir="auto">luks.json</code> by
-hand. Reinstalling a provisioned host with nixos-anywhere needs the key
-staged under <code dir="auto">/mnt</code> (<code dir="auto">--extra-files</code>) or the host dropped from the manifest
-first.</p></div></aside>
+<aside aria-label="The initrd key must predate the bootloader" class="starlight-aside starlight-aside--caution"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 16a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm10.67 1.47-8.05-14a3 3 0 0 0-5.24 0l-8 14A3 3 0 0 0 3.94 22h16.12a3 3 0 0 0 2.61-4.53Zm-1.73 2a1 1 0 0 1-.88.51H3.94a1 1 0 0 1-.88-.51 1 1 0 0 1 0-1l8-14a1 1 0 0 1 1.78 0l8.05 14a1 1 0 0 1 .05 1.02v-.02ZM12 8a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V9a1 1 0 0 0-1-1Z"></path></svg>The initrd key must predate the bootloader</p><div class="starlight-aside__content"><p>Initrd secrets are appended when the bootloader is installed, <em>before</em>
+activation. A fresh install is covered: <code dir="auto">just install</code> stages the key under
+<code dir="auto">/mnt</code> (<code dir="auto">nixos-anywhere --extra-files</code>) so the very first boot already listens
+on 2222. On an already-running host, <code dir="auto">just luks &#x3C;host></code> puts it in place over
+SSH — never add a host to <code dir="auto">luks.json</code> by hand, and never apply before the key
+exists on the target.</p></div></aside>
 <aside aria-label="Keyslot budget" class="starlight-aside starlight-aside--danger"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 7a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V8a1 1 0 0 0-1-1Zm0 8a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm9.71-7.44-5.27-5.27a1.05 1.05 0 0 0-.71-.29H8.27a1.05 1.05 0 0 0-.71.29L2.29 7.56a1.05 1.05 0 0 0-.29.71v7.46c.004.265.107.518.29.71l5.27 5.27c.192.183.445.286.71.29h7.46a1.05 1.05 0 0 0 .71-.29l5.27-5.27a1.05 1.05 0 0 0 .29-.71V8.27a1.05 1.05 0 0 0-.29-.71ZM20 15.31 15.31 20H8.69L4 15.31V8.69L8.69 4h6.62L20 8.69v6.62Z"></path></svg>Keyslot budget</p><div class="starlight-aside__content"><p>LUKS2 headers hold at most 32 keyslots. Every enrolled YubiKey consumes one
-slot on every encrypted host (fleet-wide policy), plus install + shared +
-per-host passphrases: the module warns when the projected total nears the
-limit.</p></div></aside>
+slot on every encrypted host (fleet-wide policy), plus the shared and per-host
+passphrases: the module warns when the projected total nears the limit.</p></div></aside>
 <ul>
 <li><strong>enable</strong> <code dir="auto">bool</code> Fleet LUKS passphrase policy (inert until <code dir="auto">just luks &#x26;lt;host&#x26;gt;</code> provisions the host)</li>
 <li><strong>sshPort</strong> <code dir="auto">port</code> Initrd sshd port; distinct from 22 so the initrd host key never clashes with the system one</li>
+<li><strong>volumes</strong> <code dir="auto">listOf str</code> LUKS volumes declared by the host disko layout.</li>
 </ul>
-<div class="expressive-code"><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="nix"><code><div class="ec-line"><div class="code"><span style="--0:#D7DBE0;--1:#403F53">darkone</span><span style="--0:#7FDBCA;--1:#096E72">.</span><span style="--0:#D7DBE0;--1:#403F53">system</span><span style="--0:#7FDBCA;--1:#096E72">.</span><span style="--1:#403F53"><span style="--0:#D7DBE0">luks</span><span style="--0:#D6DEEB"> </span></span><span style="--0:#FFFFFF;--1:#984E4D">=</span><span style="--0:#D6DEEB;--1:#403F53"> {</span></div></div><div class="ec-line"><div class="code"><span class="indent">  </span><span style="--0:#C5E478;--1:#3B61B0">enable</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#7FDBCA;--1:#096E72">=</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#82AAFF;--1:#3B61B0">true</span><span style="--0:#D6DEEB;--1:#403F53">;</span></div></div><div class="ec-line"><div class="code"><span class="indent">  </span><span style="--0:#C5E478;--1:#3B61B0">sshPort</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#7FDBCA;--1:#096E72">=</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#F78C6C;--1:#AA0982">2222</span><span style="--0:#D6DEEB;--1:#403F53">;</span></div></div><div class="ec-line"><div class="code"><span style="--0:#D6DEEB;--1:#403F53">}</span><span style="--0:#FFFFFF;--1:#984E4D">;</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copier dans le presse-papiers" data-copied="Copié !" data-code="darkone.system.luks = {  enable = true;  sshPort = 2222;};"><div></div></button></div></figure></div>
+<div class="expressive-code"><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="nix"><code><div class="ec-line"><div class="code"><span style="--0:#D7DBE0;--1:#403F53">darkone</span><span style="--0:#7FDBCA;--1:#096E72">.</span><span style="--0:#D7DBE0;--1:#403F53">system</span><span style="--0:#7FDBCA;--1:#096E72">.</span><span style="--1:#403F53"><span style="--0:#D7DBE0">luks</span><span style="--0:#D6DEEB"> </span></span><span style="--0:#FFFFFF;--1:#984E4D">=</span><span style="--0:#D6DEEB;--1:#403F53"> {</span></div></div><div class="ec-line"><div class="code"><span class="indent">  </span><span style="--0:#C5E478;--1:#3B61B0">enable</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#7FDBCA;--1:#096E72">=</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#82AAFF;--1:#3B61B0">true</span><span style="--0:#D6DEEB;--1:#403F53">;</span></div></div><div class="ec-line"><div class="code"><span class="indent">  </span><span style="--0:#C5E478;--1:#3B61B0">sshPort</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#7FDBCA;--1:#096E72">=</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#F78C6C;--1:#AA0982">2222</span><span style="--0:#D6DEEB;--1:#403F53">;</span></div></div><div class="ec-line"><div class="code"><span class="indent">  </span><span style="--0:#C5E478;--1:#3B61B0">volumes</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#7FDBCA;--1:#096E72">=</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#D9F5DD;--1:#111111">[</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#D9F5DD;--1:#111111">]</span><span style="--0:#D6DEEB;--1:#403F53">;</span></div></div><div class="ec-line"><div class="code"><span style="--0:#D6DEEB;--1:#403F53">}</span><span style="--0:#FFFFFF;--1:#984E4D">;</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copier dans le presse-papiers" data-copied="Copié !" data-code="darkone.system.luks = {  enable = true;  sshPort = 2222;  volumes = [ ];};"><div></div></button></div></figure></div>
 <hr>
 
 <div class="sl-heading-wrapper level-h3"><h3 id="-darkonesystemsecurity">⚙ darkone.system.security</h3><a class="sl-anchor-link" href="#-darkonesystemsecurity"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “⚙ darkone.system.security”</span></a></div>
