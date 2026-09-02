@@ -168,15 +168,23 @@ exister <em>avant</em> que le système ne soit construit :</p>
 <ol>
 <li>la <strong>passphrase partagée</strong> dans sops si absente (demandée une seule fois
 pour tout le parc) ;</li>
-<li>la <strong>passphrase par hôte</strong> dans sops si absente (saisie vide = valeur
-aléatoire forte, l’hôte reste déverrouillable par la partagée et les
-YubiKeys) ;</li>
+<li>la <strong>passphrase par hôte</strong> dans sops si absente, <strong>générée au hasard et sans
+rien demander</strong> (voir l’encadré ci-dessous) ;</li>
 <li>la <strong>clé d’hôte SSH de l’initrd</strong>, générée localement et rangée dans sops
 (<code dir="auto">luks/&#x3C;hôte>/initrd-key</code>, encodée en base64) ;</li>
 <li>l’inscription de l’hôte dans le <strong>manifeste public</strong> <code dir="auto">usr/secrets/luks.json</code>
 (versionné en clair, il ne contient aucun secret) : c’est cette entrée
 qui active le module.</li>
 </ol>
+<aside aria-label="Pourquoi la passphrase par hôte n’est jamais demandée à l’installation" class="starlight-aside starlight-aside--note"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 11a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0v-4a1 1 0 0 0-1-1Zm.38-3.92a1 1 0 0 0-.76 0 1 1 0 0 0-.33.21 1.15 1.15 0 0 0-.21.33 1 1 0 0 0 .21 1.09c.097.088.209.16.33.21A1 1 0 0 0 13 8a1.05 1.05 0 0 0-.29-.71 1 1 0 0 0-.33-.21ZM12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 18a8 8 0 1 1 0-16.001A8 8 0 0 1 12 20Z"></path></svg>Pourquoi la passphrase par hôte n’est jamais demandée à l’installation</p><div class="starlight-aside__content"><p>Elle sert à confier le déverrouillage d’une station à son utilisateur sans lui
+donner la clé de tout le parc. Mais au moment du formatage on ignore encore qui
+utilisera la machine : la réponse était toujours « vide ». Et une
+question interactive au milieu d’une installation est exactement ce qui casse
+une installation à distance.</p><p>Elle est donc tirée au hasard et gardée dans sops seule. Le slot garde son
+utilité — c’est un second moyen d’ouvrir le volume, et le repli de
+<code dir="auto">just unlock</code>. Le jour où quelqu’un doit vraiment taper une passphrase sur cette
+machine, <code dir="auto">just luks &#x3C;hôte> passwd</code> lui en donne une choisie, et
+<code dir="auto">luks-passphrase-sync</code> échange le slot au prochain <code dir="auto">apply</code>.</p></div></aside>
 <p>La phase par défaut ajoute ce qui demande la machine :</p>
 <ol start="5">
 <li>repose la <strong>clé d’initrd</strong> depuis sops si elle manque sur la cible (elle
@@ -247,9 +255,18 @@ propre clé d’hôte persistante, accessible uniquement avec la clé de
 déploiement <code dir="auto">nix</code>. Deux façons d’y répondre :</p>
 <div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Fenêtre de terminal</span></figcaption><pre data-language="sh"><code><div class="ec-line"><div class="code"><span style="--0:#82AAFF;--1:#3B61B0">just</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">unlock</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">&#x3C;hôte></span><span style="--0:#D6DEEB;--1:#403F53">     </span><span style="--0:#919F9F;--1:#5F636F"># sans humain : la passphrase est lue dans sops</span></div></div><div class="ec-line"><div class="code"><span style="--0:#82AAFF;--1:#3B61B0">just</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">enter</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">&#x3C;hôte></span><span style="--0:#D6DEEB;--1:#403F53">      </span><span style="--0:#919F9F;--1:#5F636F"># interactif : le prompt est présenté au terminal</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copier dans le presse-papiers" data-copied="Copié !" data-code="just unlock <hôte>     # sans humain : la passphrase est lue dans sopsjust enter <hôte>      # interactif : le prompt est présenté au terminal"><div></div></button></div></figure></div>
 <p><code dir="auto">just unlock</code> attend que le port 2222 apparaisse (un point par tentative), lit
-la passphrase par hôte dans sops (repli sur la partagée) et la pousse dans
-l’initrd. C’est ce que <code dir="auto">just full-install</code> appelle tout seul après le premier
-redémarrage. Sur un hôte non chiffré, c’est un no-op journalisé.</p>
+la passphrase <strong>partagée</strong> dans sops et la pousse dans l’initrd, puis vérifie
+que la machine a bien quitté son initrd avant d’annoncer un succès. Si elle est
+refusée, il réessaie avec la passphrase par hôte. C’est ce que
+<code dir="auto">just full-install</code> appelle tout seul après le premier redémarrage. Sur un hôte
+non chiffré, c’est un no-op journalisé.</p>
+<aside aria-label="Pourquoi la partagée d’abord" class="starlight-aside starlight-aside--note"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 11a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0v-4a1 1 0 0 0-1-1Zm.38-3.92a1 1 0 0 0-.76 0 1 1 0 0 0-.33.21 1.15 1.15 0 0 0-.21.33 1 1 0 0 0 .21 1.09c.097.088.209.16.33.21A1 1 0 0 0 13 8a1.05 1.05 0 0 0-.29-.71 1 1 0 0 0-.33-.21ZM12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 18a8 8 0 1 1 0-16.001A8 8 0 0 1 12 20Z"></path></svg>Pourquoi la partagée d’abord</p><div class="starlight-aside__content"><p>Au tout premier démarrage, le slot par hôte n’existe pas encore : disko formate
+avec la passphrase partagée, et <code dir="auto">luks-passphrase-sync</code> n’ajoute le slot par hôte
+que depuis le système démarré, donc <em>après</em> le déverrouillage. La partagée est
+le seul moyen d’entrer à ce moment-là.</p><p>Par ailleurs <code dir="auto">dnf-unlock</code> sait seulement qu’il a <strong>répondu</strong> à la demande, jamais
+si la passphrase a été acceptée : systemd se contente de redemander. Le seul
+témoin fiable est donc la machine qui quitte son initrd et répond sur le port 22,
+et c’est ce que <code dir="auto">just unlock</code> observe depuis le poste d’administration.</p></div></aside>
 <p><code dir="auto">just enter</code> fait la même chose en mode interactif : quand le port 22 ne
 répond pas, il sonde le 2222 sur l’IP explicite (si fournie), le nom d’hôte,
 puis l’<strong>IP WAN enregistrée dans le manifeste</strong>, et présente le prompt LUKS via
@@ -278,6 +295,15 @@ supposé : chaque passphrase gérée est réellement essayée contre l’en-tê
 donc la colonne « Check » dit ce que le volume accepte aujourd’hui, pas ce
 qu’un registre a mémorisé.</p>
 <div class="expressive-code"><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="plaintext"><code><div class="ec-line"><div class="code"><span style="--0:#d6deeb;--1:#403f53">/dev/disk/by-partlabel/disk-main-luks</span></div></div><div class="ec-line"><div class="code"><span class="indent"><span style="--0:#d6deeb;--1:#403f53">  </span></span><span style="--0:#d6deeb;--1:#403f53">Slot  Content              Source                       Check</span></div></div><div class="ec-line"><div class="code"><span class="indent"><span style="--0:#d6deeb;--1:#403f53">  </span></span><span style="--0:#d6deeb;--1:#403f53">----  -------------------  ---------------------------  -----------------</span></div></div><div class="ec-line"><div class="code"><span class="indent"><span style="--0:#d6deeb;--1:#403f53">  </span></span><span style="--0:#d6deeb;--1:#403f53">0     Shared passphrase    sops luks-passphrase         opens the volume</span></div></div><div class="ec-line"><div class="code"><span class="indent"><span style="--0:#d6deeb;--1:#403f53">  </span></span><span style="--0:#d6deeb;--1:#403f53">1     Host passphrase      sops luks/poste/passphrase   opens the volume</span></div></div><div class="ec-line"><div class="code"><span class="indent"><span style="--0:#d6deeb;--1:#403f53">  </span></span><span style="--0:#d6deeb;--1:#403f53">2     YubiKey alice/main   systemd-fido2 token          enrolled</span></div></div><div class="ec-line"><div class="code"><span class="indent"><span style="--0:#d6deeb;--1:#403f53">  </span></span><span style="--0:#d6deeb;--1:#403f53">7     Unknown              -                            not managed by DNF</span></div></div><div class="ec-line"><div class="code"><span class="indent"><span style="--0:#d6deeb;--1:#403f53">  </span></span><span style="--0:#d6deeb;--1:#403f53">Slots in use: 4/32</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copier dans le presse-papiers" data-copied="Copié !" data-code="/dev/disk/by-partlabel/disk-main-luks  Slot  Content              Source                       Check  ----  -------------------  ---------------------------  -----------------  0     Shared passphrase    sops luks-passphrase         opens the volume  1     Host passphrase      sops luks/poste/passphrase   opens the volume  2     YubiKey alice/main   systemd-fido2 token          enrolled  7     Unknown              -                            not managed by DNF  Slots in use: 4/32"><div></div></button></div></figure></div>
+<aside aria-label="Un slot « Unknown »" class="starlight-aside starlight-aside--note"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 11a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0v-4a1 1 0 0 0-1-1Zm.38-3.92a1 1 0 0 0-.76 0 1 1 0 0 0-.33.21 1.15 1.15 0 0 0-.21.33 1 1 0 0 0 .21 1.09c.097.088.209.16.33.21A1 1 0 0 0 13 8a1.05 1.05 0 0 0-.29-.71 1 1 0 0 0-.33-.21ZM12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 18a8 8 0 1 1 0-16.001A8 8 0 0 1 12 20Z"></path></svg>Un slot « Unknown »</p><div class="starlight-aside__content"><p>Aucune passphrase gérée ne l’ouvre et aucun token FIDO2 ne le revendique. Le
+plus souvent c’est un enrôlement YubiKey interrompu entre la création du
+keyslot et l’écriture de son token — typiquement pendant une installation, où
+la convergence de la passphrase redémarre le service d’enrôlement. Le service
+répare désormais lui-même ce cas au <code dir="auto">just apply</code> suivant : il adopte le
+keyslot s’il appartient à une clé déclarée, le supprime s’il fait doublon. Un
+slot qui persiste après un apply vient donc d’ailleurs : un
+<code dir="auto">systemd-cryptenroll</code> manuel, par exemple — DNF n’y touche jamais, faute de
+pouvoir prouver à qui il appartient.</p></div></aside>
 <p>Un second bloc audite le <strong>déverrouillage distant</strong>, point par point :</p>
 
 

@@ -292,10 +292,18 @@ demandée avant d’exécuter.</p></div></aside>
 <code dir="auto">usr/machines/&#x3C;hôte>/default.nix</code>, une clé <code dir="auto">mac</code> et une adresse fixe
 (<code dir="auto">zone: "&#x3C;zone>:&#x3C;x.y>"</code>). Les deux derniers points sont vérifiés avant tout
 formatage : sans eux, la machine change d’adresse au redémarrage qui suit
-l’installation. Voir <a href="/fr/doc/admin-guide/install/first-network-installation/#installer-le-premier-poste">Installation
+l’installation. Voir <a href="/fr/doc/admin-guide/install/first-network-installation/#installer-un-poste">Installation
 initiale</a>.</p></div></aside>
 <p>L’argument <code dir="auto">ip</code> vaut <code dir="auto">auto</code> par défaut : l’adresse est calculée comme pour
 <code dir="auto">full-install</code>, inutile de la relever.</p>
+<aside aria-label="L’adresse doit être celle que la machine garde" class="starlight-aside starlight-aside--caution"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 16a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm10.67 1.47-8.05-14a3 3 0 0 0-5.24 0l-8 14A3 3 0 0 0 3.94 22h16.12a3 3 0 0 0 2.61-4.53Zm-1.73 2a1 1 0 0 1-.88.51H3.94a1 1 0 0 1-.88-.51 1 1 0 0 1 0-1l8-14a1 1 0 0 1 1.78 0l8.05 14a1 1 0 0 1 .05 1.02v-.02ZM12 8a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V9a1 1 0 0 0-1-1Z"></path></svg>L’adresse doit être celle que la machine garde</p><div class="starlight-aside__content"><p><code dir="auto">nixos-anywhere</code> fige son adresse cible pour toute la durée du run et ne sait
+pas suivre une renumérotation. Or l’installeur refait un DHCP : si la
+machine tournait jusque-là sur un bail dynamique plus ancien que sa réservation
+— le cas typique d’une installation <strong>par-dessus un autre système</strong> — elle
+bascule sur son adresse réservée en pleine installation et le run parle dans le
+vide.</p><p>La recette refuse donc de démarrer sur une adresse que l’hôte ne garde pas, et
+affiche celles qu’il accepte. Avant d’installer par-dessus un OS existant,
+redémarrez la machine pour qu’elle prenne son adresse réservée.</p></div></aside>
 <p>La recette dépose aussi sur la cible, <strong>avant</strong> l’installation du système, la
 clé age <code dir="auto">/etc/sops/age/infra.key</code> et, sur un hôte chiffré, la clé d’hôte SSH de
 son initrd : sops fonctionne dès la première activation et le tout premier
@@ -316,6 +324,12 @@ de leur zone</a>.</p>
 endroit : la recette sonde <strong>toutes</strong> ses adresses connues, sur les ports
 22 et 2222, et poursuit sur celle qui répond. Un hôte chiffré est déverrouillé
 au passage par <code dir="auto">just unlock</code>.</p>
+<p>Le redémarrage final n’est pas décoratif : <code dir="auto">apply</code> active l’espace
+utilisateur mais pas le noyau ni l’initrd, et ce reboot est la seule preuve
+automatique que la machine repart <strong>toute seule</strong>. Sur un hôte chiffré, il
+prouve du même coup que le déverrouillage à distance fonctionne — pendant que
+vous êtes encore devant, et non à la première coupure de courant. <code dir="auto">unlock</code> est
+donc rappelé juste après.</p>
 <div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Fenêtre de terminal</span></figcaption><pre data-language="sh"><code><div class="ec-line"><div class="code"><span style="--0:#82AAFF;--1:#3B61B0">just</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">full-install</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">myserver</span></div></div><div class="ec-line"><div class="code"><span style="--0:#82AAFF;--1:#3B61B0">just</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">full-install</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">myserver</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">nixos</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#F78C6C;--1:#AA0982">10.0.3.42</span><span style="--0:#D6DEEB;--1:#403F53">   </span><span style="--0:#919F9F;--1:#5F636F"># adresse forcée</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copier dans le presse-papiers" data-copied="Copié !" data-code="just full-install myserverjust full-install myserver nixos 10.0.3.42   # adresse forcée"><div></div></button></div></figure></div>
 
 <div class="sl-heading-wrapper level-h3"><h3 id="️-install-key-hôte">✳️ <code dir="auto">install-key &#x3C;hôte></code></h3><a class="sl-anchor-link" href="#️-install-key-hôte"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section intitulée « ✳️ install-key &#x3C;hôte> »</span></a></div>
@@ -329,6 +343,10 @@ sur un hôte non chiffré).</p>
 branché hors de sa zone, la redirection SSH est posée dans la foulée, pour que
 l’<code dir="auto">apply</code> qui suit l’atteigne : <code dir="auto">just roaming-clear &#x3C;hôte></code> une fois la
 machine revenue chez elle.</p>
+<aside aria-label="Uniquement pour un hôte réellement ailleurs" class="starlight-aside starlight-aside--caution"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 16a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm10.67 1.47-8.05-14a3 3 0 0 0-5.24 0l-8 14A3 3 0 0 0 3.94 22h16.12a3 3 0 0 0 2.61-4.53Zm-1.73 2a1 1 0 0 1-.88.51H3.94a1 1 0 0 1-.88-.51 1 1 0 0 1 0-1l8-14a1 1 0 0 1 1.78 0l8.05 14a1 1 0 0 1 .05 1.02v-.02ZM12 8a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V9a1 1 0 0 0-1-1Z"></path></svg>Uniquement pour un hôte réellement ailleurs</p><div class="starlight-aside__content"><p>La redirection désactive la vérification de la clé d’hôte, <strong>et elle le reste
+tant qu’on ne la retire pas</strong>. Elle n’est donc posée que si l’adresse utilisée
+n’est ni le nom de l’hôte ni l’adresse fixe de sa zone. <code dir="auto">just install</code> retire au
+passage celle qu’aurait pu laisser une installation interrompue.</p></div></aside>
 <div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Fenêtre de terminal</span></figcaption><pre data-language="sh"><code><div class="ec-line"><div class="code"><span style="--0:#82AAFF;--1:#3B61B0">just</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">configure</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">myserver</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copier dans le presse-papiers" data-copied="Copié !" data-code="just configure myserver"><div></div></button></div></figure></div>
 
 <div class="sl-heading-wrapper level-h3"><h3 id="️-copy-id-hôte">✳️ <code dir="auto">copy-id &#x3C;hôte></code></h3><a class="sl-anchor-link" href="#️-copy-id-hôte"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section intitulée « ✳️ copy-id &#x3C;hôte> »</span></a></div>
