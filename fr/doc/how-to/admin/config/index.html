@@ -482,6 +482,12 @@ c’est-à-dire aujourd’hui celle de l’hôte lui-même : les clients NFS
 inter-zones ne sont pas encore câblés. Un suffixe pointant ailleurs
 n’active plus le montage — auparavant l’hôte montait quand même le serveur de
 sa propre zone, alors que ses liens XDG, eux, n’étaient pas créés.</p></div></aside>
+<aside aria-label="Partages réservés aux clients déclarés" class="starlight-aside starlight-aside--caution"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 16a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm10.67 1.47-8.05-14a3 3 0 0 0-5.24 0l-8 14A3 3 0 0 0 3.94 22h16.12a3 3 0 0 0 2.61-4.53Zm-1.73 2a1 1 0 0 1-.88.51H3.94a1 1 0 0 1-.88-.51 1 1 0 0 1 0-1l8-14a1 1 0 0 1 1.78 0l8.05 14a1 1 0 0 1 .05 1.02v-.02ZM12 8a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V9a1 1 0 0 0-1-1Z"></path></svg>Partages réservés aux clients déclarés</p><div class="starlight-aside__content"><p>Le serveur NFS exporte une ligne par adresse de client déclaré, jamais le
+préfixe de la zone : une machine absente de <code dir="auto">etc/config.yaml</code> n’obtient
+aucun montage. Le compte root d’un client est écrasé sur les trois partages
+(<code dir="auto">root_squash</code>), il n’a donc pas plus de droits qu’un utilisateur ordinaire.
+Ajouter un poste demande de le déclarer, puis de réappliquer la configuration
+du serveur.</p></div></aside>
 
 <div class="sl-heading-wrapper level-h3"><h3 id="déclarer-des-services">Déclarer des services</h3><a class="sl-anchor-link" href="#déclarer-des-services"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section intitulée « Déclarer des services »</span></a></div>
 <p>La clé <code dir="auto">services</code> contient une collection de services à installer automatiquement sur
