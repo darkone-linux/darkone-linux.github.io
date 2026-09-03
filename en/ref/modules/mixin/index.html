@@ -96,6 +96,8 @@
 Additional enabled services (homepage, adguardhome, forgejo, nix-cache…)
 are automatically configured with consistent network plumbing on the
 gateway and all machines on the local network.</p></div></aside>
+<aside aria-label="Routed traffic is filtered" class="starlight-aside starlight-aside--caution"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 16a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm10.67 1.47-8.05-14a3 3 0 0 0-5.24 0l-8 14A3 3 0 0 0 3.94 22h16.12a3 3 0 0 0 2.61-4.53Zm-1.73 2a1 1 0 0 1-.88.51H3.94a1 1 0 0 1-.88-.51 1 1 0 0 1 0-1l8-14a1 1 0 0 1 1.78 0l8.05 14a1 1 0 0 1 .05 1.02v-.02ZM12 8a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V9a1 1 0 0 0-1-1Z"></path></svg>Routed traffic is filtered</p><div class="starlight-aside__content"><p><code dir="auto">filterForward = true</code>: only LAN &#x3C;-> WAN and LAN &#x3C;-> tailnet cross. Anything
+else is dropped — add it to <code dir="auto">networking.firewall.extraForwardRules</code>.</p></div></aside>
 <ul>
 <li><strong>enable</strong> <code dir="auto">bool</code> Enable gateway features for the current host (dhcp, dns, proxy, etc.)</li>
 </ul>
@@ -108,6 +110,9 @@ gateway and all machines on the local network.</p></div></aside>
 Additional enabled services (authentication, etc.)
 are automatically configured with consistent network plumbing on your
 global network.</p><p>Zsh alias “h” for “headscale”.</p></div></aside>
+<aside aria-label="Public SSH" class="starlight-aside starlight-aside--caution"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 16a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm10.67 1.47-8.05-14a3 3 0 0 0-5.24 0l-8 14A3 3 0 0 0 3.94 22h16.12a3 3 0 0 0 2.61-4.53Zm-1.73 2a1 1 0 0 1-.88.51H3.94a1 1 0 0 1-.88-.51 1 1 0 0 1 0-1l8-14a1 1 0 0 1 1.78 0l8.05 14a1 1 0 0 1 .05 1.02v-.02ZM12 8a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V9a1 1 0 0 0-1-1Z"></path></svg>Public SSH</p><div class="starlight-aside__content"><p>Port 22 is open on every interface, Internet included — the only host of the
+fleet in that case: it runs the tailnet control plane, so reaching it must
+not require the tailnet.</p></div></aside>
 <ul>
 <li><strong>enable</strong> <code dir="auto">bool</code> Enable headscale coordination server</li>
 <li><strong>enableClient</strong> <code dir="auto">bool</code> Enable tailscale client on HCS node (recommended to host services)</li>

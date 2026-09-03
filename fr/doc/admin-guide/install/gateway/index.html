@@ -115,8 +115,10 @@ machine, l’administrateur installe par SSH.</p>
 <li>Rediriger le port 22 de la box vers la passerelle.</li>
 </ol>
 <aside aria-label="Pourquoi rediriger le port 22 ?" class="starlight-aside starlight-aside--note"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 11a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0v-4a1 1 0 0 0-1-1Zm.38-3.92a1 1 0 0 0-.76 0 1 1 0 0 0-.33.21 1.15 1.15 0 0 0-.21.33 1 1 0 0 0 .21 1.09c.097.088.209.16.33.21A1 1 0 0 0 13 8a1.05 1.05 0 0 0-.29-.71 1 1 0 0 0-.33-.21ZM12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 18a8 8 0 1 1 0-16.001A8 8 0 0 1 12 20Z"></path></svg>Pourquoi rediriger le port 22 ?</p><div class="starlight-aside__content"><p>Il permet l’accès SSH le temps de l’installation. La clé USB n’accepte que les
-clés d’authentification (pas de mot de passe). La redirection peut être retirée
-ensuite.</p></div></aside>
+clés d’authentification (pas de mot de passe).</p><p><strong>Retirez la redirection une fois l’installation finie</strong> : la passerelle
+installée ne répond plus au SSH depuis Internet, l’accès distant passe par le
+VPN (<code dir="auto">just enter gw</code>). Voir <a href="/fr/doc/admin-guide/understand/network/">Accès SSH selon le
+rôle</a>.</p></div></aside>
 </li>
 <li>
 <p><strong>Installer</strong> (administrateur)</p>
