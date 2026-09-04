@@ -362,11 +362,14 @@ accounts (not normal users) need not be listed.</li>
 It is recommended to keep it enabled and configure it (<code dir="auto">just passwd*</code> commands).</p></div></aside>
 <p>Wires sops-nix to <code dir="auto">usr/secrets/secrets.yaml</code> and unlocks it with the
 host SSH key (<code dir="auto">ssh_host_ed25519_key</code>) plus the dedicated infrastructure
-age key (<code dir="auto">/etc/sops/age/infra.key</code>). Pre-declares a shared <code dir="auto">sops</code> group,
-the <code dir="auto">default-password</code> / <code dir="auto">default-password-hash</code> secrets (group-readable
-by <code dir="auto">sops</code>), and one <code dir="auto">user/&#x3C;login>/password-hash</code> secret per host user
-(with <code dir="auto">neededForUsers = true</code> so the hash is available before the user
-accounts are created).</p>
+age key (<code dir="auto">/etc/sops/age/infra.key</code>). Declares one
+<code dir="auto">user/&#x3C;login>/password-hash</code> secret per host user, with
+<code dir="auto">neededForUsers = true</code> so the hash is available before the user accounts
+are created.</p>
+<p>Nothing else is materialised here: a secret belongs on the hosts that
+consume it, declared by the module that reads it. <code dir="auto">default-password-hash</code>
+stays in the encrypted file, unread by any host — it records the fleet
+default password for <code dir="auto">just passwd &#x3C;login></code>.</p>
 <ul>
 <li><strong>enable</strong> <code dir="auto">bool</code> Enable sops automated configuration for DNF</li>
 </ul>

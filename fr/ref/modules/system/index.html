@@ -358,20 +358,24 @@ de service (qui ne sont pas des utilisateurs normaux) n’ont pas besoin d’êt
 <hr>
 
 <div class="sl-heading-wrapper level-h3"><h3 id="-darkonesystemsops">⚙ darkone.system.sops</h3><a class="sl-anchor-link" href="#-darkonesystemsops"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section intitulée « ⚙ darkone.system.sops »</span></a></div>
-<p>Gestion des mots de passe et secrets DNF sops.</p>
+<p>Gestion DNF de sops, mots de passe et secrets.</p>
 <aside aria-label="Module critique" class="starlight-aside starlight-aside--danger"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 7a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V8a1 1 0 0 0-1-1Zm0 8a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm9.71-7.44-5.27-5.27a1.05 1.05 0 0 0-.71-.29H8.27a1.05 1.05 0 0 0-.71.29L2.29 7.56a1.05 1.05 0 0 0-.29.71v7.46c.004.265.107.518.29.71l5.27 5.27c.192.183.445.286.71.29h7.46a1.05 1.05 0 0 0 .71-.29l5.27-5.27a1.05 1.05 0 0 0 .29-.71V8.27a1.05 1.05 0 0 0-.29-.71ZM20 15.31 15.31 20H8.69L4 15.31V8.69L8.69 4h6.62L20 8.69v6.62Z"></path></svg>Module critique</p><div class="starlight-aside__content"><p>Ce module est activé par défaut dans le module core.
-Il est recommandé de le conserver activé et de le configurer (commandes <code dir="auto">just passwd*</code>).</p></div></aside>
-<p>Connecte sops-nix à <code dir="auto">usr/secrets/secrets.yaml</code> et le déverrouille avec la
-clé SSH de l’hôte (<code dir="auto">ssh_host_ed25519_key</code>) plus la clé d’infrastructure dédiée
-age (<code dir="auto">/etc/sops/age/infra.key</code>). Pré-déclare un groupe <code dir="auto">sops</code> partagé,
-les secrets <code dir="auto">default-password</code> / <code dir="auto">default-password-hash</code> (lisible par le groupe
-<code dir="auto">sops</code>), et un secret <code dir="auto">user/&#x3C;login>/password-hash</code> par utilisateur d’hôte
-(avec <code dir="auto">neededForUsers = true</code> pour que le hash soit disponible avant la
-création des comptes utilisateur).</p>
+Il est recommandé de le laisser activé et de le configurer (commandes <code dir="auto">just passwd*</code>).</p></div></aside>
+<p>Branche sops-nix sur <code dir="auto">usr/secrets/secrets.yaml</code> et le déverrouille avec la clé
+SSH de l’hôte (<code dir="auto">ssh_host_ed25519_key</code>) ainsi que la clé age d’infrastructure
+dédiée (<code dir="auto">/etc/sops/age/infra.key</code>). Déclare un
+secret <code dir="auto">user/&#x3C;login>/password-hash</code> par utilisateur d’hôte, avec
+<code dir="auto">neededForUsers = true</code> afin que le hash soit disponible avant la création des
+comptes utilisateurs.</p>
+<p>Rien d’autre n’est matérialisé ici : un secret appartient aux hôtes qui le
+consomment, déclaré par le module qui le lit. <code dir="auto">default-password-hash</code>
+reste dans le fichier chiffré, illisible par aucun hôte : il enregistre le
+mot de passe par défaut de la flotte pour <code dir="auto">just passwd &#x3C;login></code>.</p>
 <ul>
-<li><strong>enable</strong> <code dir="auto">bool</code> Activer la configuration automatique sops pour DNF</li>
+<li><strong>enable</strong> <code dir="auto">bool</code> Active la configuration automatisée de sops pour DNF</li>
 </ul>
 <div class="expressive-code"><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="nix"><code><div class="ec-line"><div class="code"><span style="--0:#D7DBE0;--1:#403F53">darkone</span><span style="--0:#7FDBCA;--1:#096E72">.</span><span style="--0:#D7DBE0;--1:#403F53">system</span><span style="--0:#7FDBCA;--1:#096E72">.</span><span style="--0:#D7DBE0;--1:#403F53">sops</span><span style="--0:#7FDBCA;--1:#096E72">.</span><span style="--1:#403F53"><span style="--0:#D7DBE0">enable</span><span style="--0:#D6DEEB"> </span></span><span style="--0:#FFFFFF;--1:#984E4D">=</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#82AAFF;--1:#3B61B0">false</span><span style="--0:#FFFFFF;--1:#984E4D">;</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copier dans le presse-papiers" data-copied="Copié !" data-code="darkone.system.sops.enable = false;"><div></div></button></div></figure></div>
+<hr>
 
 <div class="sl-heading-wrapper level-h3"><h3 id="-darkonesystemsrv-dirs">⚙ darkone.system.srv-dirs</h3><a class="sl-anchor-link" href="#-darkonesystemsrv-dirs"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section intitulée « ⚙ darkone.system.srv-dirs »</span></a></div>
 <p>Service de gestion des répertoires partagés.</p>
