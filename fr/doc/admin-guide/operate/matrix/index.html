@@ -803,6 +803,45 @@ reconstitue la configuration et les secrets du service, et fonctionne donc
 qu’utilise <a href="/fr/doc/admin-guide/operate/justfile/"><code dir="auto">just configure-alert-bot</code></a>
 pour créer un compte de bot manquant : créer ce compte <strong>avant</strong> de
 migrer, ou le recréer avec <code dir="auto">sudo dnf-mas manage register-user</code>.</p></div></aside>
+<p><code dir="auto">mas-cli</code> n’expose aucune commande de lecture : pour voir les comptes,
+leurs appareils et leurs sessions, activer le service <code dir="auto">matrix-admin</code>, l’interface
+web <a href="https://github.com/etkecc/ketesa" target="_blank" rel="nofollow">Ketesa<span> 🡕</span></a> (ex-synapse-admin), qui parle aux
+API d’administration de MAS <strong>et</strong> de Synapse.</p>
+<div class="expressive-code"><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="yaml"><code><div class="ec-line"><div class="code"><span style="--0:#919F9F;--1:#5F636F"># etc/config.yaml, sur l'hôte du serveur Matrix</span></div></div><div class="ec-line"><div class="code"><span style="--0:#7FDBCA;--1:#111111">services</span><span style="--0:#D6DEEB;--1:#403F53">:</span></div></div><div class="ec-line"><div class="code"><span class="indent">  </span><span style="--0:#7FDBCA;--1:#111111">matrix-admin</span><span style="--0:#D6DEEB;--1:#403F53">:</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copier dans le presse-papiers" data-copied="Copié !" data-code="# etc/config.yaml, sur l&#x27;hôte du serveur Matrixservices:  matrix-admin:"><div></div></button></div></figure></div>
+<p>Elle répond sur <code dir="auto">https://matrix-admin.domain.tld</code>, <strong>depuis le LAN et le tailnet
+uniquement</strong>. Le sous-domaine doit tout de même résoudre publiquement vers le
+HCS : Caddy en a besoin pour le certificat ACME, avant de refuser les
+appelants extérieurs. Connexion par le bouton OIDC, avec un compte promu au
+préalable :</p>
+<div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Fenêtre de terminal</span></figcaption><pre data-language="sh"><code><div class="ec-line"><div class="code"><span style="--0:#82AAFF;--1:#3B61B0">sudo</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">dnf-mas</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">manage</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">promote-admin</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">alice</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copier dans le presse-papiers" data-copied="Copié !" data-code="sudo dnf-mas manage promote-admin alice"><div></div></button></div></figure></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Côté</th><th>Ce que l’interface permet</th></tr></thead><tbody><tr><td>MAS</td><td>Sessions (compat, OAuth2, personnelles), e-mails, liens OIDC amont, jetons d’inscription, mot de passe, verrouillage, désactivation</td></tr><tr><td>Synapse</td><td>Comptes et appareils, salons, médias, signalements, limites de débit</td></tr></tbody></table>
+<aside aria-label="Débloquer un ami" class="starlight-aside starlight-aside--tip"><p class="starlight-aside__title" aria-hidden="true"><svg aria-hidden="true" class="starlight-aside__icon astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path fill-rule="evenodd" d="M1.44 8.855v-.001l3.527-3.516c.34-.344.802-.541 1.285-.548h6.649l.947-.947c3.07-3.07 6.207-3.072 7.62-2.868a1.821 1.821 0 0 1 1.557 1.557c.204 1.413.203 4.55-2.868 7.62l-.946.946v6.649a1.845 1.845 0 0 1-.549 1.286l-3.516 3.528a1.844 1.844 0 0 1-3.11-.944l-.858-4.275-4.52-4.52-2.31-.463-1.964-.394A1.847 1.847 0 0 1 .98 10.693a1.843 1.843 0 0 1 .46-1.838Zm5.379 2.017-3.873-.776L6.32 6.733h4.638l-4.14 4.14Zm8.403-5.655c2.459-2.46 4.856-2.463 5.89-2.33.134 1.035.13 3.432-2.329 5.891l-6.71 6.71-3.561-3.56 6.71-6.711Zm-1.318 15.837-.776-3.873 4.14-4.14v4.639l-3.364 3.374Z" clip-rule="evenodd"/><path d="M9.318 18.345a.972.972 0 0 0-1.86-.561c-.482 1.435-1.687 2.204-2.934 2.619a8.22 8.22 0 0 1-1.23.302c.062-.365.157-.79.303-1.229.415-1.247 1.184-2.452 2.62-2.935a.971.971 0 1 0-.62-1.842c-.12.04-.236.084-.35.13-2.02.828-3.012 2.588-3.493 4.033a10.383 10.383 0 0 0-.51 2.845l-.001.016v.063c0 .536.434.972.97.972H2.24a7.21 7.21 0 0 0 .878-.065c.527-.063 1.248-.19 2.02-.447 1.445-.48 3.205-1.472 4.033-3.494a5.828 5.828 0 0 0 .147-.407Z"/></svg>Débloquer un ami</p><div class="starlight-aside__content"><p>Symptôme courant : plus aucune session ne s’ouvre, ou le chiffrement ne
+suit plus. Révoquer <strong>toutes les sessions MAS</strong> du compte, puis supprimer ses
+<strong>appareils Synapse</strong> : la reconnexion se fait ensuite avec le seul couple
+identifiant / mot de passe. La réinitialisation du chiffrement, elle, reste
+<strong>côté client</strong> (« Réinitialiser le chiffrement » dans Element) :
+aucun outil serveur ne la fait à sa place.</p></div></aside>
+<aside aria-label="Comptes de ponts protégés" class="starlight-aside starlight-aside--caution"><p class="starlight-aside__title" aria-hidden="true"><svg aria-hidden="true" class="starlight-aside__icon astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M12 16a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm10.67 1.47-8.05-14a3 3 0 0 0-5.24 0l-8 14A3 3 0 0 0 3.94 22h16.12a3 3 0 0 0 2.61-4.53Zm-1.73 2a1 1 0 0 1-.88.51H3.94a1 1 0 0 1-.88-.51 1 1 0 0 1 0-1l8-14a1 1 0 0 1 1.78 0l8.05 14a1 1 0 0 1 .05 1.02v-.02ZM12 8a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V9a1 1 0 0 0-1-1Z"/></svg>Comptes de ponts protégés</p><div class="starlight-aside__content"><p>Les comptes appartenant aux ponts (<code dir="auto">@whatsappbot</code>, <code dir="auto">@signal_…</code>) sont marqués
+<em>appservice-managed</em> : l’interface refuse de les désactiver, de les
+verrouiller ou de leur retirer leurs appareils — de quoi casser un pont en un
+clic. Nom affiché et avatar restent modifiables.</p></div></aside>
 
 <div class="sl-heading-wrapper level-h3"><h3 id="diagnostiquer-une-connexion-sso-refusée">Diagnostiquer une connexion SSO refusée</h3><a class="sl-anchor-link" href="#diagnostiquer-une-connexion-sso-refusée"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section intitulée « Diagnostiquer une connexion SSO refusée »</span></a></div>
 <p>Après une migration, les sessions déjà ouvertes continuent de fonctionner :
