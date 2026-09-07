@@ -193,9 +193,21 @@ liste unique de cibles). Deux effets :</p>
 jobs, y compris les règles ressources génériques, qui ignorent tout de la
 topologie à l’évaluation.</p>
 <aside aria-label="Les agrégations effacent les labels" class="starlight-aside starlight-aside--caution"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 16a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm10.67 1.47-8.05-14a3 3 0 0 0-5.24 0l-8 14A3 3 0 0 0 3.94 22h16.12a3 3 0 0 0 2.61-4.53Zm-1.73 2a1 1 0 0 1-.88.51H3.94a1 1 0 0 1-.88-.51 1 1 0 0 1 0-1l8-14a1 1 0 0 1 1.78 0l8.05 14a1 1 0 0 1 .05 1.02v-.02ZM12 8a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V9a1 1 0 0 0-1-1Z"></path></svg>Les agrégations effacent les labels</p><div class="starlight-aside__content"><p>Une clause <code dir="auto">by (...)</code> supprime tout label non groupé. <code dir="auto">ResticBackupStale</code>
-(<code dir="auto">max by (instance, job, host)</code>) et <code dir="auto">SynapseHighErrorRate</code>
-(<code dir="auto">sum by (instance, host)</code>) citent donc <code dir="auto">host</code> explicitement. L’oublier dans une
-nouvelle règle agrégée fait retomber la notification sur l’instance brute.</p></div></aside>
+(<code dir="auto">max by (instance, job, host)</code>), <code dir="auto">SynapseHighErrorRate</code>
+(<code dir="auto">sum by (instance, host)</code>) et les règles FS (<code dir="auto">byDevice</code>) citent donc <code dir="auto">host</code>
+explicitement. L’oublier dans une nouvelle règle agrégée fait retomber la
+notification sur l’instance brute.</p></div></aside>
+<aside aria-label="Règles FS : une alerte par partition" class="starlight-aside starlight-aside--note"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 11a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0v-4a1 1 0 0 0-1-1Zm.38-3.92a1 1 0 0 0-.76 0 1 1 0 0 0-.33.21 1.15 1.15 0 0 0-.21.33 1 1 0 0 0 .21 1.09c.097.088.209.16.33.21A1 1 0 0 0 13 8a1.05 1.05 0 0 0-.29-.71 1 1 0 0 0-.33-.21ZM12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 18a8 8 0 1 1 0-16.001A8 8 0 0 1 12 20Z"></path></svg>Règles FS : une alerte par partition</p><div class="starlight-aside__content"><p><code dir="auto">node_filesystem_*</code> est émis <strong>par montage</strong>. Une partition montée plusieurs
+fois (sous-volumes btrfs, montages <code dir="auto">bind</code>) déclenchait donc chaque règle FS
+autant de fois qu’elle a de montages, pour un seul disque plein.</p><p><code dir="auto">mkResourceRuleGroups</code> agrège sur <code dir="auto">byDevice</code>
+(<code dir="auto">instance, job, host, device, fstype</code>) : <code dir="auto">min</code> pour l’espace et les
+inodes, <code dir="auto">max</code> pour <code dir="auto">FilesystemReadOnly</code>. Les deux membres du <code dir="auto">and</code> de
+<code dir="auto">DiskWillFillSoon</code> sont agrégés — un membre brut porte encore <code dir="auto">mountpoint</code> et ne
+matche plus rien en face.</p><p><code dir="auto">mountpoint</code> disparaît avec l’agrégation. PromQL ne sait pas concaténer des
+valeurs de label : la liste des montages est donc résolue par la fonction
+<code dir="auto">query</code> du moteur de templates Go que Prometheus applique aux annotations
+(<code dir="auto">deviceMounts</code>). Coût : une requête instantanée par alerte active et par
+évaluation, aucune tant que la règle reste muette.</p></div></aside>
 <aside aria-label="Le bot n’affiche pas summary" class="starlight-aside starlight-aside--note"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 11a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0v-4a1 1 0 0 0-1-1Zm.38-3.92a1 1 0 0 0-.76 0 1 1 0 0 0-.33.21 1.15 1.15 0 0 0-.21.33 1 1 0 0 0 .21 1.09c.097.088.209.16.33.21A1 1 0 0 0 13 8a1.05 1.05 0 0 0-.29-.71 1 1 0 0 0-.33-.21ZM12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 18a8 8 0 1 1 0-16.001A8 8 0 0 1 12 20Z"></path></svg>Le bot n’affiche pas <code dir="auto">summary</code></p><div class="starlight-aside__content"><p>Le bot Matrix rend le titre puis l’annotation <code dir="auto">description</code>, et ne se rabat sur
 <code dir="auto">summary</code> que si <code dir="auto">description</code> est absente : toutes les règles DNF en
 définissent une, donc <code dir="auto">summary</code> ne lui parvient jamais. Une information à faire
@@ -299,7 +311,7 @@ Deux listes de seuils le font, dans <code dir="auto">mkResourceRuleGroups</code>
 <li><code dir="auto">remoteFstypes</code> — retiré de <strong>toutes</strong> les règles FS. Un montage client
 remonte l’espace du <strong>serveur</strong> : le surveiller transforme un export
 plein en une même alerte sur chaque machine qui le monte, alors que le serveur
-alerte déjà tout seul, avec le vrai point de montage.</li>
+alerte déjà tout seul, avec la vraie partition.</li>
 <li><code dir="auto">readOnlyByDesignFstypes</code> — retiré de <code dir="auto">FilesystemReadOnly</code> seul (médias
 optiques). La règle ne surveille donc que les montages censés être accessibles
 en écriture.</li>
