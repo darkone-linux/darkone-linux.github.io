@@ -280,7 +280,9 @@ recompilation (tag <code dir="auto">kernel-recompile</code>) if not excluded.</l
 <aside aria-label="Exclusion tags" class="starlight-aside starlight-aside--note"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 11a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0v-4a1 1 0 0 0-1-1Zm.38-3.92a1 1 0 0 0-.76 0 1 1 0 0 0-.33.21 1.15 1.15 0 0 0-.21.33 1 1 0 0 0 .21 1.09c.097.088.209.16.33.21A1 1 0 0 0 13 8a1.05 1.05 0 0 0-.29-.71 1 1 0 0 0-.33-.21ZM12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 18a8 8 0 1 1 0-16.001A8 8 0 0 1 12 20Z"></path></svg>Exclusion tags</p><div class="starlight-aside__content"><ul>
 <li><code dir="auto">kernel-recompile</code>             : ignores R15–R27, C1 (no custom kernel).</li>
 <li><code dir="auto">disable-kernel-module-loading</code>: ignores R10 (may break devices).</li>
-<li><code dir="auto">no-ipv6</code>                      : ignores R13, R22 (IPv6 disable).</li>
+<li><code dir="auto">no-ipv6</code>                      : ignores R22 (IPv6 kernel options). Dropping
+IPv6 itself (R13) is the opt-in option
+<code dir="auto">darkone.security.kernel-params.disableIpv6</code>.</li>
 <li><code dir="auto">no-mac</code>                       : ignores R37, R45 (no active MAC).</li>
 <li><code dir="auto">no-sealing</code>                   : ignores R76, R77 (no HIDS/AIDE).</li>
 <li><code dir="auto">no-auditd</code>                    : ignores R73 (auditd not configurable).</li>
