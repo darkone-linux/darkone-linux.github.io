@@ -192,6 +192,10 @@ liste unique de cibles). Deux effets :</p>
 <p>Le poser au scrape le propage gratuitement à toutes les alertes issues de ces
 jobs, y compris les règles ressources génériques, qui ignorent tout de la
 topologie à l’évaluation.</p>
+<p>Les sondes blackbox n’ont pas de <code dir="auto">host</code> (la cible est une IP). <code dir="auto">PeerGatewayDown</code>
+le pose donc dans la règle, avec le nom de la passerelle visée. Sans lui, les
+règles d’une zone ne différeraient que par leur <code dir="auto">expr</code> → <code dir="auto">promtool</code> les signale
+comme doublons.</p>
 <aside aria-label="Les agrégations effacent les labels" class="starlight-aside starlight-aside--caution"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 16a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm10.67 1.47-8.05-14a3 3 0 0 0-5.24 0l-8 14A3 3 0 0 0 3.94 22h16.12a3 3 0 0 0 2.61-4.53Zm-1.73 2a1 1 0 0 1-.88.51H3.94a1 1 0 0 1-.88-.51 1 1 0 0 1 0-1l8-14a1 1 0 0 1 1.78 0l8.05 14a1 1 0 0 1 .05 1.02v-.02ZM12 8a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V9a1 1 0 0 0-1-1Z"></path></svg>Les agrégations effacent les labels</p><div class="starlight-aside__content"><p>Une clause <code dir="auto">by (...)</code> supprime tout label non groupé. <code dir="auto">ResticBackupStale</code>
 (<code dir="auto">max by (instance, job, host)</code>), <code dir="auto">SynapseHighErrorRate</code>
 (<code dir="auto">sum by (instance, host)</code>) et les règles FS (<code dir="auto">byDevice</code>) citent donc <code dir="auto">host</code>
