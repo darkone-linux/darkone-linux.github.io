@@ -1,0 +1,580 @@
+<!DOCTYPE html><html lang="fr" dir="ltr" data-theme="dark" data-has-toc data-has-sidebar class="astro-vdxcvpsm"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>Fonctionnement du tailnet | Darkone NixOS Framework</title><link rel="canonical" href="https://darkone-linux.github.io/fr/doc/admin-guide/understand/tailnet/"/><link rel="alternate" hreflang="en" href="https://darkone-linux.github.io/en/doc/admin-guide/understand/tailnet/"/><link rel="alternate" hreflang="fr" href="https://darkone-linux.github.io/fr/doc/admin-guide/understand/tailnet/"/><link rel="alternate" hreflang="x-default" href="https://darkone-linux.github.io/fr/doc/admin-guide/understand/tailnet/"/><link rel="sitemap" href="/sitemap-index.xml"/><link rel="shortcut icon" href="/favicon.svg" type="image/svg+xml"/><meta name="generator" content="Astro v7.0.6"/><meta name="generator" content="Starlight v0.41.3"/><meta property="og:title" content="Fonctionnement du tailnet"/><meta property="og:type" content="article"/><meta property="og:url" content="https://darkone-linux.github.io/fr/doc/admin-guide/understand/tailnet/"/><meta property="og:locale" content="fr"/><meta property="og:site_name" content="Darkone NixOS Framework"/><meta name="twitter:card" content="summary_large_image"/><script>
+	window.StarlightThemeProvider = (() => {
+		const storedTheme =
+			typeof localStorage !== 'undefined' && localStorage.getItem('starlight-theme');
+		const theme =
+			storedTheme ||
+			(window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+		document.documentElement.dataset.theme = theme === 'light' ? 'light' : 'dark';
+		return {
+			updatePickers(theme = storedTheme || 'auto') {
+				document.querySelectorAll('starlight-theme-select').forEach((picker) => {
+					const select = picker.querySelector('select');
+					if (select) select.value = theme;
+					/** @type {HTMLTemplateElement | null} */
+					const tmpl = document.querySelector(`#theme-icons`);
+					const newIcon = tmpl && tmpl.content.querySelector('.' + theme);
+					if (newIcon) {
+						const oldIcon = picker.querySelector('svg.label-icon');
+						if (oldIcon) {
+							oldIcon.replaceChildren(...newIcon.cloneNode(true).childNodes);
+						}
+					}
+				});
+			},
+		};
+	})();
+</script><template id="theme-icons"><svg aria-hidden="true" class="light astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M5 12a1 1 0 0 0-1-1H3a1 1 0 0 0 0 2h1a1 1 0 0 0 1-1Zm.64 5-.71.71a1 1 0 0 0 0 1.41 1 1 0 0 0 1.41 0l.71-.71A1 1 0 0 0 5.64 17ZM12 5a1 1 0 0 0 1-1V3a1 1 0 0 0-2 0v1a1 1 0 0 0 1 1Zm5.66 2.34a1 1 0 0 0 .7-.29l.71-.71a1 1 0 1 0-1.41-1.41l-.66.71a1 1 0 0 0 0 1.41 1 1 0 0 0 .66.29Zm-12-.29a1 1 0 0 0 1.41 0 1 1 0 0 0 0-1.41l-.71-.71a1.004 1.004 0 1 0-1.43 1.41l.73.71ZM21 11h-1a1 1 0 0 0 0 2h1a1 1 0 0 0 0-2Zm-2.64 6A1 1 0 0 0 17 18.36l.71.71a1 1 0 0 0 1.41 0 1 1 0 0 0 0-1.41l-.76-.66ZM12 6.5a5.5 5.5 0 1 0 5.5 5.5A5.51 5.51 0 0 0 12 6.5Zm0 9a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7Zm0 3.5a1 1 0 0 0-1 1v1a1 1 0 0 0 2 0v-1a1 1 0 0 0-1-1Z"/></svg><svg aria-hidden="true" class="dark astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M21.64 13a1 1 0 0 0-1.05-.14 8.049 8.049 0 0 1-3.37.73 8.15 8.15 0 0 1-8.14-8.1 8.59 8.59 0 0 1 .25-2A1 1 0 0 0 8 2.36a10.14 10.14 0 1 0 14 11.69 1 1 0 0 0-.36-1.05Zm-9.5 6.69A8.14 8.14 0 0 1 7.08 5.22v.27a10.15 10.15 0 0 0 10.14 10.14 9.784 9.784 0 0 0 2.1-.22 8.11 8.11 0 0 1-7.18 4.32v-.04Z"/></svg><svg aria-hidden="true" class="auto astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M21 14h-1V7a3 3 0 0 0-3-3H7a3 3 0 0 0-3 3v7H3a1 1 0 0 0-1 1v2a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3v-2a1 1 0 0 0-1-1ZM6 7a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v7H6V7Zm14 10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-1h16v1Z"/></svg></template><link rel="stylesheet" href="/astro/print.ehPL0gv-.css" media="print"><link rel="stylesheet" href="/astro/common.7ZB6oT0H.css"><style>@layer starlight.components{.card:where(.astro-zts4jgjd){--sl-card-border:var(--sl-color-purple);--sl-card-bg:var(--sl-color-purple-low);border:1px solid var(--sl-color-gray-5);background-color:var(--sl-color-black);flex-direction:column;gap:clamp(.5rem,.125rem + 1vw,1rem);padding:clamp(1rem,.125rem + 3vw,2.5rem)}.card:where(.astro-zts4jgjd):nth-child(4n+1){--sl-card-border:var(--sl-color-orange);--sl-card-bg:var(--sl-color-orange-low)}.card:where(.astro-zts4jgjd):nth-child(4n+3){--sl-card-border:var(--sl-color-green);--sl-card-bg:var(--sl-color-green-low)}.card:where(.astro-zts4jgjd):nth-child(4n+4){--sl-card-border:var(--sl-color-red);--sl-card-bg:var(--sl-color-red-low)}.card:where(.astro-zts4jgjd):nth-child(4n+5){--sl-card-border:var(--sl-color-blue);--sl-card-bg:var(--sl-color-blue-low)}.title:where(.astro-zts4jgjd){font-weight:600;font-size:var(--sl-text-h4);color:var(--sl-color-white);line-height:var(--sl-line-height-headings);align-items:center;gap:1rem}.card:where(.astro-zts4jgjd) .icon:where(.astro-zts4jgjd){border:1px solid var(--sl-card-border);background-color:var(--sl-card-bg);border-radius:.25rem;flex-shrink:0;padding:.2em}.card:where(.astro-zts4jgjd) .body:where(.astro-zts4jgjd){font-size:clamp(var(--sl-text-sm), calc(.5rem + 1vw), var(--sl-text-body));margin:0}}
+@layer starlight.components{.card-grid:where(.astro-lmor3ela){grid-template-columns:100%;gap:1rem;display:grid}.card-grid:where(.astro-lmor3ela)>*{margin-top:0!important}@media (width>=50rem){.card-grid:where(.astro-lmor3ela){grid-template-columns:1fr 1fr;gap:1.5rem}.stagger:where(.astro-lmor3ela){--stagger-height:5rem;padding-bottom:var(--stagger-height)}.stagger:where(.astro-lmor3ela)>:nth-child(2n){transform:translateY(var(--stagger-height))}}}
+@layer starlight.components{svg:where(.astro-n5k4ipy7){color:var(--sl-icon-color);font-size:var(--sl-icon-size,1em);width:1em;height:1em}}
+@layer starlight.components{starlight-tabs:where(.astro-hbt4ddzs){display:block}.tablist-wrapper:where(.astro-hbt4ddzs){overflow-x:auto}:where(.astro-hbt4ddzs)[role=tablist]{border-bottom:2px solid var(--sl-color-gray-5);padding:0;list-style:none;display:flex}.tab:where(.astro-hbt4ddzs){display:flex}.tab:where(.astro-hbt4ddzs)>:where(.astro-hbt4ddzs)[role=tab]{--sl-tab-color-border:var(--sl-color-gray-5);line-height:var(--sl-line-height-headings);box-shadow:0 2px 0 var(--sl-tab-color-border);color:var(--sl-color-gray-3);outline-offset:var(--sl-outline-offset-inside);overflow-wrap:initial;align-items:center;gap:.5rem;padding:.275rem 1.25rem;text-decoration:none;display:flex}.tab:where(.astro-hbt4ddzs) :where(.astro-hbt4ddzs)[role=tab][aria-selected=true]{--sl-tab-color-border:var(--sl-color-text-accent);color:var(--sl-color-white);font-weight:600}.tablist-wrapper:where(.astro-hbt4ddzs)~[role=tabpanel]{margin-top:1rem}}
+@layer starlight.components{.sl-link-card:where(.astro-vodiqeol){border:1px solid var(--sl-color-gray-5);box-shadow:var(--sl-shadow-sm);border-radius:.5rem;grid-template-columns:1fr auto;gap:.5rem;padding:1rem;display:grid;position:relative}a:where(.astro-vodiqeol){line-height:var(--sl-line-height-headings);text-decoration:none}a:where(.astro-vodiqeol):before{content:"";position:absolute;inset:0}.stack:where(.astro-vodiqeol){flex-direction:column;gap:.5rem}.title:where(.astro-vodiqeol){color:var(--sl-color-white);font-weight:600;font-size:var(--sl-text-lg)}.description:where(.astro-vodiqeol){color:var(--sl-color-gray-3);line-height:1.5}.icon:where(.astro-vodiqeol){color:var(--sl-color-gray-3)}.sl-link-card:where(.astro-vodiqeol):hover{background:var(--sl-color-gray-7,var(--sl-color-gray-6));border-color:var(--sl-color-gray-2)}.sl-link-card:where(.astro-vodiqeol):hover .icon:where(.astro-vodiqeol){color:var(--sl-color-white)}}
+@layer starlight.components{.sl-steps{--bullet-size:calc(var(--sl-line-height) * 1rem);--bullet-margin:.375rem;counter-reset:steps-counter var(--sl-steps-start,0);padding-inline-start:0;list-style:none}.sl-steps>li{counter-increment:steps-counter;padding-inline-start:calc(var(--bullet-size) + 1rem);min-height:calc(var(--bullet-size) + var(--bullet-margin));padding-bottom:1px;position:relative}.sl-steps>li+li{margin-top:0}.sl-steps>li:before{content:counter(steps-counter);top:0;width:var(--bullet-size);height:var(--bullet-size);line-height:var(--bullet-size);font-size:var(--sl-text-xs);text-align:center;color:var(--sl-color-white);background-color:var(--sl-color-gray-6);box-shadow:inset 0 0 0 1px var(--sl-color-gray-5);border-radius:99rem;font-weight:600;position:absolute;inset-inline-start:0}.sl-steps>li:after{--guide-width:1px;content:"";top:calc(var(--bullet-size) + var(--bullet-margin));bottom:var(--bullet-margin);width:var(--guide-width);background-color:var(--sl-color-hairline-light);position:absolute;inset-inline-start:calc((var(--bullet-size) - var(--guide-width)) / 2)}}@layer starlight.content{.sl-steps>li>:first-child{--lh:calc(1em * var(--sl-line-height));--shift-y:calc(.5 * (var(--bullet-size) - var(--lh)));transform:translateY(var(--shift-y));margin-bottom:var(--shift-y)}.sl-steps>li>:first-child:where(h1,h2,h3,h4,h5,h6){--lh:calc(1em * var(--sl-line-height-headings))}@supports (--prop:1lh){.sl-steps>li>:first-child{--lh:1lh}}}
+@layer starlight.components{starlight-file-tree:where(.astro-r3uioum7){--x-space:1.5rem;--y-space:.125rem;--y-pad:0;border:1px solid var(--sl-color-gray-5);background-color:var(--sl-color-gray-6);font-size:var(--sl-text-xs);font-family:var(--__sl-font-mono);padding:1rem;display:block;overflow-x:auto}starlight-file-tree:where(.astro-r3uioum7) .directory>details{padding:0;background:0 0;border:0;padding-inline-start:var(--x-space)}starlight-file-tree:where(.astro-r3uioum7) .directory>details>summary{padding:var(--y-pad) .625rem;color:var(--sl-color-white);border:0;max-width:100%;margin-inline-start:calc(-1 * var(--x-space));font-weight:400}starlight-file-tree:where(.astro-r3uioum7) .directory>details>summary::marker{color:var(--sl-color-gray-3)}starlight-file-tree:where(.astro-r3uioum7) .directory>details>summary::-webkit-details-marker{color:var(--sl-color-gray-3)}starlight-file-tree:where(.astro-r3uioum7) .directory>details>summary:hover,starlight-file-tree:where(.astro-r3uioum7) .directory>details>summary:hover .tree-icon{cursor:pointer;color:var(--sl-color-text-accent);fill:currentColor}starlight-file-tree:where(.astro-r3uioum7) .directory>details>summary:hover~ul{border-color:var(--sl-color-gray-4)}starlight-file-tree:where(.astro-r3uioum7) .directory>details>summary:hover .highlight .tree-icon{color:var(--sl-color-text-invert);fill:currentColor}starlight-file-tree:where(.astro-r3uioum7) ul{border-inline-start:1px solid var(--sl-color-gray-5);margin-inline-start:.5rem;padding:0;padding-inline-start:.125rem;list-style:none}starlight-file-tree:where(.astro-r3uioum7)>ul{border:0;margin:0;padding:0}starlight-file-tree:where(.astro-r3uioum7) li{margin:var(--y-space) 0;padding:var(--y-pad) 0}starlight-file-tree:where(.astro-r3uioum7) .file{color:var(--sl-color-white);margin-inline-start:calc(var(--x-space) - .125rem)}starlight-file-tree:where(.astro-r3uioum7) .tree-entry{flex-wrap:wrap;align-items:flex-start;max-width:calc(100% - 1rem);display:inline-flex}@media (width>=30em){starlight-file-tree:where(.astro-r3uioum7) .tree-entry{flex-wrap:nowrap}}starlight-file-tree:where(.astro-r3uioum7) .tree-entry>:first-child{flex-shrink:0}starlight-file-tree:where(.astro-r3uioum7) .empty{color:var(--sl-color-gray-3);padding-inline-start:.375rem}starlight-file-tree:where(.astro-r3uioum7) .comment{color:var(--sl-color-gray-3);min-width:12rem;max-width:24rem;padding-inline-start:1.625rem}starlight-file-tree:where(.astro-r3uioum7) .highlight{color:var(--sl-color-text-invert);background-color:var(--sl-color-text-accent);border-radius:.25rem;padding-inline-end:.5rem;display:inline-block}starlight-file-tree:where(.astro-r3uioum7) svg{fill:var(--sl-color-gray-3);vertical-align:middle;width:.875rem;height:.875rem;margin-inline:.25rem .375rem;display:inline}starlight-file-tree:where(.astro-r3uioum7) .highlight svg.tree-icon{fill:currentColor}}
+</style><script type="module" src="/astro/page.B2uBVZjk.js"></script></head><body class="astro-vdxcvpsm"><a class="sl-skip-link astro-vxeigawq" href="#_top">Aller au contenu</a><div class="page sl-flex astro-gqpr5s5a"><header class="header astro-gqpr5s5a"><div class="header astro-nczgtkxc"><div class="title-wrapper sl-flex astro-nczgtkxc"><a href="/fr/" class="site-title sl-flex astro-clw6ags5"><img class="astro-clw6ags5" alt src="/astro/nix-logo.DGxu8h81.svg" width="535" height="464"><span class="astro-clw6ags5" translate="no">Darkone NixOS Framework</span></a></div><div class="sl-flex print:hidden astro-nczgtkxc"><site-search class="astro-nczgtkxc astro-r5ar4xm7" data-translations="{&quot;placeholder&quot;:&quot;Rechercher&quot;}"><button data-open-modal disabled aria-label="Rechercher" aria-keyshortcuts="Control+K" class="astro-r5ar4xm7"><svg aria-hidden="true" class="astro-r5ar4xm7 astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M21.71 20.29 18 16.61A9 9 0 1 0 16.61 18l3.68 3.68a.999.999 0 0 0 1.42 0 1 1 0 0 0 0-1.39ZM11 18a7 7 0 1 1 0-14 7 7 0 0 1 0 14Z"/></svg><span class="sl-hidden md:sl-block astro-r5ar4xm7" aria-hidden="true">Rechercher</span><kbd class="sl-hidden md:sl-flex astro-r5ar4xm7" style="display: none;"><kbd class="astro-r5ar4xm7">Ctrl</kbd><kbd class="astro-r5ar4xm7">K</kbd></kbd></button><dialog style="padding:0" aria-label="Rechercher" class="astro-r5ar4xm7"><div class="dialog-frame sl-flex astro-r5ar4xm7"><button data-close-modal class="sl-flex md:sl-hidden astro-r5ar4xm7">Annuler</button><div class="search-container astro-r5ar4xm7"><div id="starlight__search" class="astro-r5ar4xm7"></div></div></div></dialog></site-search><script>
+	(() => {
+		const openBtn = document.querySelector('button[data-open-modal]');
+		const shortcut = openBtn?.querySelector('kbd');
+		if (!openBtn || !(shortcut instanceof HTMLElement)) return;
+		const platformKey = shortcut.querySelector('kbd');
+		if (platformKey && /(Mac|iPhone|iPod|iPad)/i.test(navigator.platform)) {
+			platformKey.textContent = '⌘';
+			openBtn.setAttribute('aria-keyshortcuts', 'Meta+K');
+		}
+		shortcut.style.display = '';
+	})();
+</script><script type="module" src="/astro/Search.astro_astro_type_script_index_0_lang.BhbZRdaS.js"></script></div><div class="sl-hidden md:sl-flex print:hidden right-group astro-nczgtkxc"><div class="sl-flex social-icons astro-nczgtkxc"><a href="https://github.com/darkone-linux/darkone-nixos-framework" rel="me" class="sl-flex astro-cg55etiy"><span class="sr-only astro-cg55etiy">GitHub</span><svg aria-hidden="true" class="astro-cg55etiy astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M12 .3a12 12 0 0 0-3.8 23.38c.6.12.83-.26.83-.57L9 21.07c-3.34.72-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.08-.74.09-.73.09-.73 1.2.09 1.83 1.24 1.83 1.24 1.08 1.83 2.81 1.3 3.5 1 .1-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.14-.3-.54-1.52.1-3.18 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.28-1.55 3.29-1.23 3.29-1.23.64 1.66.24 2.88.12 3.18a4.65 4.65 0 0 1 1.23 3.22c0 4.61-2.8 5.63-5.48 5.92.42.36.81 1.1.81 2.22l-.01 3.29c0 .31.2.69.82.57A12 12 0 0 0 12 .3Z"/></svg></a></div><starlight-theme-select><label style="--sl-select-width: 6.25em" class="astro-r2p65idu"><span class="sr-only astro-r2p65idu">Selectionner le thème</span><svg aria-hidden="true" class="icon label-icon astro-r2p65idu astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M21 14h-1V7a3 3 0 0 0-3-3H7a3 3 0 0 0-3 3v7H3a1 1 0 0 0-1 1v2a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3v-2a1 1 0 0 0-1-1ZM6 7a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v7H6V7Zm14 10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-1h16v1Z"/></svg><select autocomplete="off" class="astro-r2p65idu"><option value="dark" class="astro-r2p65idu">Sombre</option><option value="light" class="astro-r2p65idu">Clair</option><option value="auto" selected class="astro-r2p65idu">Auto</option></select><svg aria-hidden="true" class="icon caret astro-r2p65idu astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M17 9.17a1 1 0 0 0-1.41 0L12 12.71 8.46 9.17a1 1 0 1 0-1.41 1.42l4.24 4.24a1.002 1.002 0 0 0 1.42 0L17 10.59a1.002 1.002 0 0 0 0-1.42Z"/></svg></label></starlight-theme-select><script>
+	StarlightThemeProvider.updatePickers();
+</script><script type="module">var e=`starlight-theme`,t=e=>e===`auto`||e===`dark`||e===`light`?e:`auto`,n=()=>t(typeof localStorage<`u`&&localStorage.getItem(e));function r(t){typeof localStorage<`u`&&localStorage.setItem(e,t===`light`||t===`dark`?t:``)}var i=()=>matchMedia(`(prefers-color-scheme: light)`).matches?`light`:`dark`;function a(e){StarlightThemeProvider.updatePickers(e),document.documentElement.dataset.theme=e===`auto`?i():e,r(e)}matchMedia(`(prefers-color-scheme: light)`).addEventListener(`change`,()=>{n()===`auto`&&a(`auto`)});var o=class extends HTMLElement{constructor(){super(),a(n()),this.querySelector(`select`)?.addEventListener(`change`,e=>{e.currentTarget instanceof HTMLSelectElement&&a(t(e.currentTarget.value))})}};customElements.define(`starlight-theme-select`,o);</script><starlight-lang-select><label style="--sl-select-width: 7em" class="astro-r2p65idu"><span class="sr-only astro-r2p65idu">Selectionner la langue</span><svg aria-hidden="true" class="icon label-icon astro-r2p65idu astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path fill-rule="evenodd" d="M8.516 3a.94.94 0 0 0-.941.94v1.15H2.94a.94.94 0 1 0 0 1.882h7.362a7.422 7.422 0 0 1-1.787 3.958 7.42 7.42 0 0 1-1.422-2.425.94.94 0 1 0-1.774.627 9.303 9.303 0 0 0 1.785 3.043 7.422 7.422 0 0 1-4.164 1.278.94.94 0 1 0 0 1.881 9.303 9.303 0 0 0 5.575-1.855 9.303 9.303 0 0 0 4.11 1.74l-.763 1.525a.968.968 0 0 0-.016.034l-1.385 2.77a.94.94 0 1 0 1.683.841l1.133-2.267h5.806l1.134 2.267a.94.94 0 0 0 1.683-.841l-1.385-2.769a.95.95 0 0 0-.018-.036l-3.476-6.951a.94.94 0 0 0-1.682 0l-1.82 3.639a7.423 7.423 0 0 1-3.593-1.256 9.303 9.303 0 0 0 2.27-5.203h1.894a.94.94 0 0 0 0-1.881H9.456V3.94A.94.94 0 0 0 8.516 3Zm6.426 11.794a1.068 1.068 0 0 1-.02.039l-.703 1.407h3.924l-1.962-3.924-1.24 2.478Z" clip-rule="evenodd"/></svg><select autocomplete="off" class="astro-r2p65idu"><option value="/en/doc/admin-guide/understand/tailnet/" class="astro-r2p65idu">English</option><option value="/fr/doc/admin-guide/understand/tailnet/" selected class="astro-r2p65idu">Français</option></select><svg aria-hidden="true" class="icon caret astro-r2p65idu astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M17 9.17a1 1 0 0 0-1.41 0L12 12.71 8.46 9.17a1 1 0 1 0-1.41 1.42l4.24 4.24a1.002 1.002 0 0 0 1.42 0L17 10.59a1.002 1.002 0 0 0 0-1.42Z"/></svg></label></starlight-lang-select><script type="module">var e=class extends HTMLElement{constructor(){super();let e=this.querySelector(`select`);e&&(e.addEventListener(`change`,e=>{e.currentTarget instanceof HTMLSelectElement&&(window.location.pathname=e.currentTarget.value)}),window.addEventListener(`pageshow`,t=>{if(!t.persisted)return;let n=e.querySelector(`option[selected]`)?.index;n!==e.selectedIndex&&(e.selectedIndex=n??0)}))}};customElements.define(`starlight-lang-select`,e);</script></div></div></header><nav class="sidebar print:hidden astro-gqpr5s5a" aria-label="principale"><starlight-menu-button class="print:hidden astro-vvx7mffu"><button aria-expanded="false" aria-label="Menu" aria-controls="starlight__sidebar" class="sl-flex md:sl-hidden astro-vvx7mffu"><svg aria-hidden="true" class="open-menu astro-vvx7mffu astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M3 8h18a1 1 0 1 0 0-2H3a1 1 0 0 0 0 2Zm18 8H3a1 1 0 0 0 0 2h18a1 1 0 0 0 0-2Zm0-5H3a1 1 0 0 0 0 2h18a1 1 0 0 0 0-2Z"/></svg><svg aria-hidden="true" class="close-menu astro-vvx7mffu astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="m13.41 12 6.3-6.29a1.004 1.004 0 1 0-1.42-1.42L12 10.59l-6.29-6.3a1.004 1.004 0 0 0-1.42 1.42l6.3 6.29-6.3 6.29a1 1 0 0 0 0 1.42.998.998 0 0 0 1.42 0l6.29-6.3 6.29 6.3a.999.999 0 0 0 1.42 0 1 1 0 0 0 0-1.42L13.41 12Z"/></svg></button></starlight-menu-button><script type="module">var e=class extends HTMLElement{btn=this.querySelector(`button`);constructor(){super(),this.btn.addEventListener(`click`,()=>this.toggleExpanded());let e=this.closest(`nav`);e&&e.addEventListener(`keyup`,e=>this.closeOnEscape(e)),matchMedia(`(min-width: 50em)`).addEventListener(`change`,()=>this.setExpanded(!1))}setExpanded(e){this.setAttribute(`aria-expanded`,String(e)),document.body.toggleAttribute(`data-mobile-menu-expanded`,e),document.querySelectorAll(`.main-frame, .sl-skip-link`).forEach(t=>{t.toggleAttribute(`inert`,e)})}toggleExpanded(){this.setExpanded(this.getAttribute(`aria-expanded`)!==`true`)}closeOnEscape(e){e.code===`Escape`&&(this.setExpanded(!1),this.btn.focus())}};customElements.define(`starlight-menu-button`,e);</script><div id="starlight__sidebar" class="sidebar-pane astro-gqpr5s5a"><div class="sidebar-content sl-flex astro-gqpr5s5a"><sl-sidebar-state-persist data-hash="1cp5jct" class="astro-f5yvicm7"><script aria-hidden="true">
+		(() => {
+			try {
+				if (!matchMedia('(min-width: 50em)').matches) return;
+				/** @type {HTMLElement | null} */
+				const target = document.querySelector('sl-sidebar-state-persist');
+				const state = JSON.parse(sessionStorage.getItem('sl-sidebar-state') || '0');
+				if (!target || !state || target.dataset.hash !== state.hash) return;
+				window._starlightScrollRestore = state.scroll;
+				customElements.define(
+					'sl-sidebar-restore',
+					class SidebarRestore extends HTMLElement {
+						connectedCallback() {
+							try {
+								const idx = parseInt(this.dataset.index || '');
+								const details = this.closest('details');
+								if (details && typeof state.open[idx] === 'boolean') details.open = state.open[idx];
+							} catch {}
+						}
+					}
+				);
+			} catch {}
+		})();
+	</script><ul class="top-level astro-ojxuodky"><li class="astro-ojxuodky"><details open class="astro-ojxuodky"><summary class="astro-ojxuodky"><span class="group-label astro-ojxuodky"><span class="large astro-ojxuodky">Documentation</span></span><svg aria-hidden="true" class="caret astro-ojxuodky astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg></summary><sl-sidebar-restore data-index="0"></sl-sidebar-restore><ul class="astro-ojxuodky"><li class="astro-ojxuodky"><a href="/fr/doc/" class="astro-ojxuodky"><span class="astro-ojxuodky">Le Projet</span></a></li><li class="astro-ojxuodky"><details class="astro-ojxuodky"><summary class="astro-ojxuodky"><span class="group-label astro-ojxuodky"><span class="large astro-ojxuodky">Guide de l&#39;utilisateur</span></span><svg aria-hidden="true" class="caret astro-ojxuodky astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg></summary><sl-sidebar-restore data-index="1"></sl-sidebar-restore><ul class="astro-ojxuodky"><li class="astro-ojxuodky"><a href="/fr/doc/user-guide/" class="astro-ojxuodky"><span class="astro-ojxuodky">Introduction</span></a></li><li class="astro-ojxuodky"><details open class="astro-ojxuodky"><summary class="astro-ojxuodky"><span class="group-label astro-ojxuodky"><span class="large astro-ojxuodky">Comprendre</span></span><svg aria-hidden="true" class="caret astro-ojxuodky astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg></summary><sl-sidebar-restore data-index="2"></sl-sidebar-restore><ul class="astro-ojxuodky"><li class="astro-ojxuodky"><a href="/fr/doc/user-guide/understand/services/" class="astro-ojxuodky"><span class="astro-ojxuodky">Services en ligne</span></a></li><li class="astro-ojxuodky"><a href="/fr/doc/user-guide/understand/linux-workstations/" class="astro-ojxuodky"><span class="astro-ojxuodky">Postes Linux</span></a></li><li class="astro-ojxuodky"><a href="/fr/doc/user-guide/understand/profiles/" class="astro-ojxuodky"><span class="astro-ojxuodky">Profils d&#39;utilisateurs</span></a></li><li class="astro-ojxuodky"><a href="/fr/doc/user-guide/understand/network-nodes/" class="astro-ojxuodky"><span class="astro-ojxuodky">Nœuds du réseau</span></a></li><li class="astro-ojxuodky"><a href="/fr/doc/user-guide/understand/security/" class="astro-ojxuodky"><span class="astro-ojxuodky">Ma sécurité</span></a></li></ul></details></li><li class="astro-ojxuodky"><details open class="astro-ojxuodky"><summary class="astro-ojxuodky"><span class="group-label astro-ojxuodky"><span class="large astro-ojxuodky">Utiliser</span></span><svg aria-hidden="true" class="caret astro-ojxuodky astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg></summary><sl-sidebar-restore data-index="3"></sl-sidebar-restore><ul class="astro-ojxuodky"><li class="astro-ojxuodky"><a href="/fr/doc/user-guide/usage/account/" class="astro-ojxuodky"><span class="astro-ojxuodky">Gérer mon compte</span></a></li><li class="astro-ojxuodky"><a href="/fr/doc/user-guide/usage/matrix/" class="astro-ojxuodky"><span class="astro-ojxuodky">Messagerie Matrix</span></a></li><li class="astro-ojxuodky"><a href="/fr/doc/user-guide/usage/nextcloud/" class="astro-ojxuodky"><span class="astro-ojxuodky">Cloud Nextcloud</span></a></li></ul></details></li></ul></details></li><li class="astro-ojxuodky"><details open class="astro-ojxuodky"><summary class="astro-ojxuodky"><span class="group-label astro-ojxuodky"><span class="large astro-ojxuodky">Administrateurs</span></span><svg aria-hidden="true" class="caret astro-ojxuodky astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg></summary><sl-sidebar-restore data-index="4"></sl-sidebar-restore><ul class="astro-ojxuodky"><li class="astro-ojxuodky"><a href="/fr/doc/admin-guide/" class="astro-ojxuodky"><span class="astro-ojxuodky">Guide de l&#39;administrateur</span></a></li><li class="astro-ojxuodky"><details open class="astro-ojxuodky"><summary class="astro-ojxuodky"><span class="group-label astro-ojxuodky"><span class="large astro-ojxuodky">Comprendre</span></span><svg aria-hidden="true" class="caret astro-ojxuodky astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg></summary><sl-sidebar-restore data-index="5"></sl-sidebar-restore><ul class="astro-ojxuodky"><li class="astro-ojxuodky"><a href="/fr/doc/admin-guide/understand/concepts/" class="astro-ojxuodky"><span class="astro-ojxuodky">Concepts</span></a></li><li class="astro-ojxuodky"><a href="/fr/doc/admin-guide/understand/network/" class="astro-ojxuodky"><span class="astro-ojxuodky">Réseau</span></a></li><li class="astro-ojxuodky"><a href="/fr/doc/admin-guide/understand/tailnet/" aria-current="page" class="astro-ojxuodky"><span class="astro-ojxuodky">Tailnet</span></a></li><li class="astro-ojxuodky"><a href="/fr/doc/admin-guide/understand/host-profiles/" class="astro-ojxuodky"><span class="astro-ojxuodky">Profils d&#39;hôtes</span></a></li><li class="astro-ojxuodky"><a href="/fr/doc/admin-guide/understand/user-profiles/" class="astro-ojxuodky"><span class="astro-ojxuodky">Profils d&#39;utilisateurs</span></a></li><li class="astro-ojxuodky"><a href="/fr/doc/admin-guide/understand/auth-idm/" class="astro-ojxuodky"><span class="astro-ojxuodky">Auth &amp; Identités</span></a></li><li class="astro-ojxuodky"><a href="/fr/doc/admin-guide/understand/monitoring-alerts/" class="astro-ojxuodky"><span class="astro-ojxuodky">Monitoring &amp; Alertes</span></a></li><li class="astro-ojxuodky"><a href="/fr/doc/admin-guide/understand/matrix/" class="astro-ojxuodky"><span class="astro-ojxuodky">Matrix</span></a></li><li class="astro-ojxuodky"><a href="/fr/doc/admin-guide/understand/security-notions/" class="astro-ojxuodky"><span class="astro-ojxuodky">Notions de sécurité</span></a></li></ul></details></li><li class="astro-ojxuodky"><details open class="astro-ojxuodky"><summary class="astro-ojxuodky"><span class="group-label astro-ojxuodky"><span class="large astro-ojxuodky">Installer</span></span><svg aria-hidden="true" class="caret astro-ojxuodky astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg></summary><sl-sidebar-restore data-index="6"></sl-sidebar-restore><ul class="astro-ojxuodky"><li class="astro-ojxuodky"><a href="/fr/doc/admin-guide/install/first-network-installation/" class="astro-ojxuodky"><span class="astro-ojxuodky">Installation</span></a></li><li class="astro-ojxuodky"><a href="/fr/doc/admin-guide/install/gateway/" class="astro-ojxuodky"><span class="astro-ojxuodky">Passerelle</span></a></li><li class="astro-ojxuodky"><a href="/fr/doc/admin-guide/install/hcs/" class="astro-ojxuodky"><span class="astro-ojxuodky">HCS</span></a></li><li class="astro-ojxuodky"><a href="/fr/doc/admin-guide/install/aarch64-hosts/" class="astro-ojxuodky"><span class="astro-ojxuodky">Raspberry Pi</span></a></li><li class="astro-ojxuodky"><a href="/fr/doc/admin-guide/install/gateway-hardware-migration/" class="astro-ojxuodky"><span class="astro-ojxuodky">Migration</span></a></li></ul></details></li><li class="astro-ojxuodky"><details open class="astro-ojxuodky"><summary class="astro-ojxuodky"><span class="group-label astro-ojxuodky"><span class="large astro-ojxuodky">Exploiter</span></span><svg aria-hidden="true" class="caret astro-ojxuodky astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg></summary><sl-sidebar-restore data-index="7"></sl-sidebar-restore><ul class="astro-ojxuodky"><li class="astro-ojxuodky"><a href="/fr/doc/admin-guide/operate/services/" class="astro-ojxuodky"><span class="astro-ojxuodky">Services</span></a></li><li class="astro-ojxuodky"><a href="/fr/doc/admin-guide/operate/sso/" class="astro-ojxuodky"><span class="astro-ojxuodky">SSO (Kanidm)</span></a></li><li class="astro-ojxuodky"><a href="/fr/doc/admin-guide/operate/yubikey/" class="astro-ojxuodky"><span class="astro-ojxuodky">YubiKey</span></a></li><li class="astro-ojxuodky"><a href="/fr/doc/admin-guide/operate/luks/" class="astro-ojxuodky"><span class="astro-ojxuodky">LUKS</span></a></li><li class="astro-ojxuodky"><a href="/fr/doc/admin-guide/operate/vpn/" class="astro-ojxuodky"><span class="astro-ojxuodky">VPN</span></a></li><li class="astro-ojxuodky"><a href="/fr/doc/admin-guide/operate/secrets/" class="astro-ojxuodky"><span class="astro-ojxuodky">Secrets</span></a></li><li class="astro-ojxuodky"><a href="/fr/doc/admin-guide/operate/deploy/" class="astro-ojxuodky"><span class="astro-ojxuodky">Déploiement</span></a></li><li class="astro-ojxuodky"><a href="/fr/doc/admin-guide/operate/users/" class="astro-ojxuodky"><span class="astro-ojxuodky">Utilisateurs</span></a></li><li class="astro-ojxuodky"><a href="/fr/doc/admin-guide/operate/alerts/" class="astro-ojxuodky"><span class="astro-ojxuodky">Alertes</span></a></li><li class="astro-ojxuodky"><a href="/fr/doc/admin-guide/operate/justfile/" class="astro-ojxuodky"><span class="astro-ojxuodky">Commandes Just</span></a></li><li class="astro-ojxuodky"><a href="/fr/doc/admin-guide/operate/matrix/" class="astro-ojxuodky"><span class="astro-ojxuodky">Matrix</span></a></li><li class="astro-ojxuodky"><a href="/fr/doc/admin-guide/operate/nextcloud/" class="astro-ojxuodky"><span class="astro-ojxuodky">Nextcloud</span></a></li><li class="astro-ojxuodky"><a href="/fr/doc/admin-guide/operate/security/" class="astro-ojxuodky"><span class="astro-ojxuodky">Règles de sécurité</span></a></li><li class="astro-ojxuodky"><a href="/fr/doc/admin-guide/operate/alternate-deployer/" class="astro-ojxuodky"><span class="astro-ojxuodky">Déployeur alternatif</span></a></li><li class="astro-ojxuodky"><a href="/fr/doc/admin-guide/operate/remote-desktop/" class="astro-ojxuodky"><span class="astro-ojxuodky">Bureau à distance</span></a></li><li class="astro-ojxuodky"><a href="/fr/doc/admin-guide/operate/accessibility/" class="astro-ojxuodky"><span class="astro-ojxuodky">Accessibilité</span></a></li></ul></details></li><li class="astro-ojxuodky"><details open class="astro-ojxuodky"><summary class="astro-ojxuodky"><span class="group-label astro-ojxuodky"><span class="large astro-ojxuodky">Maintenir</span></span><svg aria-hidden="true" class="caret astro-ojxuodky astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg></summary><sl-sidebar-restore data-index="8"></sl-sidebar-restore><ul class="astro-ojxuodky"><li class="astro-ojxuodky"><a href="/fr/doc/admin-guide/maintain/security/" class="astro-ojxuodky"><span class="astro-ojxuodky">Sécurité</span></a></li><li class="astro-ojxuodky"><a href="/fr/doc/admin-guide/maintain/monitoring/" class="astro-ojxuodky"><span class="astro-ojxuodky">Supervision</span></a></li><li class="astro-ojxuodky"><a href="/fr/doc/admin-guide/maintain/backup/" class="astro-ojxuodky"><span class="astro-ojxuodky">Sauvegardes</span></a></li><li class="astro-ojxuodky"><a href="/fr/doc/admin-guide/maintain/troubleshooting/" class="astro-ojxuodky"><span class="astro-ojxuodky">Dépannage</span></a></li><li class="astro-ojxuodky"><a href="/fr/doc/admin-guide/maintain/versions/" class="astro-ojxuodky"><span class="astro-ojxuodky">Versions</span></a></li></ul></details></li></ul></details></li><li class="astro-ojxuodky"><details class="astro-ojxuodky"><summary class="astro-ojxuodky"><span class="group-label astro-ojxuodky"><span class="large astro-ojxuodky">Développeurs</span></span><svg aria-hidden="true" class="caret astro-ojxuodky astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg></summary><sl-sidebar-restore data-index="9"></sl-sidebar-restore><ul class="astro-ojxuodky"><li class="astro-ojxuodky"><a href="/fr/doc/dev-guide/" class="astro-ojxuodky"><span class="astro-ojxuodky">Guide du développeur</span></a></li><li class="astro-ojxuodky"><a href="/fr/doc/dev-guide/architecture/" class="astro-ojxuodky"><span class="astro-ojxuodky">Architecture</span></a></li><li class="astro-ojxuodky"><a href="/fr/doc/dev-guide/modules/" class="astro-ojxuodky"><span class="astro-ojxuodky">Modules</span></a></li><li class="astro-ojxuodky"><a href="/fr/doc/dev-guide/create-service-module/" class="astro-ojxuodky"><span class="astro-ojxuodky">Services</span></a></li><li class="astro-ojxuodky"><a href="/fr/doc/dev-guide/generator/" class="astro-ojxuodky"><span class="astro-ojxuodky">Générateur</span></a></li><li class="astro-ojxuodky"><a href="/fr/doc/dev-guide/documentation/" class="astro-ojxuodky"><span class="astro-ojxuodky">Documentation</span></a></li><li class="astro-ojxuodky"><a href="/fr/doc/dev-guide/prometheus-alerts/" class="astro-ojxuodky"><span class="astro-ojxuodky">Alertes Prometheus</span></a></li><li class="astro-ojxuodky"><a href="/fr/doc/dev-guide/releasing/" class="astro-ojxuodky"><span class="astro-ojxuodky">Publier</span></a></li><li class="astro-ojxuodky"><a href="/fr/doc/dev-guide/packages/" class="astro-ojxuodky"><span class="astro-ojxuodky">Paquets</span></a></li></ul></details></li><li class="astro-ojxuodky"><details class="astro-ojxuodky"><summary class="astro-ojxuodky"><span class="group-label astro-ojxuodky"><span class="large astro-ojxuodky">FAQ</span></span><svg aria-hidden="true" class="caret astro-ojxuodky astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg></summary><sl-sidebar-restore data-index="10"></sl-sidebar-restore><ul class="astro-ojxuodky"><li class="astro-ojxuodky"><details open class="astro-ojxuodky"><summary class="astro-ojxuodky"><span class="group-label astro-ojxuodky"><span class="large astro-ojxuodky">Utilisateurs</span></span><svg aria-hidden="true" class="caret astro-ojxuodky astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg></summary><sl-sidebar-restore data-index="11"></sl-sidebar-restore><ul class="astro-ojxuodky"><li class="astro-ojxuodky"><a href="/fr/doc/how-to/user/" class="astro-ojxuodky"><span class="astro-ojxuodky">Sommaire</span></a></li><li class="astro-ojxuodky"><a href="/fr/doc/how-to/user/passkey/" class="astro-ojxuodky"><span class="astro-ojxuodky">Clé d&#39;accès</span></a></li><li class="astro-ojxuodky"><a href="/fr/doc/how-to/user/connect-device/" class="astro-ojxuodky"><span class="astro-ojxuodky">Connecter un appareil</span></a></li></ul></details></li><li class="astro-ojxuodky"><details open class="astro-ojxuodky"><summary class="astro-ojxuodky"><span class="group-label astro-ojxuodky"><span class="large astro-ojxuodky">Administrateurs</span></span><svg aria-hidden="true" class="caret astro-ojxuodky astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg></summary><sl-sidebar-restore data-index="12"></sl-sidebar-restore><ul class="astro-ojxuodky"><li class="astro-ojxuodky"><a href="/fr/doc/how-to/admin/" class="astro-ojxuodky"><span class="astro-ojxuodky">Sommaire</span></a></li><li class="astro-ojxuodky"><a href="/fr/doc/how-to/admin/config/" class="astro-ojxuodky"><span class="astro-ojxuodky">Le fichier config.yaml</span></a></li><li class="astro-ojxuodky"><a href="/fr/doc/how-to/admin/disks/" class="astro-ojxuodky"><span class="astro-ojxuodky">Disques</span></a></li><li class="astro-ojxuodky"><a href="/fr/doc/how-to/admin/leave-nfs/" class="astro-ojxuodky"><span class="astro-ojxuodky">Sortir de NFS</span></a></li><li class="astro-ojxuodky"><a href="/fr/doc/how-to/admin/network-backup/" class="astro-ojxuodky"><span class="astro-ojxuodky">Sauvegardes réseau</span></a></li><li class="astro-ojxuodky"><a href="/fr/doc/how-to/admin/rename-host/" class="astro-ojxuodky"><span class="astro-ojxuodky">Renommer un hôte</span></a></li><li class="astro-ojxuodky"><a href="/fr/doc/how-to/admin/reset-user-password/" class="astro-ojxuodky"><span class="astro-ojxuodky">Mot de passe utilisateur</span></a></li></ul></details></li><li class="astro-ojxuodky"><details open class="astro-ojxuodky"><summary class="astro-ojxuodky"><span class="group-label astro-ojxuodky"><span class="large astro-ojxuodky">Développeurs</span></span><svg aria-hidden="true" class="caret astro-ojxuodky astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg></summary><sl-sidebar-restore data-index="13"></sl-sidebar-restore><ul class="astro-ojxuodky"><li class="astro-ojxuodky"><a href="/fr/doc/how-to/dev/" class="astro-ojxuodky"><span class="astro-ojxuodky">Sommaire</span></a></li><li class="astro-ojxuodky"><a href="/fr/doc/how-to/dev/service-require/" class="astro-ojxuodky"><span class="astro-ojxuodky">Dépendance de service</span></a></li><li class="astro-ojxuodky"><a href="/fr/doc/how-to/dev/code-headers/" class="astro-ojxuodky"><span class="astro-ojxuodky">En-têtes de code</span></a></li></ul></details></li></ul></details></li></ul></details></li><li class="astro-ojxuodky"><details open class="astro-ojxuodky"><summary class="astro-ojxuodky"><span class="group-label astro-ojxuodky"><span class="large astro-ojxuodky">Références</span></span><svg aria-hidden="true" class="caret astro-ojxuodky astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg></summary><sl-sidebar-restore data-index="14"></sl-sidebar-restore><ul class="astro-ojxuodky"><li class="astro-ojxuodky"><details open class="astro-ojxuodky"><summary class="astro-ojxuodky"><span class="group-label astro-ojxuodky"><span class="large astro-ojxuodky">Modules</span></span><svg aria-hidden="true" class="caret astro-ojxuodky astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg></summary><sl-sidebar-restore data-index="15"></sl-sidebar-restore><ul class="astro-ojxuodky"><li class="astro-ojxuodky"><a href="/fr/ref/modules/" class="astro-ojxuodky"><span class="astro-ojxuodky">Aperçu</span></a></li><li class="astro-ojxuodky"><a href="/fr/ref/modules/mixin/" class="astro-ojxuodky"><span class="astro-ojxuodky">Mixins</span></a></li><li class="astro-ojxuodky"><a href="/fr/ref/modules/service/" class="astro-ojxuodky"><span class="astro-ojxuodky">Services</span></a></li><li class="astro-ojxuodky"><a href="/fr/ref/modules/system/" class="astro-ojxuodky"><span class="astro-ojxuodky">Système</span></a></li><li class="astro-ojxuodky"><a href="/fr/ref/modules/security/" class="astro-ojxuodky"><span class="astro-ojxuodky">Sécurité</span></a></li><li class="astro-ojxuodky"><a href="/fr/ref/modules/console/" class="astro-ojxuodky"><span class="astro-ojxuodky">Apps CLI</span></a></li><li class="astro-ojxuodky"><a href="/fr/ref/modules/graphic/" class="astro-ojxuodky"><span class="astro-ojxuodky">Apps graphiques</span></a></li><li class="astro-ojxuodky"><a href="/fr/ref/modules/admin/" class="astro-ojxuodky"><span class="astro-ojxuodky">Administration</span></a></li><li class="astro-ojxuodky"><a href="/fr/ref/modules/user/" class="astro-ojxuodky"><span class="astro-ojxuodky">Gestion des utilisateurs</span></a></li><li class="astro-ojxuodky"><a href="/fr/ref/modules/home/" class="astro-ojxuodky"><span class="astro-ojxuodky">Home Manager</span></a></li></ul></details></li></ul></details></li><li class="astro-ojxuodky"><a href="/fr/changelog/" class="large astro-ojxuodky"><span class="astro-ojxuodky">Changelog</span></a></li><li class="astro-ojxuodky"><a href="/fr/thanks/" class="large astro-ojxuodky"><span class="astro-ojxuodky">Merci !</span></a></li></ul><script aria-hidden="true">
+		(() => {
+			const scroller = document.getElementById('starlight__sidebar');
+			if (!window._starlightScrollRestore || !scroller) return;
+			scroller.scrollTop = window._starlightScrollRestore;
+			delete window._starlightScrollRestore;
+		})();
+	</script></sl-sidebar-state-persist><div class="md:sl-hidden"><div class="mobile-preferences sl-flex astro-b5gddk54"><div class="social-icons astro-b5gddk54"><a href="https://github.com/darkone-linux/darkone-nixos-framework" rel="me" class="sl-flex astro-cg55etiy"><span class="sr-only astro-cg55etiy">GitHub</span><svg aria-hidden="true" class="astro-cg55etiy astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M12 .3a12 12 0 0 0-3.8 23.38c.6.12.83-.26.83-.57L9 21.07c-3.34.72-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.08-.74.09-.73.09-.73 1.2.09 1.83 1.24 1.83 1.24 1.08 1.83 2.81 1.3 3.5 1 .1-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.14-.3-.54-1.52.1-3.18 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.28-1.55 3.29-1.23 3.29-1.23.64 1.66.24 2.88.12 3.18a4.65 4.65 0 0 1 1.23 3.22c0 4.61-2.8 5.63-5.48 5.92.42.36.81 1.1.81 2.22l-.01 3.29c0 .31.2.69.82.57A12 12 0 0 0 12 .3Z"/></svg></a></div><starlight-theme-select><label style="--sl-select-width: 6.25em" class="astro-r2p65idu"><span class="sr-only astro-r2p65idu">Selectionner le thème</span><svg aria-hidden="true" class="icon label-icon astro-r2p65idu astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M21 14h-1V7a3 3 0 0 0-3-3H7a3 3 0 0 0-3 3v7H3a1 1 0 0 0-1 1v2a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3v-2a1 1 0 0 0-1-1ZM6 7a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v7H6V7Zm14 10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-1h16v1Z"/></svg><select autocomplete="off" class="astro-r2p65idu"><option value="dark" class="astro-r2p65idu">Sombre</option><option value="light" class="astro-r2p65idu">Clair</option><option value="auto" selected class="astro-r2p65idu">Auto</option></select><svg aria-hidden="true" class="icon caret astro-r2p65idu astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M17 9.17a1 1 0 0 0-1.41 0L12 12.71 8.46 9.17a1 1 0 1 0-1.41 1.42l4.24 4.24a1.002 1.002 0 0 0 1.42 0L17 10.59a1.002 1.002 0 0 0 0-1.42Z"/></svg></label></starlight-theme-select><script>
+	StarlightThemeProvider.updatePickers();
+</script><starlight-lang-select><label style="--sl-select-width: 7em" class="astro-r2p65idu"><span class="sr-only astro-r2p65idu">Selectionner la langue</span><svg aria-hidden="true" class="icon label-icon astro-r2p65idu astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path fill-rule="evenodd" d="M8.516 3a.94.94 0 0 0-.941.94v1.15H2.94a.94.94 0 1 0 0 1.882h7.362a7.422 7.422 0 0 1-1.787 3.958 7.42 7.42 0 0 1-1.422-2.425.94.94 0 1 0-1.774.627 9.303 9.303 0 0 0 1.785 3.043 7.422 7.422 0 0 1-4.164 1.278.94.94 0 1 0 0 1.881 9.303 9.303 0 0 0 5.575-1.855 9.303 9.303 0 0 0 4.11 1.74l-.763 1.525a.968.968 0 0 0-.016.034l-1.385 2.77a.94.94 0 1 0 1.683.841l1.133-2.267h5.806l1.134 2.267a.94.94 0 0 0 1.683-.841l-1.385-2.769a.95.95 0 0 0-.018-.036l-3.476-6.951a.94.94 0 0 0-1.682 0l-1.82 3.639a7.423 7.423 0 0 1-3.593-1.256 9.303 9.303 0 0 0 2.27-5.203h1.894a.94.94 0 0 0 0-1.881H9.456V3.94A.94.94 0 0 0 8.516 3Zm6.426 11.794a1.068 1.068 0 0 1-.02.039l-.703 1.407h3.924l-1.962-3.924-1.24 2.478Z" clip-rule="evenodd"/></svg><select autocomplete="off" class="astro-r2p65idu"><option value="/en/doc/admin-guide/understand/tailnet/" class="astro-r2p65idu">English</option><option value="/fr/doc/admin-guide/understand/tailnet/" selected class="astro-r2p65idu">Français</option></select><svg aria-hidden="true" class="icon caret astro-r2p65idu astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M17 9.17a1 1 0 0 0-1.41 0L12 12.71 8.46 9.17a1 1 0 1 0-1.41 1.42l4.24 4.24a1.002 1.002 0 0 0 1.42 0L17 10.59a1.002 1.002 0 0 0 0-1.42Z"/></svg></label></starlight-lang-select></div></div></div></div></nav><div class="main-frame astro-gqpr5s5a"><script type="module">var e=document.getElementById(`starlight__sidebar`),t=e?.querySelector(`sl-sidebar-state-persist`),n=`sl-sidebar-state`,r=()=>{let r=[],i=t?.dataset.hash||``;try{let e=sessionStorage.getItem(n),t=JSON.parse(e||`{}`);Array.isArray(t.open)&&t.hash===i&&(r=t.open)}catch{}return{hash:i,open:r,scroll:e?.scrollTop||0}},i=e=>{try{sessionStorage.setItem(n,JSON.stringify(e))}catch{}},a=()=>i(r()),o=(e,t)=>{let n=r();n.open[t]=e,i(n)};t?.addEventListener(`click`,e=>{if(!(e.target instanceof Element))return;let t=e.target.closest(`summary`)?.closest(`details`);if(!t)return;let n=t.querySelector(`sl-sidebar-restore`),r=parseInt(n?.dataset.index||``);isNaN(r)||o(!t.open,r)}),addEventListener(`visibilitychange`,()=>{document.visibilityState===`hidden`&&a()}),addEventListener(`pageHide`,a);</script><div class="lg:sl-flex astro-abfeecmu"><aside class="right-sidebar-container print:hidden astro-abfeecmu"><div class="right-sidebar astro-abfeecmu"><div class="lg:sl-hidden astro-q5mffni3"><mobile-starlight-toc data-min-h="2" data-max-h="3" class="astro-5ulgm6bh"><nav aria-labelledby="starlight__on-this-page--mobile" class="astro-5ulgm6bh"><details id="starlight__mobile-toc" class="astro-5ulgm6bh"><summary id="starlight__on-this-page--mobile" class="sl-flex astro-5ulgm6bh"><span class="toggle sl-flex astro-5ulgm6bh">Sur cette page<svg aria-hidden="true" class="caret astro-5ulgm6bh astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg></span><span class="display-current astro-5ulgm6bh"></span></summary><div class="dropdown astro-5ulgm6bh"><ul class="isMobile astro-cxyftcne" style="--depth: 0;"><li style="--depth: 0;" class="astro-cxyftcne"><a href="#_top" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">Vue d’ensemble</span></a></li><li style="--depth: 0;" class="astro-cxyftcne"><a href="#plan-de-contrôle-plan-de-données" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">Plan de contrôle, plan de données</span></a></li><li style="--depth: 0;" class="astro-cxyftcne"><a href="#qui-est-sur-le-tailnet" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">Qui est sur le tailnet</span></a></li><li style="--depth: 0;" class="astro-cxyftcne"><a href="#routage" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">Routage</span></a></li><li style="--depth: 0;" class="astro-cxyftcne"><a href="#dns" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">DNS</span></a></li><li style="--depth: 0;" class="astro-cxyftcne"><a href="#magicdns" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">MagicDNS</span></a><ul class="isMobile astro-cxyftcne" style="--depth: 1;"><li style="--depth: 1;" class="astro-cxyftcne"><a href="#où-il-intervient" style="--depth: 1;" class="astro-cxyftcne"><span style="--depth: 1;" class="astro-cxyftcne">Où il intervient</span></a></li><li style="--depth: 1;" class="astro-cxyftcne"><a href="#pourquoi" style="--depth: 1;" class="astro-cxyftcne"><span style="--depth: 1;" class="astro-cxyftcne">Pourquoi</span></a></li><li style="--depth: 1;" class="astro-cxyftcne"><a href="#comment-ça-sarticule" style="--depth: 1;" class="astro-cxyftcne"><span style="--depth: 1;" class="astro-cxyftcne">Comment ça s’articule</span></a></li></ul></li><li style="--depth: 0;" class="astro-cxyftcne"><a href="#politique-daccès-acl" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">Politique d’accès (ACL)</span></a><ul class="isMobile astro-cxyftcne" style="--depth: 1;"><li style="--depth: 1;" class="astro-cxyftcne"><a href="#les-briques" style="--depth: 1;" class="astro-cxyftcne"><span style="--depth: 1;" class="astro-cxyftcne">Les briques</span></a></li><li style="--depth: 1;" class="astro-cxyftcne"><a href="#les-règles" style="--depth: 1;" class="astro-cxyftcne"><span style="--depth: 1;" class="astro-cxyftcne">Les règles</span></a></li></ul></li><li style="--depth: 0;" class="astro-cxyftcne"><a href="#clés-dactivation-et-enrôlement" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">Clés d’activation et enrôlement</span></a><ul class="isMobile astro-cxyftcne" style="--depth: 1;"><li style="--depth: 1;" class="astro-cxyftcne"><a href="#machines--une-clé-à-usage-unique" style="--depth: 1;" class="astro-cxyftcne"><span style="--depth: 1;" class="astro-cxyftcne">Machines : une clé à usage unique</span></a></li><li style="--depth: 1;" class="astro-cxyftcne"><a href="#appareils-personnels--oidc" style="--depth: 1;" class="astro-cxyftcne"><span style="--depth: 1;" class="astro-cxyftcne">Appareils personnels : OIDC</span></a></li></ul></li></ul></div></details></nav></mobile-starlight-toc><script type="module" src="/astro/MobileTableOfContents.astro_astro_type_script_index_0_lang.BcSo_yiZ.js"></script></div><div class="right-sidebar-panel sl-hidden lg:sl-block astro-q5mffni3"><div class="sl-container astro-q5mffni3"><starlight-toc data-min-h="2" data-max-h="3"><nav aria-labelledby="starlight__on-this-page"><h2 id="starlight__on-this-page">Sur cette page</h2><ul class="astro-cxyftcne" style="--depth: 0;"><li style="--depth: 0;" class="astro-cxyftcne"><a href="#_top" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">Vue d’ensemble</span></a></li><li style="--depth: 0;" class="astro-cxyftcne"><a href="#plan-de-contrôle-plan-de-données" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">Plan de contrôle, plan de données</span></a></li><li style="--depth: 0;" class="astro-cxyftcne"><a href="#qui-est-sur-le-tailnet" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">Qui est sur le tailnet</span></a></li><li style="--depth: 0;" class="astro-cxyftcne"><a href="#routage" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">Routage</span></a></li><li style="--depth: 0;" class="astro-cxyftcne"><a href="#dns" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">DNS</span></a></li><li style="--depth: 0;" class="astro-cxyftcne"><a href="#magicdns" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">MagicDNS</span></a><ul class="astro-cxyftcne" style="--depth: 1;"><li style="--depth: 1;" class="astro-cxyftcne"><a href="#où-il-intervient" style="--depth: 1;" class="astro-cxyftcne"><span style="--depth: 1;" class="astro-cxyftcne">Où il intervient</span></a></li><li style="--depth: 1;" class="astro-cxyftcne"><a href="#pourquoi" style="--depth: 1;" class="astro-cxyftcne"><span style="--depth: 1;" class="astro-cxyftcne">Pourquoi</span></a></li><li style="--depth: 1;" class="astro-cxyftcne"><a href="#comment-ça-sarticule" style="--depth: 1;" class="astro-cxyftcne"><span style="--depth: 1;" class="astro-cxyftcne">Comment ça s’articule</span></a></li></ul></li><li style="--depth: 0;" class="astro-cxyftcne"><a href="#politique-daccès-acl" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">Politique d’accès (ACL)</span></a><ul class="astro-cxyftcne" style="--depth: 1;"><li style="--depth: 1;" class="astro-cxyftcne"><a href="#les-briques" style="--depth: 1;" class="astro-cxyftcne"><span style="--depth: 1;" class="astro-cxyftcne">Les briques</span></a></li><li style="--depth: 1;" class="astro-cxyftcne"><a href="#les-règles" style="--depth: 1;" class="astro-cxyftcne"><span style="--depth: 1;" class="astro-cxyftcne">Les règles</span></a></li></ul></li><li style="--depth: 0;" class="astro-cxyftcne"><a href="#clés-dactivation-et-enrôlement" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">Clés d’activation et enrôlement</span></a><ul class="astro-cxyftcne" style="--depth: 1;"><li style="--depth: 1;" class="astro-cxyftcne"><a href="#machines--une-clé-à-usage-unique" style="--depth: 1;" class="astro-cxyftcne"><span style="--depth: 1;" class="astro-cxyftcne">Machines : une clé à usage unique</span></a></li><li style="--depth: 1;" class="astro-cxyftcne"><a href="#appareils-personnels--oidc" style="--depth: 1;" class="astro-cxyftcne"><span style="--depth: 1;" class="astro-cxyftcne">Appareils personnels : OIDC</span></a></li></ul></li></ul></nav></starlight-toc><script type="module" src="/astro/TableOfContents.astro_astro_type_script_index_0_lang.Csloo1VZ.js"></script></div></div></div></aside><div class="main-pane astro-abfeecmu"><main data-pagefind-body class="astro-vdxcvpsm" lang="fr" dir="ltr"><div class="content-panel astro-oil7k7jf"><div class="sl-container astro-oil7k7jf"><h1 id="_top" class="astro-2sm4b3ln">Fonctionnement du tailnet</h1></div></div><div class="content-panel astro-oil7k7jf"><div class="sl-container astro-oil7k7jf"><div class="sl-markdown-content">
+
+
+<p>Le tailnet est le VPN maillé du réseau : il relie les zones, le serveur de
+coordination (HCS) et les appareils distants. <a href="https://headscale.net/" target="_blank" rel="nofollow">Headscale<span> 🡕</span></a>
+le coordonne, <a href="https://tailscale.com/" target="_blank" rel="nofollow">Tailscale<span> 🡕</span></a> le fait vivre sur chaque nœud.
+Cette page explique qui y figure, par où passent paquets et requêtes DNS, qui peut
+joindre quoi, et comment une machine y entre. Les gestes d’exploitation sont dans
+<a href="/fr/doc/admin-guide/operate/vpn/">VPN</a>.</p>
+
+<div class="sl-heading-wrapper level-h2"><h2 id="plan-de-contrôle-plan-de-données">Plan de contrôle, plan de données</h2><a class="sl-anchor-link" href="#plan-de-contrôle-plan-de-données"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section intitulée « Plan de contrôle, plan de données »</span></a></div>
+<p>Headscale distribue les informations, jamais le trafic : les nœuds échangent
+directement entre eux, chiffrés par <a href="https://www.wireguard.com/" target="_blank" rel="nofollow">WireGuard<span> 🡕</span></a>.</p>
+<img alt="Diagram" decoding="async" loading="lazy" src="/d2/docs/fr/doc/admin-guide/understand/tailnet-0.svg" width="382" height="1054">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Plan</th><th>Porté par</th><th>Contenu</th></tr></thead><tbody><tr><td>Contrôle</td><td>Headscale sur le HCS (HTTPS)</td><td>identités, clés publiques, adresses, routes, DNS, filtres ACL</td></tr><tr><td>Données</td><td>chaque client Tailscale (UDP 41641)</td><td>le trafic, d’un nœud à l’autre</td></tr><tr><td>Relais</td><td>serveurs DERP publics de Tailscale</td><td>le trafic chiffré, faute de chemin direct</td></tr></tbody></table>
+<ul>
+<li>Les nœuds percent le NAT pour se joindre en direct. Le port UDP 41641 est ouvert
+sur le HCS et sur le WAN des passerelles, ce qui aide derrière un NAT strict.</li>
+<li>Sans chemin direct (UDP filtré, NAT strict des deux côtés), le trafic passe par un
+relais DERP : toujours chiffré de bout en bout, mais plus lent.</li>
+<li>HCS indisponible : les tunnels établis continuent de fonctionner, mais rien ne
+change (nouveau nœud, nouvelle route, nouvelle politique) jusqu’à son retour.</li>
+</ul>
+
+<div class="sl-heading-wrapper level-h2"><h2 id="qui-est-sur-le-tailnet">Qui est sur le tailnet</h2><a class="sl-anchor-link" href="#qui-est-sur-le-tailnet"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section intitulée « Qui est sur le tailnet »</span></a></div>
+<p>Deux sortes d’identités coexistent : les <strong>machines</strong>, identifiées par un tag
+qui dit leur rôle, et les <strong>appareils personnels</strong>, rattachés à leur propriétaire.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Nœud</th><th>Identité</th><th>Obtenue par</th><th>Expiration</th></tr></thead><tbody><tr><td>HCS</td><td><code dir="auto">tag:hcs</code></td><td>clé à usage unique (<code dir="auto">just tailnet-enroll</code>)</td><td>jamais</td></tr><tr><td>Passerelle d’une zone</td><td><code dir="auto">tag:gw-&#x3C;zone></code></td><td>clé à usage unique</td><td>jamais</td></tr><tr><td>Poste d’administration</td><td><code dir="auto">tag:admin</code></td><td>clé à usage unique</td><td>jamais</td></tr><tr><td>Appareil personnel</td><td>son propriétaire (<code dir="auto">alice@</code>)</td><td>connexion <a href="/fr/doc/admin-guide/understand/auth-idm/">Kanidm</a></td><td>180 jours</td></tr></tbody></table>
+<ul>
+<li>Les tags se déduisent de la topologie : profil <code dir="auto">hcs</code>, passerelle de zone, hôte
+dont <code dir="auto">groups</code> contient <code dir="auto">admin</code> et qui active le client Tailscale.</li>
+<li>Un nœud tagué n’appartient à personne (<code dir="auto">tagged-devices</code> dans Headscale).</li>
+<li>Seuls les comptes du groupe Kanidm <code dir="auto">tailnet</code> connectent un appareil :
+administrateurs et membres d’une zone (groupe <code dir="auto">zone-&#x3C;zone></code>).</li>
+<li>Les <code dir="auto">tags</code> libres d’un hôte dans <code dir="auto">etc/config.yaml</code> n’accordent aucun droit.</li>
+<li>Chaque nœud porte un nom MagicDNS : <code dir="auto">&#x3C;nœud>.tailnet.internal</code>.</li>
+</ul>
+
+<div class="sl-heading-wrapper level-h2"><h2 id="routage">Routage</h2><a class="sl-anchor-link" href="#routage"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section intitulée « Routage »</span></a></div>
+<p>Le tailnet donne une adresse à chaque nœud et relie les sous-réseaux des zones.
+Trajet d’un poste de la zone <code dir="auto">maison</code> vers un serveur de la zone <code dir="auto">atelier</code> :</p>
+<img alt="Diagram" decoding="async" loading="lazy" src="/d2/docs/fr/doc/admin-guide/understand/tailnet-1.svg" width="452" height="1051">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Trajet</th><th>Chemin</th><th>Mécanisme</th></tr></thead><tbody><tr><td>Poste d’une zone → autre zone</td><td>sa passerelle, le tailnet, la passerelle distante</td><td>routes de sous-réseau</td></tr><tr><td>Appareil distant → service d’une zone</td><td>le tailnet, la passerelle de la zone</td><td>route de sous-réseau de la zone</td></tr><tr><td>Appareil distant → service global</td><td>le tailnet, le HCS</td><td>adresse tailnet du HCS</td></tr><tr><td>Nœud → nœud</td><td>direct</td><td>adresses <code dir="auto">100.64.x.y</code></td></tr><tr><td>Nœud → Internet</td><td>sa propre connexion</td><td>exit node du HCS fermé par défaut</td></tr></tbody></table>
+<ul>
+<li><strong>Adresses</strong> : Headscale les attribue dans l’ordre, dans <code dir="auto">100.64.0.0/10</code> (et
+<code dir="auto">fd7a:115c:a1e0::/48</code>). Une machine réinstallée (nouvelle clé de machine) en reçoit
+une nouvelle.</li>
+<li><strong>Routes annoncées</strong> : chaque passerelle annonce le <code dir="auto">/16</code> de sa zone. La
+politique l’approuve d’office pour le seul <code dir="auto">tag:gw-&#x3C;zone></code> : une passerelle ne
+peut pas détourner le sous-réseau d’une autre zone.</li>
+<li><strong>Routes acceptées</strong> : chaque client installe les <code dir="auto">/16</code> des autres zones dans
+la table de routage 52 de Tailscale, consultée avant la table principale. Une
+passerelle n’y installe pas sa propre zone.</li>
+<li><strong>Sans SNAT</strong> : une passerelle relaie sans masquer la source
+(<code dir="auto">--snat-subnet-routes=false</code>). Une machine de la zone voit la vraie adresse
+tailnet et répond par sa route par défaut, la passerelle ; d’où le filtrage de
+chemin inverse souple des passerelles (règle <code dir="auto">R12</code> de la
+<a href="/fr/doc/admin-guide/operate/security/">sécurité</a>).</li>
+<li><strong>Exit node</strong> : le HCS s’annonce comme sortie vers Internet, approuvée d’office,
+mais aucune règle ne l’autorise tant que <code dir="auto">policy.exitNodeSources</code> est vide.</li>
+<li><strong>Filtrage</strong> : la politique s’applique à l’arrivée. Pour une zone, c’est sa
+passerelle qui trie ce qui entre depuis le tailnet.</li>
+</ul>
+<p>Ce qu’une passerelle laisse traverser est détaillé dans <a href="/fr/doc/admin-guide/understand/network/#ce-qui-traverse-une-passerelle">Ce qui traverse une
+passerelle</a>.</p>
+
+<div class="sl-heading-wrapper level-h2"><h2 id="dns">DNS</h2><a class="sl-anchor-link" href="#dns"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section intitulée « DNS »</span></a></div>
+<p>Chaque machine interroge un résolveur différent, mais les noms d’une zone finissent
+toujours chez le même détenteur : la passerelle de cette zone.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Machine</th><th>Résolveur</th><th>Noms d’une zone</th><th>Services globaux</th><th>Internet</th></tr></thead><tbody><tr><td>Poste d’une zone, passerelle</td><td>dnsmasq de la passerelle, derrière AdGuard Home s’il est activé</td><td>dnsmasq, ou passerelle de la zone</td><td>dnsmasq, ou unbound du HCS</td><td>DNS publics, filtrés par AdGuard Home</td></tr><tr><td>HCS</td><td>unbound, local</td><td>passerelle de la zone</td><td>unbound</td><td>Quad9, chiffré</td></tr><tr><td>Appareil distant</td><td>MagicDNS (<code dir="auto">100.100.100.100</code>)</td><td>par unbound du HCS</td><td>par unbound du HCS</td><td>résolveur du réseau visité</td></tr></tbody></table>
+<img alt="Diagram" decoding="async" loading="lazy" src="/d2/docs/fr/doc/admin-guide/understand/tailnet-2.svg" width="806" height="1243">
+<ul>
+<li><strong>Passerelle</strong> : dnsmasq connaît les machines de toutes les zones et les
+services déclarés. Un nom inconnu d’une autre zone part vers la passerelle de cette
+zone (adresse LAN, à travers le tailnet) ; le reste de <code dir="auto">domain.tld</code> part vers
+unbound, sur le HCS.</li>
+<li><strong>Services d’une zone</strong> : <code dir="auto">*.&#x3C;zone>.domain.tld</code> pointe vers l’adresse LAN de la
+passerelle de la zone, qui les sert derrière son proxy.</li>
+<li><strong>HCS</strong> : unbound écoute sur <code dir="auto">127.0.0.1</code> et sur l’adresse tailnet du HCS, pour
+les seules adresses du tailnet. Il transmet <code dir="auto">&#x3C;zone>.domain.tld</code> au résolveur de la
+passerelle, à son adresse tailnet : d’où l’importance de déclarer <code dir="auto">vpn.ipv4</code>.</li>
+<li><strong><code dir="auto">headscale.domain.tld</code></strong> : jamais demandé au tunnel qu’il sert à monter, voir
+<a href="/fr/doc/admin-guide/operate/vpn/#amor%C3%A7age-du-plan-de-contr%C3%B4le">Amorçage du plan de contrôle</a>.</li>
+</ul>
+
+<div class="sl-heading-wrapper level-h2"><h2 id="magicdns">MagicDNS</h2><a class="sl-anchor-link" href="#magicdns"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section intitulée « MagicDNS »</span></a></div>
+<p>MagicDNS est le petit résolveur que chaque client Tailscale embarque, à l’adresse
+<code dir="auto">100.100.100.100</code>. Headscale l’active pour tout le tailnet et lui transmet ses
+consignes :</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Consigne</th><th>Valeur</th><th>Effet</th></tr></thead><tbody><tr><td>Noms des nœuds</td><td><code dir="auto">tailnet.internal</code></td><td><code dir="auto">gw-atelier.tailnet.internal</code> → adresse tailnet, tenue à jour par Headscale</td></tr><tr><td>Domaine de recherche</td><td><code dir="auto">tailnet.internal</code></td><td><code dir="auto">ssh gw-atelier</code> suffit</td></tr><tr><td>DNS scindé</td><td><code dir="auto">domain.tld</code> → unbound du HCS</td><td>les noms internes partent, par le tunnel, au résolveur pivot</td></tr><tr><td>Résolveur global</td><td>aucun</td><td>le reste va au résolveur habituel de l’appareil</td></tr></tbody></table>
+
+<div class="sl-heading-wrapper level-h3"><h3 id="où-il-intervient">Où il intervient</h3><a class="sl-anchor-link" href="#où-il-intervient"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section intitulée « Où il intervient »</span></a></div>
+<p>Un client ne s’en sert comme résolveur que s’il accepte le DNS du tailnet
+(<code dir="auto">--accept-dns</code>).</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Machine</th><th><code dir="auto">--accept-dns</code></th><th>Rôle de MagicDNS</th></tr></thead><tbody><tr><td>Appareil personnel, portable hors zone</td><td>oui</td><td>résolveur du système : noms des nœuds et DNS scindé</td></tr><tr><td>Portable rebranché dans sa zone</td><td>client en pause</td><td>aucun, la passerelle locale reprend la main</td></tr><tr><td>Passerelle</td><td>non</td><td>noms inverses des adresses <code dir="auto">100.x</code>, pour les statistiques d’AdGuard Home</td></tr><tr><td>HCS</td><td>oui</td><td>présent, mais le système interroge unbound (<code dir="auto">127.0.0.1</code>)</td></tr><tr><td>Poste d’une zone</td><td>pas de client</td><td>aucun</td></tr></tbody></table>
+
+<div class="sl-heading-wrapper level-h3"><h3 id="pourquoi">Pourquoi</h3><a class="sl-anchor-link" href="#pourquoi"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section intitulée « Pourquoi »</span></a></div>
+<ul>
+<li><strong>Nommer les nœuds hors des zones</strong> : un portable en déplacement joint
+<code dir="auto">gw-atelier</code> en direct sur le tailnet, sans dépendre d’une route de sous-réseau ni du
+DNS d’une zone. C’est ce que fait <code dir="auto">just enter gw-atelier</code> hors de chez soi.</li>
+<li><strong>Résoudre les noms internes partout</strong> : le DNS scindé suffit, sans faire passer
+tout le DNS dans le VPN.</li>
+<li><strong>Garder Internet hors du tunnel</strong> : si le chemin VPN faiblit, la résolution des
+noms publics tient
+(<a href="/fr/doc/admin-guide/understand/network/#r%C3%A9solution-depuis-lext%C3%A9rieur">pourquoi</a>).</li>
+<li><strong>Laisser la main aux passerelles</strong> : elles gardent leur propre DNS
+(<code dir="auto">--accept-dns=false</code>), dont dépendent leur zone et ses clients.</li>
+</ul>
+
+<div class="sl-heading-wrapper level-h3"><h3 id="comment-ça-sarticule">Comment ça s’articule</h3><a class="sl-anchor-link" href="#comment-ça-sarticule"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section intitulée « Comment ça s’articule »</span></a></div>
+<p>Un appareil distant ouvre un service de la zone <code dir="auto">maison</code> :</p>
+<img alt="Diagram" decoding="async" loading="lazy" src="/d2/docs/fr/doc/admin-guide/understand/tailnet-3.svg" width="992" height="888">
+<ol>
+<li>MagicDNS reconnaît <code dir="auto">domain.tld</code> et transmet la question, par le tunnel, à unbound.</li>
+<li>unbound la transmet au résolveur de la passerelle <code dir="auto">maison</code>, à son adresse tailnet.</li>
+<li>La réponse est l’adresse LAN de la passerelle (<code dir="auto">10.0.1.1</code>).</li>
+<li>L’appareil l’atteint par la route de sous-réseau de la zone ; la politique
+l’autorise sur le port 443 (<code dir="auto">gateway-maison</code>).</li>
+</ol>
+<aside aria-label="Passerelles et HCS : pas de noms tailnet.internal" class="starlight-aside starlight-aside--caution"><p class="starlight-aside__title" aria-hidden="true"><svg aria-hidden="true" class="starlight-aside__icon astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M12 16a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm10.67 1.47-8.05-14a3 3 0 0 0-5.24 0l-8 14A3 3 0 0 0 3.94 22h16.12a3 3 0 0 0 2.61-4.53Zm-1.73 2a1 1 0 0 1-.88.51H3.94a1 1 0 0 1-.88-.51 1 1 0 0 1 0-1l8-14a1 1 0 0 1 1.78 0l8.05 14a1 1 0 0 1 .05 1.02v-.02ZM12 8a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V9a1 1 0 0 0-1-1Z"/></svg>Passerelles et HCS : pas de noms tailnet.internal</p><div class="starlight-aside__content"><p>Leur système ne passe pas par MagicDNS : <code dir="auto">gw-atelier.tailnet.internal</code> n’y
+résout pas. Viser une adresse tailnet (voir la
+<a href="/fr/doc/how-to/admin/network-backup/">sauvegarde réseau</a>), ou interroger MagicDNS
+directement : <code dir="auto">dig @100.100.100.100 gw-atelier.tailnet.internal</code>.</p></div></aside>
+
+<div class="sl-heading-wrapper level-h2"><h2 id="politique-daccès-acl">Politique d’accès (ACL)</h2><a class="sl-anchor-link" href="#politique-daccès-acl"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section intitulée « Politique d’accès (ACL) »</span></a></div>
+<p>Sur le tailnet, <strong>rien ne passe par défaut</strong>. Headscale compile une politique en
+filtres qu’il pousse à chaque nœud ; chacun jette ce qu’aucune règle n’autorise.
+Pour une zone, le tri se fait sur sa passerelle.</p>
+<p>La politique n’est pas écrite à la main : DNF la génère depuis
+<code dir="auto">etc/config.yaml</code> (zones, hôtes, utilisateurs), la vérifie à la construction
+(<code dir="auto">headscale policy check</code>), puis Headscale la recharge à chaud au déploiement.</p>
+
+<div class="sl-heading-wrapper level-h3"><h3 id="les-briques">Les briques</h3><a class="sl-anchor-link" href="#les-briques"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section intitulée « Les briques »</span></a></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Brique</th><th>Contenu généré</th></tr></thead><tbody><tr><td><code dir="auto">groups</code></td><td><code dir="auto">group:admins</code> (profils <code dir="auto">admin</code>, <code dir="auto">nix-admin</code>), <code dir="auto">group:zone-&#x3C;zone></code> (groupe <code dir="auto">zone-&#x3C;zone></code>)</td></tr><tr><td><code dir="auto">tagOwners</code></td><td><code dir="auto">tag:hcs</code>, <code dir="auto">tag:gw-&#x3C;zone></code>, <code dir="auto">tag:admin</code>, détenus par <code dir="auto">group:admins</code></td></tr><tr><td><code dir="auto">hosts</code></td><td><code dir="auto">zone-&#x3C;zone></code> (sous-réseau), <code dir="auto">gateway-&#x3C;zone></code> (adresse LAN de la passerelle), postes d’administration (adresse LAN), <code dir="auto">adminDevices</code>, <code dir="auto">extraHosts</code></td></tr><tr><td><code dir="auto">autoApprovers</code></td><td>route de chaque zone → <code dir="auto">tag:gw-&#x3C;zone></code> ; exit node → <code dir="auto">tag:hcs</code></td></tr><tr><td><code dir="auto">acls</code></td><td>les règles ci-dessous</td></tr></tbody></table>
+
+<div class="sl-heading-wrapper level-h3"><h3 id="les-règles">Les règles</h3><a class="sl-anchor-link" href="#les-règles"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section intitulée « Les règles »</span></a></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>#</th><th>Source</th><th>Destination</th><th>Pour</th></tr></thead><tbody><tr><td>1</td><td>machines taguées, sous-réseaux des zones</td><td>toutes les machines et zones, tous ports</td><td>l’infrastructure : DNS, supervision, sauvegardes, déploiement</td></tr><tr><td>2</td><td>appareils personnels (<code dir="auto">autogroup:member</code>)</td><td>HCS, ports 53 et 443</td><td>DNS interne, services globaux</td></tr><tr><td>3</td><td><code dir="auto">group:admins</code></td><td>passerelles de toutes les zones, port 443</td><td>les services de toutes les zones</td></tr><tr><td>4</td><td><code dir="auto">group:zone-&#x3C;zone></code></td><td>passerelle de la zone, port 443</td><td>les services de ses zones</td></tr><tr><td>5</td><td>appareils personnels</td><td>appareils du même propriétaire</td><td>entre ses propres appareils</td></tr><tr><td>6</td><td><code dir="auto">tag:admin</code>, postes d’administration, <code dir="auto">adminDevices</code></td><td>toutes les machines et zones, port 22</td><td>l’administration SSH</td></tr><tr><td>7</td><td><code dir="auto">policy.exitNodeSources</code></td><td>Internet</td><td>l’exit node du HCS, s’il est ouvert</td></tr><tr><td>8</td><td><code dir="auto">policy.extraAcls</code></td><td>libre</td><td>les besoins propres au réseau</td></tr></tbody></table>
+<ul>
+<li><strong>Le SSH suit le poste, pas la personne</strong> : un administrateur sur son téléphone
+n’a pas le SSH, sauf appareil déclaré dans <code dir="auto">adminDevices</code>.</li>
+<li><strong><code dir="auto">gateway-&#x3C;zone></code> en plus du tag</strong> : les services d’une zone se résolvent vers
+l’adresse LAN de sa passerelle, que <code dir="auto">tag:gw-&#x3C;zone></code> ne couvre pas (il ne désigne
+que ses adresses tailnet).</li>
+<li><strong>Un groupe vide disparaît</strong> de la politique : une règle qui le citerait la
+ferait refuser en entier.</li>
+<li><strong>Mode ouvert</strong> (<code dir="auto">policy.enforce = false</code>) : une règle unique autorise tout.
+Réservé à une migration, le temps de taguer les nœuds.</li>
+</ul>
+<p>Les options qui ajustent la politique sont décrites dans <a href="/fr/doc/admin-guide/operate/vpn/#adapter-la-politique-dacc%C3%A8s">Adapter la politique
+d’accès</a>.</p>
+
+<div class="sl-heading-wrapper level-h2"><h2 id="clés-dactivation-et-enrôlement">Clés d’activation et enrôlement</h2><a class="sl-anchor-link" href="#clés-dactivation-et-enrôlement"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section intitulée « Clés d’activation et enrôlement »</span></a></div>
+<p>Un nœud prouve <strong>une seule fois</strong> à Headscale qu’il a le droit d’entrer. Ensuite, sa
+clé de nœud suffit : pour toujours s’il est tagué, jusqu’à expiration pour un
+appareil personnel.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Clé</th><th>Où</th><th>Rôle</th></tr></thead><tbody><tr><td>Clé de machine</td><td><code dir="auto">/var/lib/tailscale</code> du nœud</td><td>identifie la machine auprès de Headscale ; perdue à la réinstallation</td></tr><tr><td>Clé de nœud</td><td><code dir="auto">/var/lib/tailscale</code> du nœud</td><td>chiffre le trafic ; Headscale publie sa partie publique aux pairs</td></tr><tr><td>Clé pré-autorisée</td><td>créée par Headscale</td><td>autorise un enregistrement sans navigateur, avec les tags qu’elle porte</td></tr><tr><td>Session OIDC</td><td>Kanidm</td><td>autorise l’enregistrement d’un appareil personnel</td></tr></tbody></table>
+
+<div class="sl-heading-wrapper level-h3"><h3 id="machines--une-clé-à-usage-unique">Machines : une clé à usage unique</h3><a class="sl-anchor-link" href="#machines--une-clé-à-usage-unique"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section intitulée « Machines : une clé à usage unique »</span></a></div>
+<p><code dir="auto">just tailnet-enroll &#x3C;hôte></code> fait entrer une machine, sans clé partagée :</p>
+<img alt="Diagram" decoding="async" loading="lazy" src="/d2/docs/fr/doc/admin-guide/understand/tailnet-4.svg" width="649" height="978">
+<ul>
+<li><strong>Tags imposés</strong> : le HCS crée la clé pour les tags <strong>déclarés</strong> de l’hôte
+(<code dir="auto">dnf-tailnet-enroll</code>), quoi que demande l’appelant.</li>
+<li><strong>Usage unique, 10 minutes</strong> : sans valeur une fois servie.</li>
+<li><strong>Aucune trace</strong> : la clé passe par un tube, jamais par une ligne de commande,
+une variable, un disque ou le journal d’entrées et sorties de sudo (règles
+<code dir="auto">NOLOG_INPUT</code> et <code dir="auto">NOLOG_OUTPUT</code>).</li>
+<li><strong>Déposée en mémoire</strong> : <code dir="auto">dnf-tailnet-join</code> la pose dans
+<code dir="auto">/run/tailscale-enroll</code>, <code dir="auto">tailscaled-autoconnect</code> l’utilise
+(<code dir="auto">tailscale up --force-reauth</code>) puis l’efface.</li>
+<li><strong>Portable en pause dans sa zone</strong> : il s’enregistre sans routes ni DNS, puis se
+remet en pause.</li>
+<li><strong>Contrôle final</strong> : <code dir="auto">adopt</code> pose les tags et le nom déclarés, remplace un
+ancien nœud hors ligne du même nom, et la recette vérifie le résultat.</li>
+</ul>
+<aside aria-label="Pourquoi pas de clé partagée" class="starlight-aside starlight-aside--note"><p class="starlight-aside__title" aria-hidden="true"><svg aria-hidden="true" class="starlight-aside__icon astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M12 11a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0v-4a1 1 0 0 0-1-1Zm.38-3.92a1 1 0 0 0-.76 0 1 1 0 0 0-.33.21 1.15 1.15 0 0 0-.21.33 1 1 0 0 0 .21 1.09c.097.088.209.16.33.21A1 1 0 0 0 13 8a1.05 1.05 0 0 0-.29-.71 1 1 0 0 0-.33-.21ZM12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 18a8 8 0 1 1 0-16.001A8 8 0 0 1 12 20Z"/></svg>Pourquoi pas de clé partagée</p><div class="starlight-aside__content"><p>Tous les hôtes déchiffrent le même fichier sops. Une clé commune y serait à la portée
+de chacun : un poste compromis pourrait entrer sous l’identité d’une passerelle.</p></div></aside>
+
+<div class="sl-heading-wrapper level-h3"><h3 id="appareils-personnels--oidc">Appareils personnels : OIDC</h3><a class="sl-anchor-link" href="#appareils-personnels--oidc"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section intitulée « Appareils personnels : OIDC »</span></a></div>
+<ol>
+<li>L’application Tailscale contacte Headscale, qui la renvoie vers Kanidm.</li>
+<li>Kanidm n’accepte que les membres du groupe <code dir="auto">tailnet</code> ; Headscale le vérifie
+aussi.</li>
+<li>L’appareil est enregistré au nom de la personne (<code dir="auto">alice@</code>) et expire après
+180 jours (<code dir="auto">nodeExpiry</code>) : elle se reconnecte alors.</li>
+</ol>
+<aside aria-label="Kanidm indisponible au démarrage de Headscale" class="starlight-aside starlight-aside--caution"><p class="starlight-aside__title" aria-hidden="true"><svg aria-hidden="true" class="starlight-aside__icon astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M12 16a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm10.67 1.47-8.05-14a3 3 0 0 0-5.24 0l-8 14A3 3 0 0 0 3.94 22h16.12a3 3 0 0 0 2.61-4.53Zm-1.73 2a1 1 0 0 1-.88.51H3.94a1 1 0 0 1-.88-.51 1 1 0 0 1 0-1l8-14a1 1 0 0 1 1.78 0l8.05 14a1 1 0 0 1 .05 1.02v-.02ZM12 8a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V9a1 1 0 0 0-1-1Z"/></svg>Kanidm indisponible au démarrage de Headscale</p><div class="starlight-aside__content"><p>Headscale démarre quand même, mais sans OIDC jusqu’à son prochain redémarrage :
+aucun appareil personnel ne peut se connecter. L’alerte <code dir="auto">HeadscaleOidcFallback</code> le
+signale.</p></div></aside></div><footer class="sl-flex astro-xhxjzfa7"><div class="meta sl-flex astro-xhxjzfa7"></div><div class="pagination-links print:hidden astro-jgq3vlii" dir="ltr"><a href="/fr/doc/admin-guide/understand/network/" rel="prev" class="astro-jgq3vlii"><svg aria-hidden="true" class="astro-jgq3vlii astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.5rem;"><path d="M17 11H9.41l3.3-3.29a1.004 1.004 0 1 0-1.42-1.42l-5 5a1 1 0 0 0-.21.33 1 1 0 0 0 0 .76 1 1 0 0 0 .21.33l5 5a1.002 1.002 0 0 0 1.639-.325 1 1 0 0 0-.219-1.095L9.41 13H17a1 1 0 0 0 0-2Z"/></svg><span class="astro-jgq3vlii">Précédent<br class="astro-jgq3vlii"><span class="link-title astro-jgq3vlii">Réseau</span></span></a><a href="/fr/doc/admin-guide/understand/host-profiles/" rel="next" class="astro-jgq3vlii"><svg aria-hidden="true" class="astro-jgq3vlii astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.5rem;"><path d="M17.92 11.62a1.001 1.001 0 0 0-.21-.33l-5-5a1.003 1.003 0 1 0-1.42 1.42l3.3 3.29H7a1 1 0 0 0 0 2h7.59l-3.3 3.29a1.002 1.002 0 0 0 .325 1.639 1 1 0 0 0 1.095-.219l5-5a1 1 0 0 0 .21-.33 1 1 0 0 0 0-.76Z"/></svg><span class="astro-jgq3vlii">Suivant<br class="astro-jgq3vlii"><span class="link-title astro-jgq3vlii">Profils d&#39;hôtes</span></span></a></div></footer></div></div></main></div></div></div></div></body></html>
