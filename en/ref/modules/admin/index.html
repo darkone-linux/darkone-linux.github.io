@@ -86,7 +86,7 @@
 <p>Fleet update tool (<code dir="auto">fleet-update</code>) and its unattended daily run.</p>
 <p><code dir="auto">enable</code> installs the tool on a deployment host; <code dir="auto">just fleet-update</code> then
 runs it. <code dir="auto">timer.enable</code> adds a daily <code dir="auto">fleet-update --no-ui</code> run: flake
-update, build, test by waves, switch, Matrix report.</p>
+update, build, test by waves, switch.</p>
 <aside aria-label="Service identity" class="starlight-aside starlight-aside--caution"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 16a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm10.67 1.47-8.05-14a3 3 0 0 0-5.24 0l-8 14A3 3 0 0 0 3.94 22h16.12a3 3 0 0 0 2.61-4.53Zm-1.73 2a1 1 0 0 1-.88.51H3.94a1 1 0 0 1-.88-.51 1 1 0 0 1 0-1l8-14a1 1 0 0 1 1.78 0l8.05 14a1 1 0 0 1 .05 1.02v-.02ZM12 8a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V9a1 1 0 0 0-1-1Z"></path></svg>Service identity</p><div class="starlight-aside__content"><p>The run belongs to <code dir="auto">user</code>, owner of <code dir="auto">workDir</code>: git identity, sops age key,
 AI and Matrix credentials. It needs passwordless <code dir="auto">sudo</code> (<code dir="auto">just clean</code>
 permissions, <code dir="auto">nix</code> deploy identity whose key lives in <code dir="auto">~nix/.ssh</code>).</p></div></aside>
