@@ -222,7 +222,8 @@ proxy is a separate concern: it caches the <em>public</em> binary cache
 </ul><p>That order is pinned client-side with <code dir="auto">?priority=</code> on each substituter URL
 (see <code dir="auto">nix-cache.nix</code>), because the <code dir="auto">priority</code> set below is identical on every
 instance and Nix sorts substituters by advertised priority, not by list order.</p><p>A host running harmonia does <strong>not</strong> get its own instance as a substituter: it
-would only ever serve paths its local store already has.</p><p>Other zones’ non-global harmonia are never used. Harmonia’s signature is
+would only ever serve paths its local store already has.</p><p>A global-zone host (<code dir="auto">www</code>) has no LAN and no proxy: its only fleet substituter
+is the <code dir="auto">global</code> harmonia, over the tailnet.</p><p>Other zones’ non-global harmonia are never used. Harmonia’s signature is
 passed through unchanged, so every host trusts the deployment-wide harmonia
 public key (<code dir="auto">usr/secrets/harmonia.pub</code>). Transport is plain HTTP on the
 trusted LAN / VPN: integrity comes from the NAR signature, not from TLS.</p></div></aside>
@@ -628,6 +629,9 @@ harmonia instances (direct, LAN/tailnet) plus this proxy.</li>
 Their substituters are the zone-neutral names (<code dir="auto">harmonia.dnf.internal</code>,
 <code dir="auto">nix-cache.dnf.internal</code>) that each zone’s DNS resolves to its own cache
 services (see <code dir="auto">service/dnsmasq.nix</code>), so the cache follows the laptop.</li>
+<li>global-zone hosts (<code dir="auto">www</code>, a datacenter VPS): no LAN, no gateway, so no
+proxy. They take the <code dir="auto">global</code> harmonia over the tailnet and the fleet key,
+without which they can pull nothing the fleet built.</li>
 </ul></div></aside>
 <ul>
 <li><strong>enable</strong> <code dir="auto">bool</code> the per-zone Nix binary-cache proxy (nginx in front of cache.nixos.org)</li>
