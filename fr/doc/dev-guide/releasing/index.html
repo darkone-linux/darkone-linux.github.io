@@ -290,13 +290,16 @@ sur la ligne <code dir="auto">MAJEUR.MINEUR</code> du framework, puis le site es
 </li>
 <li>
 <p><strong>Boilerplate et exemple</strong> : le tag du framework est écrit dans leur
-<code dir="auto">flake.nix</code>, <code dir="auto">nix flake check</code> valide, le <code dir="auto">flake.lock</code> est <strong>commité</strong>
-(c’est lui qui rend un clone reproductible), puis changelog et tag
-identique à celui du framework.</p>
+<code dir="auto">flake.nix</code>, le <code dir="auto">flake.lock</code> est <strong>commité</strong> (c’est lui qui rend un clone
+reproductible), puis changelog et tag identique à celui du framework.
+<code dir="auto">nix flake check</code> valide l’exemple ; le boilerplate, livré sans
+<code dir="auto">var/generated/</code>, n’a rien à évaluer avant <code dir="auto">just generate</code>.</p>
 </li>
 <li>
-<p><strong>Racine</strong> : <code dir="auto">just update-dnf</code>, puis commit du seul <code dir="auto">flake.lock</code>. La
-racine n’est jamais tagguée ni poussée.</p>
+<p><strong>Racine</strong> : <code dir="auto">just update-dnf</code>, commit du seul <code dir="auto">flake.lock</code>, puis
+poussée de la branche courante (sans tag), en tout dernier : son verrou
+pointe sur les releases publiées juste avant. La racine n’est jamais
+tagguée.</p>
 </li>
 </ol>
 <p>Seul le framework suit le <code dir="auto">niveau</code> passé à la recette. Générateur et
