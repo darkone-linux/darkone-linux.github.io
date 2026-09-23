@@ -119,7 +119,8 @@ commande, depuis l’espace de co-développement.</p>
 
 
 
-<table><thead><tr><th>Dépôt</th><th>Source de vérité</th><th>Règle</th></tr></thead><tbody><tr><td><code dir="auto">darkone-nixos-framework</code></td><td><code dir="auto">VERSION</code></td><td>Référence du train</td></tr><tr><td><code dir="auto">dnf-generator</code></td><td><code dir="auto">Cargo.toml</code></td><td>Version propre, épinglée par le framework</td></tr><tr><td><code dir="auto">dnf-fleet-update</code></td><td><code dir="auto">package.json</code></td><td>Version propre, empaquetée par le framework</td></tr><tr><td><code dir="auto">dnf-doc</code></td><td><code dir="auto">package.json</code></td><td><code dir="auto">MAJEUR.MINEUR</code> du framework, correctif propre</td></tr><tr><td><code dir="auto">dnf-boilerplate</code>, <code dir="auto">dnf-example</code></td><td>tag seul</td><td>Miroir du framework</td></tr></tbody></table>
+<table><thead><tr><th>Dépôt</th><th>Source de vérité</th><th>Règle</th></tr></thead><tbody><tr><td><code dir="auto">darkone-nixos-framework</code></td><td><code dir="auto">VERSION</code></td><td>Référence du train</td></tr><tr><td><code dir="auto">dnf-generator</code></td><td><code dir="auto">Cargo.toml</code></td><td>Version propre, épinglée par le framework</td></tr><tr><td><code dir="auto">dnf-fleet-update</code></td><td><code dir="auto">package.json</code></td><td>Version propre, empaquetée par le framework</td></tr><tr><td><code dir="auto">dnf-doc</code></td><td><code dir="auto">package.json</code></td><td><code dir="auto">MAJEUR.MINEUR</code> du framework, correctif propre</td></tr><tr><td><code dir="auto">dnf-boilerplate</code>, <code dir="auto">dnf-example</code></td><td>dernier tag</td><td>Miroir du framework</td></tr></tbody></table>
+<p>Les six dépôts tiennent un <code dir="auto">CHANGELOG.md</code> généré, modèles compris.</p>
 <p>Le projet privé consommateur n’est jamais taggué : il reste en
 co-développement et sert de banc d’intégration permanent.</p>
 
@@ -171,7 +172,13 @@ en local via le hook <code dir="auto">commit-msg</code>, à installer une fois p
 
 
 
-<table><thead><tr><th>Type</th><th>Section du changelog</th></tr></thead><tbody><tr><td><code dir="auto">feat</code></td><td>Added</td></tr><tr><td><code dir="auto">fix</code></td><td>Fixed</td></tr><tr><td><code dir="auto">security</code></td><td>Security</td></tr><tr><td><code dir="auto">perf</code>, <code dir="auto">refactor</code>, <code dir="auto">revert</code></td><td>Changed</td></tr><tr><td><code dir="auto">docs</code></td><td>Documentation</td></tr><tr><td>sujet en <code dir="auto">drop</code> ou <code dir="auto">remove</code></td><td>Removed</td></tr><tr><td><code dir="auto">chore</code>, <code dir="auto">ci</code>, <code dir="auto">test</code>, <code dir="auto">build</code></td><td>non publié</td></tr></tbody></table>
+
+
+
+
+<table><thead><tr><th>Type</th><th>Section du changelog</th></tr></thead><tbody><tr><td><code dir="auto">feat</code></td><td>Added</td></tr><tr><td><code dir="auto">fix</code></td><td>Fixed</td></tr><tr><td><code dir="auto">security</code></td><td>Security</td></tr><tr><td><code dir="auto">perf</code>, <code dir="auto">refactor</code>, <code dir="auto">revert</code></td><td>Changed</td></tr><tr><td><code dir="auto">docs</code></td><td>Documentation</td></tr><tr><td><code dir="auto">chore(deps)</code></td><td>Dependencies</td></tr><tr><td>sujet en <code dir="auto">drop</code> ou <code dir="auto">remove</code></td><td>Removed</td></tr><tr><td>autres <code dir="auto">chore</code>, <code dir="auto">ci</code>, <code dir="auto">test</code>, <code dir="auto">build</code></td><td>non publié</td></tr></tbody></table>
+<p><code dir="auto">chore(deps)</code> est le commit d’épinglage du train : l’entrée du framework
+nomme ainsi le générateur et le <code dir="auto">fleet-update</code> qu’elle embarque.</p>
 <aside aria-label="Marquer une rupture" class="starlight-aside starlight-aside--caution"><p class="starlight-aside__title" aria-hidden="true"><svg aria-hidden="true" class="starlight-aside__icon astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M12 16a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm10.67 1.47-8.05-14a3 3 0 0 0-5.24 0l-8 14A3 3 0 0 0 3.94 22h16.12a3 3 0 0 0 2.61-4.53Zm-1.73 2a1 1 0 0 1-.88.51H3.94a1 1 0 0 1-.88-.51 1 1 0 0 1 0-1l8-14a1 1 0 0 1 1.78 0l8.05 14a1 1 0 0 1 .05 1.02v-.02ZM12 8a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V9a1 1 0 0 0-1-1Z"/></svg>Marquer une rupture</p><div class="starlight-aside__content"><p>Une rupture porte un <code dir="auto">!</code> après le scope, et son sujet nomme la surface cassée.
 Pas de pied <code dir="auto">BREAKING CHANGE:</code> : le message tient sur une ligne, la migration
 est décrite dans la documentation. C’est le <code dir="auto">!</code> qui déclenche la section
@@ -207,13 +214,19 @@ est décrite dans la documentation. C’est le <code dir="auto">!</code> qui dé
 
 
 
-<table><thead><tr><th>Recette</th><th>Effet</th></tr></thead><tbody><tr><td><code dir="auto">just versions</code></td><td>Version, dernier tag et branche de chaque dépôt</td></tr><tr><td><code dir="auto">just changelog</code></td><td>Aperçu de la prochaine entrée, n’écrit rien</td></tr><tr><td><code dir="auto">just bump [niveau]</code></td><td>Version, changelog, commit et tag d’<strong>un</strong> dépôt</td></tr><tr><td><code dir="auto">just release [niveau]</code></td><td>Le train complet sur les six dépôts</td></tr><tr><td><code dir="auto">just version</code></td><td>Version, révision et générateur épinglé du framework</td></tr></tbody></table>
+<table><thead><tr><th>Recette</th><th>Effet</th></tr></thead><tbody><tr><td><code dir="auto">just versions</code></td><td>Version, dernier tag et branche de chaque dépôt</td></tr><tr><td><code dir="auto">just changelog</code></td><td>Aperçu de la prochaine entrée, n’écrit rien</td></tr><tr><td><code dir="auto">just bump [niveau]</code></td><td>Version, changelog, commit et tag d’<strong>un</strong> dépôt</td></tr><tr><td><code dir="auto">just release [niveau]</code></td><td>Le train complet sur les six dépôts (+ la racine)</td></tr><tr><td><code dir="auto">just version</code></td><td>Version, révision et générateur épinglé du framework</td></tr></tbody></table>
 <p>Le niveau vaut <code dir="auto">auto</code> par défaut : <a href="https://git-cliff.org/" target="_blank" rel="nofollow">git-cliff<span> 🡕</span></a> déduit
 le numéro suivant des commits. <code dir="auto">patch</code>, <code dir="auto">minor</code>, <code dir="auto">major</code> ou un <code dir="auto">X.Y.Z</code> littéral
-forcent la décision.</p>
-<p><code dir="auto">just bump</code> ne pousse jamais : il affiche la commande de poussée. Deux drapeaux
-passent au script : <code dir="auto">--dry-run</code> montre l’entrée puis restaure le fichier sans
-rien commiter, <code dir="auto">--yes</code> enchaîne sans confirmation.</p>
+forcent la décision. Des commits non publiés seuls (un <code dir="auto">chore(deps)</code>, par
+exemple) donnent un correctif.</p>
+<p><code dir="auto">just bump</code> ne pousse jamais : il affiche la commande de poussée. Il refuse de
+publier si <code dir="auto">HEAD</code> porte déjà le dernier tag <code dir="auto">v*</code>. Trois drapeaux passent au
+script :</p>
+<ul>
+<li><code dir="auto">--dry-run</code> : montre l’entrée puis restaure le fichier, sans rien commiter ;</li>
+<li><code dir="auto">--yes</code> : enchaîne sans confirmation ni passage dans <code dir="auto">$EDITOR</code> ;</li>
+<li><code dir="auto">--next</code> : affiche la version que prendrait la release, puis s’arrête.</li>
+</ul>
 <aside aria-label="Lancer depuis l'environnement de développement" class="starlight-aside starlight-aside--tip"><p class="starlight-aside__title" aria-hidden="true"><svg aria-hidden="true" class="starlight-aside__icon astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path fill-rule="evenodd" d="M1.44 8.855v-.001l3.527-3.516c.34-.344.802-.541 1.285-.548h6.649l.947-.947c3.07-3.07 6.207-3.072 7.62-2.868a1.821 1.821 0 0 1 1.557 1.557c.204 1.413.203 4.55-2.868 7.62l-.946.946v6.649a1.845 1.845 0 0 1-.549 1.286l-3.516 3.528a1.844 1.844 0 0 1-3.11-.944l-.858-4.275-4.52-4.52-2.31-.463-1.964-.394A1.847 1.847 0 0 1 .98 10.693a1.843 1.843 0 0 1 .46-1.838Zm5.379 2.017-3.873-.776L6.32 6.733h4.638l-4.14 4.14Zm8.403-5.655c2.459-2.46 4.856-2.463 5.89-2.33.134 1.035.13 3.432-2.329 5.891l-6.71 6.71-3.561-3.56 6.71-6.711Zm-1.318 15.837-.776-3.873 4.14-4.14v4.639l-3.364 3.374Z" clip-rule="evenodd"/><path d="M9.318 18.345a.972.972 0 0 0-1.86-.561c-.482 1.435-1.687 2.204-2.934 2.619a8.22 8.22 0 0 1-1.23.302c.062-.365.157-.79.303-1.229.415-1.247 1.184-2.452 2.62-2.935a.971.971 0 1 0-.62-1.842c-.12.04-.236.084-.35.13-2.02.828-3.012 2.588-3.493 4.033a10.383 10.383 0 0 0-.51 2.845l-.001.016v.063c0 .536.434.972.97.972H2.24a7.21 7.21 0 0 0 .878-.065c.527-.063 1.248-.19 2.02-.447 1.445-.48 3.205-1.472 4.033-3.494a5.828 5.828 0 0 0 .147-.407Z"/></svg>Lancer depuis l&#39;environnement de développement</p><div class="starlight-aside__content"><p><code dir="auto">bump</code> et <code dir="auto">changelog</code> appellent <a href="https://git-cliff.org/" target="_blank" rel="nofollow">git-cliff<span> 🡕</span></a>, absent du
 <code dir="auto">PATH</code> par défaut. Entrer dans l’environnement avec <code dir="auto">just develop</code> avant de
 publier.</p></div></aside>
@@ -223,60 +236,82 @@ publier.</p></div></aside>
 de versions compagnes ou une note de migration s’écrivent sous
 <code dir="auto">## [Unreleased]</code> dans le <code dir="auto">CHANGELOG.md</code> : à la publication, le script vide
 cette section et replie son contenu en tête de l’entrée, avant les rubriques
-générées.</p>
+générées. Le train ne s’arrête pas pour éditer : ces notes s’écrivent
+<strong>avant</strong> de le lancer.</p>
 <aside aria-label="Ne rien laisser après les notes" class="starlight-aside starlight-aside--caution"><p class="starlight-aside__title" aria-hidden="true"><svg aria-hidden="true" class="starlight-aside__icon astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M12 16a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm10.67 1.47-8.05-14a3 3 0 0 0-5.24 0l-8 14A3 3 0 0 0 3.94 22h16.12a3 3 0 0 0 2.61-4.53Zm-1.73 2a1 1 0 0 1-.88.51H3.94a1 1 0 0 1-.88-.51 1 1 0 0 1 0-1l8-14a1 1 0 0 1 1.78 0l8.05 14a1 1 0 0 1 .05 1.02v-.02ZM12 8a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V9a1 1 0 0 0-1-1Z"/></svg>Ne rien laisser après les notes</p><div class="starlight-aside__content"><p>La section court jusqu’au titre <code dir="auto">##</code> suivant. Si les liens de référence de bas
 de page sont le dernier contenu du fichier, ils sont avalés dans l’entrée
 publiée. Les retirer, le script les régénère.</p></div></aside>
 <aside aria-label="La toute première release" class="starlight-aside starlight-aside--note"><p class="starlight-aside__title" aria-hidden="true"><svg aria-hidden="true" class="starlight-aside__icon astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M12 11a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0v-4a1 1 0 0 0-1-1Zm.38-3.92a1 1 0 0 0-.76 0 1 1 0 0 0-.33.21 1.15 1.15 0 0 0-.21.33 1 1 0 0 0 .21 1.09c.097.088.209.16.33.21A1 1 0 0 0 13 8a1.05 1.05 0 0 0-.29-.71 1 1 0 0 0-.33-.21ZM12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 18a8 8 0 1 1 0-16.001A8 8 0 0 1 12 20Z"/></svg>La toute première release</p><div class="starlight-aside__content"><p>Sans tag <code dir="auto">v*</code>, <code dir="auto">auto</code> n’a rien à déduire : le script reprend la version
 déclarée telle quelle, et git-cliff remonte jusqu’au premier commit du dépôt.
-L’entrée couvre alors tout l’historique, à élaguer avant la poussée.</p></div></aside>
+L’entrée couvre alors tout l’historique. Un modèle, sans fichier de version,
+exige un <code dir="auto">X.Y.Z</code> explicite (le train passe celui du framework).</p></div></aside>
 
 <div class="sl-heading-wrapper level-h2"><h2 id="le-train-de-release">Le train de release</h2><a class="sl-anchor-link" href="#le-train-de-release"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section intitulée « Le train de release »</span></a></div>
 <p><code dir="auto">just release</code> s’exécute à la racine de l’espace de co-développement, qui doit
-contenir les six dépôts.</p>
+contenir les six dépôts. Chaque dépôt part dans l’ordre de ses dépendances, et
+seulement s’il a bougé depuis son dernier tag.</p>
 <ol role="list" class="sl-steps">
 <li>
-<p><strong>Barrière qualité</strong> : <code dir="auto">just check</code>, <code dir="auto">just gen-test</code> et
-<code dir="auto">just simulate all</code>. Les tests en machine virtuelle ne tournent pas dans
-l’intégration continue, donc un scénario rouge doit arrêter la publication
-ici. <code dir="auto">dnf-fleet-update</code> passe aussi ses barrières <code dir="auto">ci</code> et <code dir="auto">audit</code>, avec
-l’outillage de son <code dir="auto">nix develop</code>.</p>
+<p><strong>Contrôles préalables</strong> : outils présents (<code dir="auto">git-cliff</code>, <code dir="auto">jq</code>,
+<code dir="auto">nix-update</code>), dépôts propres, sur <code dir="auto">main</code>, à jour de <code dir="auto">origin</code>. Rien de long
+ne tourne avant.</p>
 </li>
 <li>
-<p><strong>Générateur</strong>, s’il a bougé depuis son dernier tag. Il possède le schéma
-<code dir="auto">etc/config.yaml</code>, donc il part avant ce qui en dépend.</p>
+<p><strong>Plan</strong> : version actuelle et prochaine de chaque dépôt, aperçu des
+entrées de changelog, puis <strong>une seule</strong> confirmation. Refuser n’écrit rien.
+Ensuite, tout est automatique.</p>
 </li>
 <li>
-<p><strong>Épinglage</strong> du tag du générateur dans <code dir="auto">dnf/flake.nix</code>, pour que le contrat
-entre framework et générateur se lise dans un diff, pas seulement dans le
-verrou.</p>
+<p><strong>Barrière globale</strong> : <code dir="auto">just check</code> (code et tests unitaires).</p>
 </li>
 <li>
-<p><strong>fleet-update</strong>, s’il a bougé depuis son dernier tag. Le framework
-l’empaquette, donc il part avant lui.</p>
+<p><strong>Générateur</strong>, s’il a bougé : <code dir="auto">just gen-test</code>, release et poussée. Il
+possède le schéma <code dir="auto">etc/config.yaml</code>, donc il part avant ce qui en dépend.
+Son tag est ensuite épinglé dans <code dir="auto">dnf/flake.nix</code> (commit <code dir="auto">chore(deps)</code>),
+pour que le contrat entre framework et générateur se lise dans un diff.</p>
 </li>
 <li>
-<p><strong>Épinglage</strong> du tag de <code dir="auto">fleet-update</code> dans <code dir="auto">dnf/pkgs/fleet-update</code>, par
-<code dir="auto">just pkg-update fleet-update &#x3C;version></code>, puis construction du paquet. À la
-première release, l’épinglage sur un commit de <code dir="auto">main</code> devient un épinglage
-sur le tag.</p>
+<p><strong>fleet-update</strong>, s’il a bougé : barrières <code dir="auto">ci</code> et <code dir="auto">audit</code> avec
+l’outillage de son <code dir="auto">nix develop</code>, release et poussée. Son tag est ensuite
+épinglé dans <code dir="auto">dnf/pkgs/fleet-update</code> par <code dir="auto">just pkg-update</code>, et le paquet
+est construit (commit <code dir="auto">chore(deps)</code>).</p>
 </li>
 <li>
-<p><strong>Framework</strong> : <code dir="auto">VERSION</code>, <code dir="auto">CHANGELOG.md</code>, commit et tag, puis poussée
-immédiate. Toute retouche de l’entrée après cette étape imposerait de forcer
-un tag déjà consommé par <code dir="auto">release.yml</code>, donc elle se fait avant.</p>
+<p><strong>Framework</strong> : <code dir="auto">just simulate all</code> tourne <strong>après</strong> les épinglages,
+donc sur les dépendances réellement livrées. Les tests en machine virtuelle
+ne tournent pas dans l’intégration continue : un scénario rouge arrête
+le train ici. Puis <code dir="auto">VERSION</code>, <code dir="auto">CHANGELOG.md</code>, commit, tag et poussée.</p>
 </li>
 <li>
-<p><strong>Documentation</strong> : <code dir="auto">just codegen</code> régénère la référence depuis le
-framework, puis la version s’aligne sur la ligne <code dir="auto">MAJEUR.MINEUR</code>, puis le
-site est construit et déployé.</p>
+<p><strong>Documentation</strong> : <code dir="auto">just codegen</code> régénère la référence, puis
+traduction et normalisation. S’il y a quelque chose à publier, le site est
+construit (avant le tag, pour qu’un lien cassé bloque), la version s’aligne
+sur la ligne <code dir="auto">MAJEUR.MINEUR</code> du framework, puis le site est déployé.</p>
 </li>
 <li>
 <p><strong>Boilerplate et exemple</strong> : le tag du framework est écrit dans leur
-<code dir="auto">flake.nix</code>, <code dir="auto">nix flake check</code> valide, et le <code dir="auto">flake.lock</code> est <strong>commité</strong>.
-C’est lui qui rend un clone reproductible.</p>
+<code dir="auto">flake.nix</code>, <code dir="auto">nix flake check</code> valide, le <code dir="auto">flake.lock</code> est <strong>commité</strong>
+(c’est lui qui rend un clone reproductible), puis changelog et tag
+identique à celui du framework.</p>
+</li>
+<li>
+<p><strong>Racine</strong> : <code dir="auto">just update-dnf</code>, puis commit du seul <code dir="auto">flake.lock</code>. La
+racine n’est jamais tagguée ni poussée.</p>
 </li>
 </ol>
+<p>Seul le framework suit le <code dir="auto">niveau</code> passé à la recette. Générateur et
+<code dir="auto">fleet-update</code> restent en <code dir="auto">auto</code>, la documentation suit la ligne du framework,
+les modèles son numéro.</p>
+<p>Chaque dépôt est poussé avec <strong>son</strong> tag seul (<code dir="auto">git push --atomic origin main refs/tags/vX.Y.Z</code>), jamais avec <code dir="auto">--tags</code> : les tags locaux de travail
+restent locaux.</p>
+<aside aria-label="Relancer le train" class="starlight-aside starlight-aside--tip"><p class="starlight-aside__title" aria-hidden="true"><svg aria-hidden="true" class="starlight-aside__icon astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path fill-rule="evenodd" d="M1.44 8.855v-.001l3.527-3.516c.34-.344.802-.541 1.285-.548h6.649l.947-.947c3.07-3.07 6.207-3.072 7.62-2.868a1.821 1.821 0 0 1 1.557 1.557c.204 1.413.203 4.55-2.868 7.62l-.946.946v6.649a1.845 1.845 0 0 1-.549 1.286l-3.516 3.528a1.844 1.844 0 0 1-3.11-.944l-.858-4.275-4.52-4.52-2.31-.463-1.964-.394A1.847 1.847 0 0 1 .98 10.693a1.843 1.843 0 0 1 .46-1.838Zm5.379 2.017-3.873-.776L6.32 6.733h4.638l-4.14 4.14Zm8.403-5.655c2.459-2.46 4.856-2.463 5.89-2.33.134 1.035.13 3.432-2.329 5.891l-6.71 6.71-3.561-3.56 6.71-6.711Zm-1.318 15.837-.776-3.873 4.14-4.14v4.639l-3.364 3.374Z" clip-rule="evenodd"/><path d="M9.318 18.345a.972.972 0 0 0-1.86-.561c-.482 1.435-1.687 2.204-2.934 2.619a8.22 8.22 0 0 1-1.23.302c.062-.365.157-.79.303-1.229.415-1.247 1.184-2.452 2.62-2.935a.971.971 0 1 0-.62-1.842c-.12.04-.236.084-.35.13-2.02.828-3.012 2.588-3.493 4.033a10.383 10.383 0 0 0-.51 2.845l-.001.016v.063c0 .536.434.972.97.972H2.24a7.21 7.21 0 0 0 .878-.065c.527-.063 1.248-.19 2.02-.447 1.445-.48 3.205-1.472 4.033-3.494a5.828 5.828 0 0 0 .147-.407Z"/></svg>Relancer le train</p><div class="starlight-aside__content"><p>Le train est idempotent. Sans rien de nouveau, il s’arrête au plan :
+« Nothing to release ». Après un échec, il reprend là où il s’est arrêté :
+les dépôts déjà taggués sont sautés, les épinglages commités restent acquis.
+Seul un déploiement du site raté se relance à la main :
+<code dir="auto">just --justfile doc/Justfile --working-directory doc deploy "Release vX.Y.Z"</code>.</p></div></aside>
+<aside aria-label="Un modèle ne précède jamais le framework" class="starlight-aside starlight-aside--caution"><p class="starlight-aside__title" aria-hidden="true"><svg aria-hidden="true" class="starlight-aside__icon astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M12 16a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm10.67 1.47-8.05-14a3 3 0 0 0-5.24 0l-8 14A3 3 0 0 0 3.94 22h16.12a3 3 0 0 0 2.61-4.53Zm-1.73 2a1 1 0 0 1-.88.51H3.94a1 1 0 0 1-.88-.51 1 1 0 0 1 0-1l8-14a1 1 0 0 1 1.78 0l8.05 14a1 1 0 0 1 .05 1.02v-.02ZM12 8a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V9a1 1 0 0 0-1-1Z"/></svg>Un modèle ne précède jamais le framework</p><div class="starlight-aside__content"><p>Un modèle porte le numéro du framework. S’il a bougé sans que le framework
+bouge, le train l’annonce et le laisse : il partira avec la prochaine
+release du framework.</p></div></aside>
 
 <div class="sl-heading-wrapper level-h2"><h2 id="les-garde-fous-dintégration-continue">Les garde-fous d’intégration continue</h2><a class="sl-anchor-link" href="#les-garde-fous-dintégration-continue"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section intitulée « Les garde-fous d’intégration continue »</span></a></div>
 <p>Sur un tag <code dir="auto">v*</code>, <code dir="auto">release.yml</code> refuse de publier si :</p>
@@ -291,8 +326,8 @@ rejoués via <code dir="auto">workflow_call</code>, puis la section du changelog
 la <em>release</em> GitHub.</p>
 
 <div class="sl-heading-wrapper level-h2"><h2 id="configuration-partagée">Configuration partagée</h2><a class="sl-anchor-link" href="#configuration-partagée"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section intitulée « Configuration partagée »</span></a></div>
-<p>Un seul <a href="https://git-cliff.org/" target="_blank" rel="nofollow">git-cliff<span> 🡕</span></a> pour les quatre dépôts qui
-produisent un changelog, dans <code dir="auto">dnf/just/scripts/cliff.toml</code>. Le script
-<code dir="auto">dnf/just/scripts/bump.sh</code> découvre la source de version du dépôt
-(<code dir="auto">VERSION</code>, <code dir="auto">Cargo.toml</code> ou <code dir="auto">package.json</code>), assemble le fichier autour du bloc
-généré et préserve l’historique écrit à la main.</p></div><footer class="sl-flex astro-ddtxxk7k"><div class="meta sl-flex astro-ddtxxk7k"></div><div class="pagination-links print:hidden astro-b5raizh3" dir="ltr"><a href="/fr/doc/dev-guide/prometheus-alerts/" rel="prev" class="astro-b5raizh3"><svg aria-hidden="true" class="astro-b5raizh3 astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.5rem;"><path d="M17 11H9.41l3.3-3.29a1.004 1.004 0 1 0-1.42-1.42l-5 5a1 1 0 0 0-.21.33 1 1 0 0 0 0 .76 1 1 0 0 0 .21.33l5 5a1.002 1.002 0 0 0 1.639-.325 1 1 0 0 0-.219-1.095L9.41 13H17a1 1 0 0 0 0-2Z"/></svg><span class="astro-b5raizh3">Précédent<br class="astro-b5raizh3"><span class="link-title astro-b5raizh3">Alertes Prometheus</span></span></a><a href="/fr/doc/dev-guide/packages/" rel="next" class="astro-b5raizh3"><svg aria-hidden="true" class="astro-b5raizh3 astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.5rem;"><path d="M17.92 11.62a1.001 1.001 0 0 0-.21-.33l-5-5a1.003 1.003 0 1 0-1.42 1.42l3.3 3.29H7a1 1 0 0 0 0 2h7.59l-3.3 3.29a1.002 1.002 0 0 0 .325 1.639 1 1 0 0 0 1.095-.219l5-5a1 1 0 0 0 .21-.33 1 1 0 0 0 0-.76Z"/></svg><span class="astro-b5raizh3">Suivant<br class="astro-b5raizh3"><span class="link-title astro-b5raizh3">Paquets</span></span></a></div></footer></div></div></main></div></div></div></div></body></html>
+<p>Un seul <a href="https://git-cliff.org/" target="_blank" rel="nofollow">git-cliff<span> 🡕</span></a> pour les six dépôts, dans
+<code dir="auto">dnf/just/scripts/cliff.toml</code>. Le script <code dir="auto">dnf/just/scripts/bump.sh</code> découvre la
+source de version du dépôt (<code dir="auto">VERSION</code>, <code dir="auto">Cargo.toml</code>, <code dir="auto">package.json</code>, ou à
+défaut le dernier tag), assemble le fichier autour du bloc généré et préserve
+l’historique écrit à la main.</p></div><footer class="sl-flex astro-ddtxxk7k"><div class="meta sl-flex astro-ddtxxk7k"></div><div class="pagination-links print:hidden astro-b5raizh3" dir="ltr"><a href="/fr/doc/dev-guide/prometheus-alerts/" rel="prev" class="astro-b5raizh3"><svg aria-hidden="true" class="astro-b5raizh3 astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.5rem;"><path d="M17 11H9.41l3.3-3.29a1.004 1.004 0 1 0-1.42-1.42l-5 5a1 1 0 0 0-.21.33 1 1 0 0 0 0 .76 1 1 0 0 0 .21.33l5 5a1.002 1.002 0 0 0 1.639-.325 1 1 0 0 0-.219-1.095L9.41 13H17a1 1 0 0 0 0-2Z"/></svg><span class="astro-b5raizh3">Précédent<br class="astro-b5raizh3"><span class="link-title astro-b5raizh3">Alertes Prometheus</span></span></a><a href="/fr/doc/dev-guide/packages/" rel="next" class="astro-b5raizh3"><svg aria-hidden="true" class="astro-b5raizh3 astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.5rem;"><path d="M17.92 11.62a1.001 1.001 0 0 0-.21-.33l-5-5a1.003 1.003 0 1 0-1.42 1.42l3.3 3.29H7a1 1 0 0 0 0 2h7.59l-3.3 3.29a1.002 1.002 0 0 0 .325 1.639 1 1 0 0 0 1.095-.219l5-5a1 1 0 0 0 .21-.33 1 1 0 0 0 0-.76Z"/></svg><span class="astro-b5raizh3">Suivant<br class="astro-b5raizh3"><span class="link-title astro-b5raizh3">Paquets</span></span></a></div></footer></div></div></main></div></div></div></div></body></html>
