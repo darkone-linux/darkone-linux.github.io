@@ -108,7 +108,11 @@ défaut. La plus basse <strong>métrique</strong> l’emporte.</p>
 
 
 
-<table><thead><tr><th>Lien</th><th>Métrique</th></tr></thead><tbody><tr><td>WAN (la box)</td><td>100</td></tr><tr><td>Liaison de secours</td><td>200 + 10 × <code dir="auto">priority</code> (300 par défaut)</td></tr><tr><td>Lien sans Internet</td><td>métrique + 20000</td></tr></tbody></table>
+
+
+
+
+<table><thead><tr><th>Lien</th><th>Métrique</th></tr></thead><tbody><tr><td>WAN (la box)</td><td>100</td></tr><tr><td>Liaison de secours</td><td>200 + 10 × <code dir="auto">priority</code> (300 par défaut)</td></tr><tr><td>Lien de retour, en probation</td><td>métrique + 10000</td></tr><tr><td>Lien sans Internet</td><td>métrique + 20000</td></tr></tbody></table>
 <p>Trois situations sont couvertes :</p>
 
 
@@ -135,12 +139,46 @@ défaut. La plus basse <strong>métrique</strong> l’emporte.</p>
 
 
 
-<table><thead><tr><th>Situation</th><th>Détection</th><th>Effet</th></tr></thead><tbody><tr><td>Câble débranché, box éteinte, plus de bail DHCP</td><td>la route de la WAN disparaît</td><td>le noyau prend la route suivante</td></tr><tr><td>Box allumée mais Internet coupé</td><td>la sonde <code dir="auto">dnf-uplink-monitor</code> échoue 3 fois</td><td>la WAN passe à 20100, le secours prend le relais</td></tr><tr><td>Internet revenu sur la box</td><td>6 sondes réussies</td><td>retour sur la WAN</td></tr></tbody></table>
+
+
+
+
+
+<table><thead><tr><th>Situation</th><th>Détection</th><th>Effet</th></tr></thead><tbody><tr><td>Câble débranché, box éteinte, plus de bail DHCP</td><td>la route de la WAN disparaît</td><td>le noyau prend la route suivante</td></tr><tr><td>Box allumée mais Internet coupé</td><td>la sonde <code dir="auto">dnf-uplink-monitor</code> échoue 3 fois (environ 40 secondes)</td><td>la WAN passe à 20100, le secours prend le relais</td></tr><tr><td>Internet revenu sur la box</td><td>6 sondes réussies</td><td>retour sur la WAN</td></tr><tr><td>Câble débranché ou changé, box redémarrée, 3 tours sans route</td><td>perte de porteuse ou de route</td><td>le lien revient en probation (10100), puis retrouve sa place après 6 sondes réussies</td></tr></tbody></table>
+<aside aria-label="Pourquoi la probation" class="starlight-aside starlight-aside--tip"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path fill-rule="evenodd" d="M1.44 8.855v-.001l3.527-3.516c.34-.344.802-.541 1.285-.548h6.649l.947-.947c3.07-3.07 6.207-3.072 7.62-2.868a1.821 1.821 0 0 1 1.557 1.557c.204 1.413.203 4.55-2.868 7.62l-.946.946v6.649a1.845 1.845 0 0 1-.549 1.286l-3.516 3.528a1.844 1.844 0 0 1-3.11-.944l-.858-4.275-4.52-4.52-2.31-.463-1.964-.394A1.847 1.847 0 0 1 .98 10.693a1.843 1.843 0 0 1 .46-1.838Zm5.379 2.017-3.873-.776L6.32 6.733h4.638l-4.14 4.14Zm8.403-5.655c2.459-2.46 4.856-2.463 5.89-2.33.134 1.035.13 3.432-2.329 5.891l-6.71 6.71-3.561-3.56 6.71-6.711Zm-1.318 15.837-.776-3.873 4.14-4.14v4.639l-3.364 3.374Z" clip-rule="evenodd"></path><path d="M9.318 18.345a.972.972 0 0 0-1.86-.561c-.482 1.435-1.687 2.204-2.934 2.619a8.22 8.22 0 0 1-1.23.302c.062-.365.157-.79.303-1.229.415-1.247 1.184-2.452 2.62-2.935a.971.971 0 1 0-.62-1.842c-.12.04-.236.084-.35.13-2.02.828-3.012 2.588-3.493 4.033a10.383 10.383 0 0 0-.51 2.845l-.001.016v.063c0 .536.434.972.97.972H2.24a7.21 7.21 0 0 0 .878-.065c.527-.063 1.248-.19 2.02-.447 1.445-.48 3.205-1.472 4.033-3.494a5.828 5.828 0 0 0 .147-.407Z"></path></svg>Pourquoi la probation</p><div class="starlight-aside__content"><p>Une box qui redémarre distribue souvent un bail avant d’avoir Internet. Sans
+probation, la zone y retournerait aussitôt, pour une coupure d’environ 40
+secondes. Même effet avec un câble changé de box en quelques secondes.
+Un lien en probation passe derrière les liens sains, mais devant les liens
+morts.</p></div></aside>
 <p>La sonde envoie un ping <strong>par chaque lien</strong> (1.1.1.1 et 9.9.9.9, toutes les 10
 secondes). Elle ne dépend pas du DNS : elle vise des adresses IP.</p>
-<aside aria-label="Veille chaude" class="starlight-aside starlight-aside--note"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 11a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0v-4a1 1 0 0 0-1-1Zm.38-3.92a1 1 0 0 0-.76 0 1 1 0 0 0-.33.21 1.15 1.15 0 0 0-.21.33 1 1 0 0 0 .21 1.09c.097.088.209.16.33.21A1 1 0 0 0 13 8a1.05 1.05 0 0 0-.29-.71 1 1 0 0 0-.33-.21ZM12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 18a8 8 0 1 1 0-16.001A8 8 0 0 1 12 20Z"></path></svg>Veille chaude</p><div class="starlight-aside__content"><p>Une liaison de secours reste connectée quand elle est disponible (partage du
-téléphone allumé, câble branché). La métrique garde le trafic sur la box tant
-qu’elle fonctionne.</p></div></aside>
+<p>Les deux types de liaison n’attendent pas de la même façon :</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Type</th><th>En attente</th><th>Réveil</th></tr></thead><tbody><tr><td><code dir="auto">ethernet</code></td><td>connecté, sans trafic (la métrique garde tout sur la box)</td><td>immédiat</td></tr><tr><td><code dir="auto">wifi</code></td><td>radio coupée (<code dir="auto">rfkill</code>) : aucune connexion au partage</td><td>dès qu’aucun lien préféré n’atteint Internet</td></tr></tbody></table>
+<aside aria-label="Wifi en veille radio" class="starlight-aside starlight-aside--note"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 11a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0v-4a1 1 0 0 0-1-1Zm.38-3.92a1 1 0 0 0-.76 0 1 1 0 0 0-.33.21 1.15 1.15 0 0 0-.21.33 1 1 0 0 0 .21 1.09c.097.088.209.16.33.21A1 1 0 0 0 13 8a1.05 1.05 0 0 0-.29-.71 1 1 0 0 0-.33-.21ZM12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 18a8 8 0 1 1 0-16.001A8 8 0 0 1 12 20Z"></path></svg>Wifi en veille radio</p><div class="starlight-aside__content"><p>Un partage de téléphone est facturé au volume et vide la batterie. La radio ne
+s’allume donc que si la WAN <strong>et</strong> les liaisons de meilleure priorité sont en
+panne (3 sondes ratées ou plus de route). Elle se recoupe dès qu’un lien
+préféré a réussi 6 sondes d’affilée. Compter environ une minute entre la panne
+et le trafic sur le wifi.</p></div></aside>
 
 <div class="sl-heading-wrapper level-h2"><h2 id="déclarer-une-liaison-de-secours">Déclarer une liaison de secours</h2><a class="sl-anchor-link" href="#déclarer-une-liaison-de-secours"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section intitulée « Déclarer une liaison de secours »</span></a></div>
 <ol role="list" class="sl-steps">
@@ -188,7 +226,7 @@ point d’accès wifi.</p>
 </ol>
 
 <div class="sl-heading-wrapper level-h2"><h2 id="vérifier">Vérifier</h2><a class="sl-anchor-link" href="#vérifier"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section intitulée « Vérifier »</span></a></div>
-<div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Fenêtre de terminal</span></figcaption><pre data-language="sh"><code><div class="ec-line"><div class="code"><span style="--0:#82AAFF;--1:#3B61B0">networkctl</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">list</span><span style="--0:#D6DEEB;--1:#403F53">                       </span><span style="--0:#919F9F;--1:#5F636F"># le lien est « routable » quand il est actif</span></div></div><div class="ec-line"><div class="code"><span style="--0:#82AAFF;--1:#3B61B0">ip</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#82AAFF;--1:#3B61B0">-4</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">route</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">show</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">default</span><span style="--0:#D6DEEB;--1:#403F53">              </span><span style="--0:#919F9F;--1:#5F636F"># la première ligne est le lien utilisé</span></div></div><div class="ec-line"><div class="code"><span style="--0:#82AAFF;--1:#3B61B0">journalctl</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#82AAFF;--1:#3B61B0">-u</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">dnf-uplink-monitor</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#82AAFF;--1:#3B61B0">-f</span><span style="--0:#D6DEEB;--1:#403F53">   </span><span style="--0:#919F9F;--1:#5F636F"># bascules, en direct</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copier dans le presse-papiers" data-copied="Copié !" data-code="networkctl list                       # le lien est « routable » quand il est actifip -4 route show default              # la première ligne est le lien utiliséjournalctl -u dnf-uplink-monitor -f   # bascules, en direct"><div></div></button></div></figure></div>
+<div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Fenêtre de terminal</span></figcaption><pre data-language="sh"><code><div class="ec-line"><div class="code"><span style="--0:#82AAFF;--1:#3B61B0">networkctl</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">list</span><span style="--0:#D6DEEB;--1:#403F53">                       </span><span style="--0:#919F9F;--1:#5F636F"># le lien est « routable » quand il est actif</span></div></div><div class="ec-line"><div class="code"><span style="--0:#82AAFF;--1:#3B61B0">ip</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#82AAFF;--1:#3B61B0">-4</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">route</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">show</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">default</span><span style="--0:#D6DEEB;--1:#403F53">              </span><span style="--0:#919F9F;--1:#5F636F"># la première ligne est le lien utilisé</span></div></div><div class="ec-line"><div class="code"><span style="--0:#82AAFF;--1:#3B61B0">rfkill</span><span style="--0:#D6DEEB;--1:#403F53">                                </span><span style="--0:#919F9F;--1:#5F636F"># radio wifi de secours « bloqué » en veille</span></div></div><div class="ec-line"><div class="code"><span style="--0:#82AAFF;--1:#3B61B0">journalctl</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#82AAFF;--1:#3B61B0">-u</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">dnf-uplink-monitor</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#82AAFF;--1:#3B61B0">-f</span><span style="--0:#D6DEEB;--1:#403F53">   </span><span style="--0:#919F9F;--1:#5F636F"># bascules et réveils radio, en direct</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copier dans le presse-papiers" data-copied="Copié !" data-code="networkctl list                       # le lien est « routable » quand il est actifip -4 route show default              # la première ligne est le lien utilisérfkill                                # radio wifi de secours « bloqué » en veillejournalctl -u dnf-uplink-monitor -f   # bascules et réveils radio, en direct"><div></div></button></div></figure></div>
 <p>Avec la box en panne et le téléphone en partage de connexion :</p>
 <div class="expressive-code"><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="plaintext"><code><div class="ec-line"><div class="code"><span style="--0:#d6deeb;--1:#403f53">default via 192.168.1.254 dev enp1s0 proto dhcp src 192.168.1.10 metric 20100</span></div></div><div class="ec-line"><div class="code"><span style="--0:#d6deeb;--1:#403f53">default via 192.168.43.1 dev wlp4s0 proto dhcp src 192.168.43.20 metric 300</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copier dans le presse-papiers" data-copied="Copié !" data-code="default via 192.168.1.254 dev enp1s0 proto dhcp src 192.168.1.10 metric 20100default via 192.168.43.1 dev wlp4s0 proto dhcp src 192.168.43.20 metric 300"><div></div></button></div></figure></div>
 
@@ -226,7 +264,7 @@ point d’accès wifi.</p>
 <table><thead><tr><th>Option</th><th>Défaut</th><th>Rôle</th></tr></thead><tbody><tr><td><code dir="auto">darkone.host.gateway.linkCheck.targets</code></td><td><code dir="auto">1.1.1.1</code>, <code dir="auto">9.9.9.9</code></td><td>adresses pingées, une réponse suffit</td></tr><tr><td><code dir="auto">darkone.host.gateway.linkCheck.interval</code></td><td>10</td><td>secondes entre deux tours</td></tr><tr><td><code dir="auto">darkone.host.gateway.linkCheck.failAfter</code></td><td>3</td><td>échecs avant de pénaliser un lien</td></tr><tr><td><code dir="auto">darkone.host.gateway.linkCheck.recoverAfter</code></td><td>6</td><td>succès avant de le rétablir</td></tr></tbody></table>
 
 <div class="sl-heading-wrapper level-h2"><h2 id="supervision">Supervision</h2><a class="sl-anchor-link" href="#supervision"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section intitulée « Supervision »</span></a></div>
-<p>La sonde publie deux métriques pour Prometheus :</p>
+<p>La sonde publie trois métriques pour Prometheus :</p>
 
 
 
@@ -244,7 +282,11 @@ point d’accès wifi.</p>
 
 
 
-<table><thead><tr><th>Métrique</th><th>Valeur</th></tr></thead><tbody><tr><td><code dir="auto">dnf_gateway_link_up</code></td><td>1 si le lien a une route et atteint Internet</td></tr><tr><td><code dir="auto">dnf_gateway_link_active</code></td><td>1 sur le lien qui porte la route par défaut</td></tr></tbody></table>
+
+
+
+
+<table><thead><tr><th>Métrique</th><th>Valeur</th></tr></thead><tbody><tr><td><code dir="auto">dnf_gateway_link_up</code></td><td>1 si le lien a une route et atteint Internet</td></tr><tr><td><code dir="auto">dnf_gateway_link_active</code></td><td>1 sur le lien qui porte la route par défaut</td></tr><tr><td><code dir="auto">dnf_gateway_link_standby</code></td><td>1 sur une radio wifi de secours coupée en attente</td></tr></tbody></table>
 <p>L’alerte <code dir="auto">GatewayOnBackupLink</code> (avertissement) se déclenche après 2 minutes sur
 une liaison de secours.</p>
 
