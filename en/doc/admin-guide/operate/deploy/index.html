@@ -221,10 +221,10 @@ of the project and of <code dir="auto">dnf/</code> have not moved and the paths 
 store; otherwise they are redone. Nothing to resume: exit code <code dir="auto">2</code>, no run.</p></div></aside>
 
 <div class="sl-heading-wrapper level-h3"><h3 id="distributed-build">Distributed build</h3><a class="sl-anchor-link" href="#distributed-build"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Distributed build”</span></a></div>
-<p>The deployment machine must not be the fleet’s bottleneck. Each host is
-therefore built by the <strong>builder elected</strong> for it. The election is recomputed at
-every run from <code dir="auto">var/generated/</code>, never declared: changing the deployment
-topology must not rebuild the fleet.</p>
+<p>The deployment machine must not be the bottleneck of the fleet. Each host is
+therefore built by the <strong>elected builder</strong> for it. The election is recomputed at
+each run from <code dir="auto">var/generated/</code>, never declared: changing the deployment topology
+must not rebuild the fleet.</p>
 
 
 
@@ -257,27 +257,33 @@ topology must not rebuild the fleet.</p>
 
 <table><thead><tr><th>Order</th><th>Builder kept</th><th>Condition</th></tr></thead><tbody><tr><td>1</td><td>The host itself</td><td><code dir="auto">auto-build</code> feature declared on the host</td></tr><tr><td>2</td><td>The <code dir="auto">harmonia</code> host of its zone</td><td>The zone has one</td></tr><tr><td>3</td><td>The <code dir="auto">global</code> <code dir="auto">harmonia</code> host</td><td>One exists in the fleet</td></tr><tr><td>4</td><td>The deployment machine</td><td>Default</td></tr></tbody></table>
 <p>The rule fits in one sentence: <strong>a builder must be able to serve what it
-builds</strong>. Hence the choice of <code dir="auto">harmonia</code> hosts, whose <code dir="auto">/nix/store</code> is already
-the cache of their zone, with nothing to bootstrap. A gateway without <code dir="auto">harmonia</code>
-is not suitable: its paths are in no substituter.</p>
-<p>The result stays at the builder’s. It is publication that then brings it to the
-zone’s hosts, over LAN, through their usual substituter.</p>
+builds</strong>. Hence the choice of <code dir="auto">harmonia</code> hosts, whose <code dir="auto">/nix/store</code> is already the
+cache of their zone, with nothing to bootstrap. A gateway without <code dir="auto">harmonia</code>
+does not fit: its paths are not in any substitute.</p>
+<p>The result stays on the builder. Publication then brings it to the hosts of the
+zone, over LAN, through their usual substitute.</p>
+<aside aria-label="nixpkgs sources downloaded by the builder" class="starlight-aside starlight-aside--note"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 11a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0v-4a1 1 0 0 0-1-1Zm.38-3.92a1 1 0 0 0-.76 0 1 1 0 0 0-.33.21 1.15 1.15 0 0 0-.21.33 1 1 0 0 0 .21 1.09c.097.088.209.16.33.21A1 1 0 0 0 13 8a1.05 1.05 0 0 0-.29-.71 1 1 0 0 0-.33-.21ZM12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 18a8 8 0 1 1 0-16.001A8 8 0 0 1 12 20Z"></path></svg><code dir="auto">nixpkgs</code> sources downloaded by the builder</p><div class="starlight-aside__content"><p>Each system embeds the <code dir="auto">nixpkgs</code> source (about 200 MiB), new at each update
+and absent from any cache. Before sending it the derivations, the tool therefore
+asks the builder to download itself, from GitHub, the sources locked in
+<code dir="auto">flake.lock</code> that its builds need: they no longer go through the upstream link of
+the deployment machine. A builder that cannot reach <code dir="auto">github.com</code> receives them
+pushed, as before, without failure.</p></div></aside>
 <div class="expressive-code"><figure class="frame has-title not-content"><figcaption class="header"><span class="title">etc/config.yaml</span></figcaption><pre data-language="yaml"><code><div class="ec-line"><div class="code"><span class="indent">    </span><span style="--0:#7FDBCA;--1:#111111">features</span><span style="--0:#D6DEEB;--1:#403F53">: [</span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#ECC48D;--1:#984E4D">auto-build</span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#D6DEEB;--1:#403F53">]</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copier dans le presse-papiers" data-copied="Copié !" data-code="    features: [&#x22;auto-build&#x22;]"><div></div></button></div></figure></div>
 <aside aria-label="When to declare auto-build" class="starlight-aside starlight-aside--tip"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path fill-rule="evenodd" d="M1.44 8.855v-.001l3.527-3.516c.34-.344.802-.541 1.285-.548h6.649l.947-.947c3.07-3.07 6.207-3.072 7.62-2.868a1.821 1.821 0 0 1 1.557 1.557c.204 1.413.203 4.55-2.868 7.62l-.946.946v6.649a1.845 1.845 0 0 1-.549 1.286l-3.516 3.528a1.844 1.844 0 0 1-3.11-.944l-.858-4.275-4.52-4.52-2.31-.463-1.964-.394A1.847 1.847 0 0 1 .98 10.693a1.843 1.843 0 0 1 .46-1.838Zm5.379 2.017-3.873-.776L6.32 6.733h4.638l-4.14 4.14Zm8.403-5.655c2.459-2.46 4.856-2.463 5.89-2.33.134 1.035.13 3.432-2.329 5.891l-6.71 6.71-3.561-3.56 6.71-6.711Zm-1.318 15.837-.776-3.873 4.14-4.14v4.639l-3.364 3.374Z" clip-rule="evenodd"></path><path d="M9.318 18.345a.972.972 0 0 0-1.86-.561c-.482 1.435-1.687 2.204-2.934 2.619a8.22 8.22 0 0 1-1.23.302c.062-.365.157-.79.303-1.229.415-1.247 1.184-2.452 2.62-2.935a.971.971 0 1 0-.62-1.842c-.12.04-.236.084-.35.13-2.02.828-3.012 2.588-3.493 4.033a10.383 10.383 0 0 0-.51 2.845l-.001.016v.063c0 .536.434.972.97.972H2.24a7.21 7.21 0 0 0 .878-.065c.527-.063 1.248-.19 2.02-.447 1.445-.48 3.205-1.472 4.033-3.494a5.828 5.828 0 0 0 .147-.407Z"></path></svg>When to declare <code dir="auto">auto-build</code></p><div class="starlight-aside__content"><p>A host that builds itself no longer receives any closure. This is decisive for a
-host isolated behind a slow link that embeds a large package missing from the
-public cache, and it is the answer for a host of a different architecture.</p><p>The choice is made <strong>per host</strong>, never per zone: RAM and disk are properties of
+host isolated behind a slow link that carries a large package absent from the
+public cache, and it is the answer for a host of another architecture.</p><p>The choice is made <strong>per host</strong>, never per zone: RAM and disk are properties of
 the machine. Counterpart to weigh: the closure of derivations, several hundred
-MiB, moves up to it at each run that moves <code dir="auto">nixpkgs</code>. It is the copy counters of
-the report that settle the case, not intuition.</p></div></aside>
-<aside aria-label="Automatic fallback" class="starlight-aside starlight-aside--note"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 11a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0v-4a1 1 0 0 0-1-1Zm.38-3.92a1 1 0 0 0-.76 0 1 1 0 0 0-.33.21 1.15 1.15 0 0 0-.21.33 1 1 0 0 0 .21 1.09c.097.088.209.16.33.21A1 1 0 0 0 13 8a1.05 1.05 0 0 0-.29-.71 1 1 0 0 0-.33-.21ZM12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 18a8 8 0 1 1 0-16.001A8 8 0 0 1 12 20Z"></path></svg>Automatic fallback</p><div class="starlight-aside__content"><p>Builder unreachable, failed, or of an architecture incompatible with its
-target → the build falls back to the deployment machine. No host fails because
-of a delegation, and the report names the builder that actually built.</p></div></aside>
+MiB, goes up to it at each run that moves <code dir="auto">nixpkgs</code>. It is the report’s copy
+counters that settle the case, not intuition.</p></div></aside>
+<aside aria-label="Automatic fallback" class="starlight-aside starlight-aside--note"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 11a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0v-4a1 1 0 0 0-1-1Zm.38-3.92a1 1 0 0 0-.76 0 1 1 0 0 0-.33.21 1.15 1.15 0 0 0-.21.33 1 1 0 0 0 .21 1.09c.097.088.209.16.33.21A1 1 0 0 0 13 8a1.05 1.05 0 0 0-.29-.71 1 1 0 0 0-.33-.21ZM12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 18a8 8 0 1 1 0-16.001A8 8 0 0 1 12 20Z"></path></svg>Automatic fallback</p><div class="starlight-aside__content"><p>Builder unreachable, failing, or of an architecture incompatible with its
+target → the build falls back to the deployment machine. No host fails
+because of a delegation, and the report names the builder that actually built.</p></div></aside>
 <p>The <code dir="auto">--no-distributed-build</code> option brings everything back to the center,
 whatever the election. It is a debugging escape hatch: the rule comes from the
 fleet, the exception from the command line.</p>
-<aside aria-label="A zone without harmonia is expensive" class="starlight-aside starlight-aside--caution"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 16a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm10.67 1.47-8.05-14a3 3 0 0 0-5.24 0l-8 14A3 3 0 0 0 3.94 22h16.12a3 3 0 0 0 2.61-4.53Zm-1.73 2a1 1 0 0 1-.88.51H3.94a1 1 0 0 1-.88-.51 1 1 0 0 1 0-1l8-14a1 1 0 0 1 1.78 0l8.05 14a1 1 0 0 1 .05 1.02v-.02ZM12 8a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V9a1 1 0 0 0-1-1Z"></path></svg>A zone without <code dir="auto">harmonia</code> is expensive</p><div class="starlight-aside__content"><p>Without a zone cache, there is neither a local builder nor a common source: each
-host gets its closure pushed to it, one by one, from the deployment machine. The
-report lists these zones and the pushed byte count shows it. Declare a
+<aside aria-label="A zone without harmonia is expensive" class="starlight-aside starlight-aside--caution"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 16a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm10.67 1.47-8.05-14a3 3 0 0 0-5.24 0l-8 14A3 3 0 0 0 3.94 22h16.12a3 3 0 0 0 2.61-4.53Zm-1.73 2a1 1 0 0 1-.88.51H3.94a1 1 0 0 1-.88-.51 1 1 0 0 1 0-1l8-14a1 1 0 0 1 1.78 0l8.05 14a1 1 0 0 1 .05 1.02v-.02ZM12 8a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V9a1 1 0 0 0-1-1Z"></path></svg>A zone without <code dir="auto">harmonia</code> is expensive</p><div class="starlight-aside__content"><p>Without a zone cache, there is neither local builder nor common source: each
+host gets its closure pushed, one by one, from the deployment machine. The
+report lists these zones and the number of pushed bytes shows it. Declare a
 <a href="#binary-cache"><code dir="auto">harmonia</code></a> on a host of the zone.</p></div></aside>
 
 <div class="sl-heading-wrapper level-h3"><h3 id="wave-order-and-critical-hosts">Wave order and critical hosts</h3><a class="sl-anchor-link" href="#wave-order-and-critical-hosts"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Wave order and critical hosts”</span></a></div>
