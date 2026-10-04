@@ -281,8 +281,13 @@ toujours chez le même détenteur : la passerelle de cette zone.</p>
 services déclarés. Un nom inconnu d’une autre zone part vers la passerelle de cette
 zone (adresse LAN, à travers le tailnet) ; le reste de <code dir="auto">domain.tld</code> part vers
 unbound, sur le HCS.</li>
-<li><strong>Services d’une zone</strong> : <code dir="auto">*.&#x3C;zone>.domain.tld</code> pointe vers l’adresse LAN de la
-passerelle de la zone, qui les sert derrière son proxy.</li>
+<li><strong>Services d’une zone</strong> : chaque service déclaré <code dir="auto">&#x3C;nom>.&#x3C;zone>.domain.tld</code>
+pointe vers l’adresse LAN de la passerelle de la zone, qui le sert derrière son proxy.</li>
+<li><strong>Services globaux servis par une zone</strong> (<code dir="auto">git.domain.tld</code> sur une passerelle) :
+unbound répond l’adresse LAN aux seules machines taguées, que la politique laisse
+entrer dans les zones. Les autres appareils reçoivent l’adresse publique du HCS, qui
+ne relaie que HTTPS. Adresses tailnet des machines lues dans Headscale par
+<code dir="auto">unbound-tailnet-view</code>.</li>
 <li><strong>HCS</strong> : unbound écoute sur <code dir="auto">127.0.0.1</code> et sur l’adresse tailnet du HCS, pour
 les seules adresses du tailnet. Il transmet <code dir="auto">&#x3C;zone>.domain.tld</code> au résolveur de la
 passerelle, à son adresse tailnet : d’où l’importance de déclarer <code dir="auto">vpn.ipv4</code>.</li>

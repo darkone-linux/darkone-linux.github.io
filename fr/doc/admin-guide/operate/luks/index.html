@@ -191,7 +191,7 @@ machine, <code dir="auto">just luks &#x3C;hôte> passwd</code> lui en donne une 
 n’en régénère jamais une nouvelle, cela invaliderait celle qu’a posée
 l’installation) ;</li>
 <li>sur une <strong>passerelle</strong>, relève l’<strong>IP WAN</strong> courante dans le manifeste
-(repli de <code dir="auto">just enter</code> et <code dir="auto">just unlock</code>, voir plus bas), à relancer si le
+(repli de <code dir="auto">just unlock</code>, voir plus bas), à relancer si le
 fournisseur d’accès renumérote ;</li>
 <li>si <strong>aucune passphrase gérée</strong> ne déverrouille le volume (hôte installé
 avant la bascule vers le formatage partagé), demande sa passphrase
@@ -252,8 +252,8 @@ quoi que ce soit, en silence, et sans rien dans le journal.</li>
 (<code dir="auto">token-timeout=</code>, réglé à 5 s).</p></div></aside>
 <p>À distance, l’initrd démarre un <strong>sshd dédié sur le port 2222</strong>, avec sa
 propre clé d’hôte persistante, accessible uniquement avec la clé de
-déploiement <code dir="auto">nix</code>. Deux façons d’y répondre :</p>
-<div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Fenêtre de terminal</span></figcaption><pre data-language="sh"><code><div class="ec-line"><div class="code"><span style="--0:#82AAFF;--1:#3B61B0">just</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">unlock</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">&#x3C;hôte></span><span style="--0:#D6DEEB;--1:#403F53">     </span><span style="--0:#919F9F;--1:#5F636F"># sans humain : la passphrase est lue dans sops</span></div></div><div class="ec-line"><div class="code"><span style="--0:#82AAFF;--1:#3B61B0">just</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">enter</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">&#x3C;hôte></span><span style="--0:#D6DEEB;--1:#403F53">      </span><span style="--0:#919F9F;--1:#5F636F"># interactif : le prompt est présenté au terminal</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copier dans le presse-papiers" data-copied="Copié !" data-code="just unlock <hôte>     # sans humain : la passphrase est lue dans sopsjust enter <hôte>      # interactif : le prompt est présenté au terminal"><div></div></button></div></figure></div>
+déploiement <code dir="auto">nix</code>. <code dir="auto">just unlock</code> y répond :</p>
+<div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Fenêtre de terminal</span></figcaption><pre data-language="sh"><code><div class="ec-line"><div class="code"><span style="--0:#82AAFF;--1:#3B61B0">just</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">unlock</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">&#x3C;hôte></span><span style="--0:#D6DEEB;--1:#403F53">     </span><span style="--0:#919F9F;--1:#5F636F"># passphrase lue dans sops, sinon demandée au terminal</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copier dans le presse-papiers" data-copied="Copié !" data-code="just unlock <hôte>     # passphrase lue dans sops, sinon demandée au terminal"><div></div></button></div></figure></div>
 <p><code dir="auto">just unlock</code> attend que le port 2222 apparaisse (un point par tentative), lit
 la passphrase <strong>partagée</strong> dans sops et la pousse dans l’initrd, puis vérifie
 que la machine a bien quitté son initrd avant d’annoncer un succès. Si elle est
@@ -267,11 +267,11 @@ le seul moyen d’entrer à ce moment-là.</p><p>Par ailleurs <code dir="auto">d
 si la passphrase a été acceptée : systemd se contente de redemander. Le seul
 témoin fiable est donc la machine qui quitte son initrd et répond sur le port 22,
 et c’est ce que <code dir="auto">just unlock</code> observe depuis le poste d’administration.</p></div></aside>
-<p><code dir="auto">just enter</code> fait la même chose en mode interactif : quand le port 22 ne
-répond pas, il sonde le 2222 sur l’IP explicite (si fournie), le nom d’hôte,
-puis l’<strong>IP WAN enregistrée dans le manifeste</strong>, et présente le prompt LUKS via
-<code dir="auto">systemd-tty-ask-password-agent</code>. Dans les deux cas, la passphrase acceptée, le
-démarrage continue et le port 22 revient.</p>
+<p>Aucune passphrase stockée acceptée, ou pas de clé d’infrastructure sur le
+poste : depuis un terminal, <code dir="auto">just unlock</code> présente le prompt LUKS via
+<code dir="auto">systemd-tty-ask-password-agent</code>. Il sonde le 2222 sur l’IP explicite (si
+fournie), le nom d’hôte, puis l’<strong>IP WAN enregistrée dans le manifeste</strong>. Dans
+les deux cas, la passphrase acceptée, le démarrage continue et le port 22 revient.</p>
 <aside aria-label="Pourquoi deux chemins" class="starlight-aside starlight-aside--note"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 11a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0v-4a1 1 0 0 0-1-1Zm.38-3.92a1 1 0 0 0-.76 0 1 1 0 0 0-.33.21 1.15 1.15 0 0 0-.21.33 1 1 0 0 0 .21 1.09c.097.088.209.16.33.21A1 1 0 0 0 13 8a1.05 1.05 0 0 0-.29-.71 1 1 0 0 0-.33-.21ZM12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 18a8 8 0 1 1 0-16.001A8 8 0 0 1 12 20Z"></path></svg>Pourquoi deux chemins</p><div class="starlight-aside__content"><p><code dir="auto">systemd-tty-ask-password-agent</code> ne parle qu’à un terminal : aucun script
 ne peut le piloter. L’initrd embarque donc un petit utilitaire <code dir="auto">dnf-unlock</code> qui
 prend la passphrase sur un tube et répond à toutes les demandes en attente.

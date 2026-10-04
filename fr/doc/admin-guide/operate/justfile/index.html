@@ -532,18 +532,18 @@ n’utiliser que pour une mise à jour régulière et testée.</p></div></aside>
 redémarrage, nettoyage et réparation du boot.</p>
 
 <div class="sl-heading-wrapper level-h3"><h3 id="️-enter-hôte--e-">✳️ <code dir="auto">enter &#x3C;hôte></code> / <code dir="auto">e</code> ⭐</h3><a class="sl-anchor-link" href="#️-enter-hôte--e-"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section intitulée « ✳️ enter &#x3C;hôte> / e ⭐ »</span></a></div>
-<p>Ouvre une session SSH interactive en tant que <code dir="auto">nix@&#x3C;hôte></code>. Si l’hôte attend
-sa passphrase LUKS au démarrage (port 22 fermé), bascule sur le sshd de son
-initrd (port 2222, avec repli sur l’IP WAN du manifeste pour une passerelle)
-et présente la demande de passphrase. Voir
-<a href="/fr/doc/admin-guide/operate/luks/">Chiffrement des disques (LUKS)</a>.</p>
+<p>Ouvre une session SSH interactive en tant que <code dir="auto">nix@&#x3C;hôte></code>, sur le port 22
+seulement. Un hôte hors de sa zone est retrouvé par <code dir="auto">dnf-locate</code> (voir
+<a href="/fr/doc/admin-guide/understand/network/#joindre-un-h%C3%B4te-en-d%C3%A9placement">Joindre un hôte en déplacement</a>).
+Un hôte qui attend sa passphrase LUKS relève de <code dir="auto">just unlock</code>.</p>
 <div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Fenêtre de terminal</span></figcaption><pre data-language="sh"><code><div class="ec-line"><div class="code"><span style="--0:#82AAFF;--1:#3B61B0">just</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">enter</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">myserver</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copier dans le presse-papiers" data-copied="Copié !" data-code="just enter myserver"><div></div></button></div></figure></div>
 
 <div class="sl-heading-wrapper level-h3"><h3 id="️-unlock-hôte-ip-délai">✳️ <code dir="auto">unlock &#x3C;hôte> [ip] [délai]</code></h3><a class="sl-anchor-link" href="#️-unlock-hôte-ip-délai"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section intitulée « ✳️ unlock &#x3C;hôte> [ip] [délai] »</span></a></div>
 <p>Répond au prompt LUKS d’un hôte resté dans son initrd, <strong>sans humain</strong> :
 la passphrase est lue dans sops et poussée par le sshd du port 2222. Attend que
 l’hôte apparaisse (un point par tentative), ce qui permet de l’enchaîner juste
-après un redémarrage. Appelée automatiquement par <code dir="auto">just full-install</code>.</p>
+après un redémarrage. Appelée automatiquement par <code dir="auto">just full-install</code>. Aucune
+passphrase stockée acceptée : depuis un terminal, la demande est présentée.</p>
 <p>Sur un hôte sans volume LUKS, c’est un no-op journalisé.</p>
 <div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Fenêtre de terminal</span></figcaption><pre data-language="sh"><code><div class="ec-line"><div class="code"><span style="--0:#82AAFF;--1:#3B61B0">just</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">unlock</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">myserver</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copier dans le presse-papiers" data-copied="Copié !" data-code="just unlock myserver"><div></div></button></div></figure></div>
 
