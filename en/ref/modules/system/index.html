@@ -93,6 +93,7 @@ It is required for the proper functioning of every NixOS computer on the local n
 <li>nightly store optimisation, weekly GC with 30 d retention (keep-last-N via
 <code dir="auto">gcKeepGenerations</code> on disk-constrained hosts);</li>
 <li>the firewall and key-only SSH;</li>
+<li>Ghostty’s <code dir="auto">xterm-ghostty</code> terminfo, so every host accepts the terminal;</li>
 <li>the suspend policy (<code dir="auto">disableSuspend</code> for servers);</li>
 <li>polkit rules letting <code dir="auto">wheel</code> halt/reboot;</li>
 <li>a shared <code dir="auto">common-files</code> group/user for cross-service media folders.</li>
