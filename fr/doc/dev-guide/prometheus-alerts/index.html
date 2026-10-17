@@ -225,6 +225,14 @@ valeurs de label : la liste des montages est donc résolue par la fonction
 <code dir="auto">query</code> du moteur de templates Go que Prometheus applique aux annotations
 (<code dir="auto">deviceMounts</code>). Coût : une requête instantanée par alerte active et par
 évaluation, aucune tant que la règle reste muette.</p></div></aside>
+<aside aria-label="FilesystemReadOnly : une métrique dédiée" class="starlight-aside starlight-aside--note"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 11a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0v-4a1 1 0 0 0-1-1Zm.38-3.92a1 1 0 0 0-.76 0 1 1 0 0 0-.33.21 1.15 1.15 0 0 0-.21.33 1 1 0 0 0 .21 1.09c.097.088.209.16.33.21A1 1 0 0 0 13 8a1.05 1.05 0 0 0-.29-.71 1 1 0 0 0-.33-.21ZM12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 18a8 8 0 1 1 0-16.001A8 8 0 0 1 12 20Z"></path></svg>FilesystemReadOnly : une métrique dédiée</p><div class="starlight-aside__content"><p><code dir="auto">node_filesystem_readonly</code> fusionne le <code dir="auto">ro</code> du <strong>montage</strong> (voulu) et celui du
+<strong>superbloc</strong> (panne : btrfs forcé en lecture seule, ext4
+<code dir="auto">errors=remount-ro</code>). La règle lit donc <code dir="auto">dnf_filesystem_forced_readonly</code> :</p><ul>
+<li><strong>Source</strong> : <code dir="auto">service/monitoring/fs-readonly.nix</code>, sur chaque nœud, chaque minute.</li>
+<li><strong>Contenu</strong> : montages <code dir="auto">rw</code> sur superbloc <code dir="auto">ro</code>, lus dans <code dir="auto">/proc/1/mountinfo</code>.</li>
+<li><strong>Emplacement</strong> : textfile sur tmpfs (<code dir="auto">textfileRuntimeDir</code>), réécrit même disque en panne.</li>
+<li><strong>Test</strong> : <code dir="auto">tests/scenarios/scripts/fs-forced-readonly.nix</code> épingle le parseur.</li>
+</ul></div></aside>
 <aside aria-label="Le bot n’affiche pas summary" class="starlight-aside starlight-aside--note"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 11a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0v-4a1 1 0 0 0-1-1Zm.38-3.92a1 1 0 0 0-.76 0 1 1 0 0 0-.33.21 1.15 1.15 0 0 0-.21.33 1 1 0 0 0 .21 1.09c.097.088.209.16.33.21A1 1 0 0 0 13 8a1.05 1.05 0 0 0-.29-.71 1 1 0 0 0-.33-.21ZM12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 18a8 8 0 1 1 0-16.001A8 8 0 0 1 12 20Z"></path></svg>Le bot n’affiche pas <code dir="auto">summary</code></p><div class="starlight-aside__content"><p>Le bot Matrix rend le titre puis l’annotation <code dir="auto">description</code>, et ne se rabat sur
 <code dir="auto">summary</code> que si <code dir="auto">description</code> est absente : toutes les règles DNF en
 définissent une, donc <code dir="auto">summary</code> ne lui parvient jamais. Une information à faire
@@ -330,8 +338,8 @@ remonte l’espace du <strong>serveur</strong> : le surveiller transforme un ex
 plein en une même alerte sur chaque machine qui le monte, alors que le serveur
 alerte déjà tout seul, avec la vraie partition.</li>
 <li><code dir="auto">readOnlyByDesignFstypes</code> — retiré de <code dir="auto">FilesystemReadOnly</code> seul (médias
-optiques). La règle ne surveille donc que les montages censés être accessibles
-en écriture.</li>
+optiques ou images : leur pilote peut poser le superbloc <code dir="auto">ro</code> sous un
+montage <code dir="auto">rw</code>, signature identique à une panne).</li>
 </ul></div></aside>
 <aside aria-label="Convention DNF" class="starlight-aside starlight-aside--tip"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path fill-rule="evenodd" d="M1.44 8.855v-.001l3.527-3.516c.34-.344.802-.541 1.285-.548h6.649l.947-.947c3.07-3.07 6.207-3.072 7.62-2.868a1.821 1.821 0 0 1 1.557 1.557c.204 1.413.203 4.55-2.868 7.62l-.946.946v6.649a1.845 1.845 0 0 1-.549 1.286l-3.516 3.528a1.844 1.844 0 0 1-3.11-.944l-.858-4.275-4.52-4.52-2.31-.463-1.964-.394A1.847 1.847 0 0 1 .98 10.693a1.843 1.843 0 0 1 .46-1.838Zm5.379 2.017-3.873-.776L6.32 6.733h4.638l-4.14 4.14Zm8.403-5.655c2.459-2.46 4.856-2.463 5.89-2.33.134 1.035.13 3.432-2.329 5.891l-6.71 6.71-3.561-3.56 6.71-6.711Zm-1.318 15.837-.776-3.873 4.14-4.14v4.639l-3.364 3.374Z" clip-rule="evenodd"></path><path d="M9.318 18.345a.972.972 0 0 0-1.86-.561c-.482 1.435-1.687 2.204-2.934 2.619a8.22 8.22 0 0 1-1.23.302c.062-.365.157-.79.303-1.229.415-1.247 1.184-2.452 2.62-2.935a.971.971 0 1 0-.62-1.842c-.12.04-.236.084-.35.13-2.02.828-3.012 2.588-3.493 4.033a10.383 10.383 0 0 0-.51 2.845l-.001.016v.063c0 .536.434.972.97.972H2.24a7.21 7.21 0 0 0 .878-.065c.527-.063 1.248-.19 2.02-.447 1.445-.48 3.205-1.472 4.033-3.494a5.828 5.828 0 0 0 .147-.407Z"></path></svg>Convention DNF</p><div class="starlight-aside__content"><p>Un helper de <code dir="auto">lib/</code> = un test. Toute fonction ajoutée à <code dir="auto">alerts.nix</code> se double
 d’un cas dans <code dir="auto">dnf/tests/unit/lib/alerts_test.nix</code> (<code dir="auto">nix-unit</code>).</p></div></aside>
