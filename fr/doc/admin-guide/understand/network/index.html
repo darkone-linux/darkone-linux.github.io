@@ -281,10 +281,12 @@ Exposés sur le HCS avec un <strong>DNS public</strong> : joignables depuis n’
 et services de <strong>toutes</strong> les zones) : il résout les noms simples et les FQDN.</li>
 <li>La zone courante est résolue localement ; les autres zones et le domaine global
 sont aiguillés vers la bonne passerelle, ou vers le résolveur pivot du HCS.</li>
-<li>Les noms publics (Internet) partent vers les DNS chiffrés en amont, filtrés par
-AdGuardHome s’il est activé.</li>
+<li>Avec AdGuardHome, les noms publics (Internet) partent chiffrés (DoT/DoH),
+filtrés et mis en cache ; sans lui, dnsmasq les relaie en clair.</li>
 <li>Seuls les noms déclarés existent : un nom inconnu sous une zone répond
 <code dir="auto">NXDOMAIN</code>, sans renvoi vers la passerelle.</li>
+<li>La résolution inverse d’une adresse donne le FQDN de sa machine, jamais un
+service qu’elle héberge.</li>
 <li>Les noms du tailnet (<code dir="auto">&#x3C;nœud>.tailnet.internal</code>) sont relayés par chaque
 passerelle à MagicDNS : résolus aussi depuis les LAN.</li>
 </ul>
