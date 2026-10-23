@@ -225,7 +225,7 @@ jamais sur toutes. Trois périmètres coexistent :</p>
 
 
 
-<table><thead><tr><th>Périmètre</th><th>Ouverture</th><th>Exemples</th></tr></thead><tbody><tr><td>Tailnet</td><td><code dir="auto">tailscale0</code></td><td>Loki (journaux), relais des services exposés</td></tr><tr><td>Réseau local</td><td><code dir="auto">lan0</code> sur une passerelle, l’interface unique ailleurs</td><td>DNS, DHCP, page d’accueil, cache Nix</td></tr><tr><td>Liste d’adresses</td><td>règle <code dir="auto">ip saddr</code>, ou liste de clients côté service</td><td>partages NFS, jeux en réseau local</td></tr></tbody></table>
+<table><thead><tr><th>Périmètre</th><th>Ouverture</th><th>Exemples</th></tr></thead><tbody><tr><td>Tailnet</td><td><code dir="auto">tailscale0</code></td><td>Loki (journaux), relais des services exposés</td></tr><tr><td>Réseau local</td><td><code dir="auto">lan0</code> sur une passerelle, l’interface unique ailleurs</td><td>DNS, DHCP, page d’accueil, cache Nix</td></tr><tr><td>Liste d’adresses</td><td>règle <code dir="auto">ip saddr</code>, ou liste de clients côté service</td><td>partages NFS, jeux en réseau (zones et tailnet)</td></tr></tbody></table>
 <p>Le troisième cas existe parce qu’un préfixe de zone n’est pas une
 identité : toute machine qui obtient une adresse locale en fait partie,
 invité Wi-Fi compris. Là où le service le permet, la liste des hôtes déclarés
