@@ -92,36 +92,35 @@ Hermes comes in a future release.</p></div></aside>
 <ol role="list" class="sl-steps">
 <li>
 <p><strong>Declare the host and its members</strong></p>
-<p>The host’s <code dir="auto">users</code> are its members : DNF creates for them the Kanidm
-group <code dir="auto">space-&#x3C;hôte></code>.</p>
+<p>The host’s <code dir="auto">users</code> are its members: DNF creates the Kanidm group
+<code dir="auto">space-&#x3C;host></code> for them.</p>
 <div class="expressive-code"><link rel="stylesheet" href="/astro/ec.v4551.css"><script type="module" src="/astro/ec.0vx5m.js"></script><figure class="frame has-title not-content"><figcaption class="header"><span class="title">etc/config.yaml</span></figcaption><pre data-language="yaml"><code><div class="ec-line"><div class="code"><span style="--0:#D6DEEB;--1:#403F53">- </span><span style="--0:#7FDBCA;--1:#111111">hostname</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#ECC48D;--1:#984E4D">ia-pro</span><span style="--0:#D9F5DD;--1:#111111">"</span></div></div><div class="ec-line"><div class="code"><span class="indent">  </span><span style="--0:#7FDBCA;--1:#111111">zone</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#ECC48D;--1:#984E4D">lan:1.40</span><span style="--0:#D9F5DD;--1:#111111">"</span></div></div><div class="ec-line"><div class="code"><span class="indent">  </span><span style="--0:#7FDBCA;--1:#111111">profile</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#ECC48D;--1:#984E4D">ai-space</span><span style="--0:#D9F5DD;--1:#111111">"</span></div></div><div class="ec-line"><div class="code"><span class="indent">  </span><span style="--0:#7FDBCA;--1:#111111">features</span><span style="--0:#D6DEEB;--1:#403F53">: [</span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#ECC48D;--1:#984E4D">microvm-guest:hyperviseur</span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#D6DEEB;--1:#403F53">, </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#ECC48D;--1:#984E4D">monitoring-node</span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#D6DEEB;--1:#403F53">]</span></div></div><div class="ec-line"><div class="code"><span class="indent">  </span><span style="--0:#7FDBCA;--1:#111111">users</span><span style="--0:#D6DEEB;--1:#403F53">: [</span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#ECC48D;--1:#984E4D">alice</span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#D6DEEB;--1:#403F53">, </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#ECC48D;--1:#984E4D">bob</span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#D6DEEB;--1:#403F53">]</span></div></div><div class="ec-line"><div class="code"><span class="indent">  </span><span style="--0:#7FDBCA;--1:#111111">services</span><span style="--0:#D6DEEB;--1:#403F53">:</span></div></div><div class="ec-line"><div class="code"><span class="indent">    </span><span style="--0:#7FDBCA;--1:#111111">openclaw</span><span style="--0:#D6DEEB;--1:#403F53">: {}</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copier dans le presse-papiers" data-copied="Copié !" data-code="- hostname: &#x22;ia-pro&#x22;  zone: &#x22;lan:1.40&#x22;  profile: &#x22;ai-space&#x22;  features: [&#x22;microvm-guest:hyperviseur&#x22;, &#x22;monitoring-node&#x22;]  users: [&#x22;alice&#x22;, &#x22;bob&#x22;]  services:    openclaw: {}"><div></div></button></div></figure></div>
-<p><code dir="auto">monitoring-node</code> places the space under the zone’s supervision : without
+<p><code dir="auto">monitoring-node</code> places the space under the zone’s supervision: without
 it, neither a space failure nor the assistant stopping triggers an alert.</p>
-<p>The <strong>owner</strong> is the member whose subscription runs the assistant : they
+<p>The <strong>owner</strong> is the member whose subscription runs the assistant: they
 receive approval requests and spontaneous messages (reminders, scheduled
-tasks). As the only member, they are implicit.
-With several members, the owner is declared in
-<code dir="auto">usr/machines/ia-pro/configuration.nix</code> (the order of <code dir="auto">users</code> is not
-preserved) :</p>
+tasks). As the only member, they are implicit. With several members, they
+are declared in <code dir="auto">usr/machines/ia-pro/configuration.nix</code> (the order of
+<code dir="auto">users</code> is not preserved):</p>
 <div class="expressive-code"><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="nix"><code><div class="ec-line"><div class="code"><span style="--0:#D6DEEB;--1:#403F53">{ </span><span style="--0:#C5E478;--1:#3B61B0">darkone</span><span style="--0:#D6DEEB;--1:#403F53">.</span><span style="--0:#C5E478;--1:#3B61B0">service</span><span style="--0:#D6DEEB;--1:#403F53">.</span><span style="--0:#C5E478;--1:#3B61B0">openclaw</span><span style="--0:#D6DEEB;--1:#403F53">.</span><span style="--0:#C5E478;--1:#3B61B0">owner</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#7FDBCA;--1:#096E72">=</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#ECC48D;--1:#984E4D">alice</span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#D6DEEB;--1:#403F53">; }</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copier dans le presse-papiers" data-copied="Copié !" data-code="{ darkone.service.openclaw.owner = &#x22;alice&#x22;; }"><div></div></button></div></figure></div>
 </li>
 <li>
 <p><strong>Initialize the space</strong></p>
-<p><code dir="auto">just space-init ia-pro</code> : host key, secrets (see
+<p><code dir="auto">just space-init ia-pro</code>: host key, secrets (see
 <a href="/en/doc/admin-guide/operate/secrets/">Isolated hosts</a>) and, if the network
-has Matrix, the <code dir="auto">@ia-pro:&#x3C;domaine></code> bot. Then commit <code dir="auto">usr/secrets/</code> and
+has Matrix, the bot <code dir="auto">@ia-pro:&#x3C;domain></code>. Then commit <code dir="auto">usr/secrets/</code> and
 <code dir="auto">var/generated/spaces/</code>.</p>
 </li>
 <li>
 <p><strong>Deploy</strong></p>
-<p>The hypervisor, the zone gateway (vhost, DNS) and the HCS (Kanidm
-group) : <code dir="auto">just apply hyperviseur,gw,hcs</code>.</p>
+<p>The hypervisor, the zone gateway (vhost, DNS) and the HCS (Kanidm group):
+<code dir="auto">just apply hyperviseur,gw,hcs</code>.</p>
 </li>
 <li>
 <p><strong>Connect the AI provider</strong></p>
 <p>Once per space, from the host (<code dir="auto">just enter ia-pro</code>), for each owner
-subscription used by the space’s models (see
-<a href="#models-and-subscriptions">Models and subscriptions</a>) :</p>
+subscription used for the space’s models (see
+<a href="#models-and-subscriptions">Models and subscriptions</a>):</p>
 
 
 
@@ -142,19 +141,19 @@ subscription used by the space’s models (see
 
 
 
-<table><thead><tr><th>Subscription</th><th>Models</th><th>Sign-in</th></tr></thead><tbody><tr><td>Claude Pro/Max, via the <code dir="auto">claude</code> CLI</td><td><code dir="auto">anthropic/*</code> (default : <code dir="auto">anthropic/claude-sonnet-5-5</code>)</td><td><code dir="auto">sudo -u openclaw -H claude auth login</code></td></tr><tr><td>ChatGPT Plus/Pro, via the <code dir="auto">codex</code> plugin</td><td><code dir="auto">openai/*</code></td><td><code dir="auto">openclaw models auth login --provider openai</code></td></tr></tbody></table>
-<p>The host’s <code dir="auto">openclaw</code> command automatically switches to the service user.
-<code dir="auto">openclaw models status</code> checks the connection, which stays in
-<code dir="auto">/var/lib/openclaw</code>, persistent.</p>
+<table><thead><tr><th>Subscription</th><th>Models</th><th>Login</th></tr></thead><tbody><tr><td>Claude Pro/Max, via the <code dir="auto">claude</code> CLI</td><td><code dir="auto">anthropic/*</code> (default: <code dir="auto">anthropic/claude-sonnet-5-5</code>)</td><td><code dir="auto">sudo -u openclaw -H claude auth login</code></td></tr><tr><td>ChatGPT Plus/Pro, via the <code dir="auto">codex</code> plugin</td><td><code dir="auto">openai/*</code></td><td><code dir="auto">openclaw models auth login --provider openai</code></td></tr></tbody></table>
+<p>The host’s <code dir="auto">openclaw</code> command switches to the service user by itself, even
+from the owner’s account (see <a href="#access">Access</a>). <code dir="auto">openclaw models status</code>
+checks the connection, which stays in <code dir="auto">/var/lib/openclaw</code>, persistent.</p>
 </li>
 </ol>
-<aside aria-label="Why an openclaw user" class="starlight-aside starlight-aside--note"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 11a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0v-4a1 1 0 0 0-1-1Zm.38-3.92a1 1 0 0 0-.76 0 1 1 0 0 0-.33.21 1.15 1.15 0 0 0-.21.33 1 1 0 0 0 .21 1.09c.097.088.209.16.33.21A1 1 0 0 0 13 8a1.05 1.05 0 0 0-.29-.71 1 1 0 0 0-.33-.21ZM12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 18a8 8 0 1 1 0-16.001A8 8 0 0 1 12 20Z"></path></svg>Why an <code dir="auto">openclaw</code> user</p><div class="starlight-aside__content"><p>The assistant reads untrusted content (web, messages, documents) : a
-dedicated system user keeps it away from member accounts, their keys and their
-sign-ins. Members have no <code dir="auto">sudo</code> (reserved for the <code dir="auto">wheel</code> group) :
-administration goes through the <code dir="auto">nix</code> account.</p></div></aside>
+<aside aria-label="Why an openclaw user" class="starlight-aside starlight-aside--note"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 11a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0v-4a1 1 0 0 0-1-1Zm.38-3.92a1 1 0 0 0-.76 0 1 1 0 0 0-.33.21 1.15 1.15 0 0 0-.21.33 1 1 0 0 0 .21 1.09c.097.088.209.16.33.21A1 1 0 0 0 13 8a1.05 1.05 0 0 0-.29-.71 1 1 0 0 0-.33-.21ZM12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 18a8 8 0 1 1 0-16.001A8 8 0 0 1 12 20Z"></path></svg>Why an <code dir="auto">openclaw</code> user</p><div class="starlight-aside__content"><p>The assistant reads untrusted content (web, messages, documents): a dedicated
+system user keeps it away from members’ accounts, their keys and their
+connections. Members have no <code dir="auto">sudo</code>, except for the <code dir="auto">openclaw</code> CLI (see
+<a href="#access">Access</a>): administration goes through the <code dir="auto">nix</code> account.</p></div></aside>
 <aside aria-label="Update" class="starlight-aside starlight-aside--caution"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 16a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm10.67 1.47-8.05-14a3 3 0 0 0-5.24 0l-8 14A3 3 0 0 0 3.94 22h16.12a3 3 0 0 0 2.61-4.53Zm-1.73 2a1 1 0 0 1-.88.51H3.94a1 1 0 0 1-.88-.51 1 1 0 0 1 0-1l8-14a1 1 0 0 1 1.78 0l8.05 14a1 1 0 0 1 .05 1.02v-.02ZM12 8a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V9a1 1 0 0 0-1-1Z"></path></svg>Update</p><div class="starlight-aside__content"><p>A space created before the assistant’s local password must go through
-<code dir="auto">just space-init &#x3C;hôte></code> again before deployment : it generates the
-<code dir="auto">openclaw-gateway-password</code> secret, through which the host’s <code dir="auto">openclaw</code> command
+<code dir="auto">just space-init &#x3C;host></code> again before deployment: it generates the
+<code dir="auto">openclaw-gateway-password</code> secret, with which the host’s <code dir="auto">openclaw</code> command
 reaches the service.</p></div></aside>
 
 <div class="sl-heading-wrapper level-h2"><h2 id="models-and-subscriptions">Models and subscriptions</h2><a class="sl-anchor-link" href="#models-and-subscriptions"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Models and subscriptions”</span></a></div>
@@ -515,7 +514,7 @@ assistant runs them on demand.</p>
 <aside aria-label="To be validated" class="starlight-aside starlight-aside--caution"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 16a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm10.67 1.47-8.05-14a3 3 0 0 0-5.24 0l-8 14A3 3 0 0 0 3.94 22h16.12a3 3 0 0 0 2.61-4.53Zm-1.73 2a1 1 0 0 1-.88.51H3.94a1 1 0 0 1-.88-.51 1 1 0 0 1 0-1l8-14a1 1 0 0 1 1.78 0l8.05 14a1 1 0 0 1 .05 1.02v-.02ZM12 8a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V9a1 1 0 0 0-1-1Z"></path></svg>To be validated</p><div class="starlight-aside__content"><p>Lobster has not been tried on a space yet.</p></div></aside>
 
 <div class="sl-heading-wrapper level-h2"><h2 id="member-accounts">Member accounts</h2><a class="sl-anchor-link" href="#member-accounts"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Member accounts”</span></a></div>
-<p>Each member has a Linux account on the space, kept minimal :</p>
+<p>Each member has a Linux account on the space, lightweight:</p>
 
 
 
@@ -545,13 +544,12 @@ assistant runs them on demand.</p>
 
 
 
-<table><thead><tr><th>Item</th><th>On the space</th></tr></thead><tbody><tr><td>Home Manager profile</td><td><code dir="auto">space-member</code> (zsh, git, vim, tmux), instead of their own</td></tr><tr><td>Space tools</td><td>Claude Code, Codex and OpenCode, with the space’s MCP servers and skills (<code dir="auto">darkone.home.aiSpace</code>)</td></tr><tr><td>Customizations</td><td><code dir="auto">usr/users/&#x3C;login>/space.nix</code> (all their spaces), then <code dir="auto">usr/users/&#x3C;login>/spaces/&#x3C;hôte>.nix</code> (this space), if they exist</td></tr><tr><td><code dir="auto">usr/users/&#x3C;login>/default.nix</code></td><td>Ignored : reserved for their workstations</td></tr><tr><td>Rights</td><td><code dir="auto">projects</code> group only (no <code dir="auto">sudo</code>), whatever their profile</td></tr></tbody></table>
-<p>Administering the space goes through the <code dir="auto">nix</code> account
-(<code dir="auto">just enter &#x3C;hôte></code>).</p>
-<aside aria-label="Customizing a space" class="starlight-aside starlight-aside--tip"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path fill-rule="evenodd" d="M1.44 8.855v-.001l3.527-3.516c.34-.344.802-.541 1.285-.548h6.649l.947-.947c3.07-3.07 6.207-3.072 7.62-2.868a1.821 1.821 0 0 1 1.557 1.557c.204 1.413.203 4.55-2.868 7.62l-.946.946v6.649a1.845 1.845 0 0 1-.549 1.286l-3.516 3.528a1.844 1.844 0 0 1-3.11-.944l-.858-4.275-4.52-4.52-2.31-.463-1.964-.394A1.847 1.847 0 0 1 .98 10.693a1.843 1.843 0 0 1 .46-1.838Zm5.379 2.017-3.873-.776L6.32 6.733h4.638l-4.14 4.14Zm8.403-5.655c2.459-2.46 4.856-2.463 5.89-2.33.134 1.035.13 3.432-2.329 5.891l-6.71 6.71-3.561-3.56 6.71-6.711Zm-1.318 15.837-.776-3.873 4.14-4.14v4.639l-3.364 3.374Z" clip-rule="evenodd"></path><path d="M9.318 18.345a.972.972 0 0 0-1.86-.561c-.482 1.435-1.687 2.204-2.934 2.619a8.22 8.22 0 0 1-1.23.302c.062-.365.157-.79.303-1.229.415-1.247 1.184-2.452 2.62-2.935a.971.971 0 1 0-.62-1.842c-.12.04-.236.084-.35.13-2.02.828-3.012 2.588-3.493 4.033a10.383 10.383 0 0 0-.51 2.845l-.001.016v.063c0 .536.434.972.97.972H2.24a7.21 7.21 0 0 0 .878-.065c.527-.063 1.248-.19 2.02-.447 1.445-.48 3.205-1.472 4.033-3.494a5.828 5.828 0 0 0 .147-.407Z"></path></svg>Customizing a space</p><div class="starlight-aside__content"><p>These files are ordinary Home Manager modules : packages, aliases, git
-configuration, other imported modules. A personal MCP server is added there
-with <code dir="auto">programs.mcp.servers.&#x3C;nom></code>.</p></div></aside>
-<p>Each member signs in to their own subscriptions, once : <code dir="auto">claude</code> (then
+<table><thead><tr><th>Item</th><th>On the space</th></tr></thead><tbody><tr><td>Home Manager profile</td><td><code dir="auto">space-member</code> (zsh, git, vim, tmux), instead of their own</td></tr><tr><td>Space tools</td><td>Claude Code, Codex and OpenCode, with the space’s MCP and skills (<code dir="auto">darkone.home.aiSpace</code>)</td></tr><tr><td>Customizations</td><td><code dir="auto">usr/users/&#x3C;login>/space.nix</code> (all their spaces), then <code dir="auto">usr/users/&#x3C;login>/spaces/&#x3C;host>.nix</code> (this space), if they exist</td></tr><tr><td><code dir="auto">usr/users/&#x3C;login>/default.nix</code></td><td>Ignored: reserved for their workstations</td></tr><tr><td>Rights</td><td><code dir="auto">projects</code> group, no <code dir="auto">sudo</code> except for the <code dir="auto">openclaw</code> CLI, whatever their profile</td></tr></tbody></table>
+<p>Administration of the space goes through the <code dir="auto">nix</code> account (<code dir="auto">just enter &#x3C;host></code>).</p>
+<aside aria-label="Customize a space" class="starlight-aside starlight-aside--tip"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path fill-rule="evenodd" d="M1.44 8.855v-.001l3.527-3.516c.34-.344.802-.541 1.285-.548h6.649l.947-.947c3.07-3.07 6.207-3.072 7.62-2.868a1.821 1.821 0 0 1 1.557 1.557c.204 1.413.203 4.55-2.868 7.62l-.946.946v6.649a1.845 1.845 0 0 1-.549 1.286l-3.516 3.528a1.844 1.844 0 0 1-3.11-.944l-.858-4.275-4.52-4.52-2.31-.463-1.964-.394A1.847 1.847 0 0 1 .98 10.693a1.843 1.843 0 0 1 .46-1.838Zm5.379 2.017-3.873-.776L6.32 6.733h4.638l-4.14 4.14Zm8.403-5.655c2.459-2.46 4.856-2.463 5.89-2.33.134 1.035.13 3.432-2.329 5.891l-6.71 6.71-3.561-3.56 6.71-6.711Zm-1.318 15.837-.776-3.873 4.14-4.14v4.639l-3.364 3.374Z" clip-rule="evenodd"></path><path d="M9.318 18.345a.972.972 0 0 0-1.86-.561c-.482 1.435-1.687 2.204-2.934 2.619a8.22 8.22 0 0 1-1.23.302c.062-.365.157-.79.303-1.229.415-1.247 1.184-2.452 2.62-2.935a.971.971 0 1 0-.62-1.842c-.12.04-.236.084-.35.13-2.02.828-3.012 2.588-3.493 4.033a10.383 10.383 0 0 0-.51 2.845l-.001.016v.063c0 .536.434.972.97.972H2.24a7.21 7.21 0 0 0 .878-.065c.527-.063 1.248-.19 2.02-.447 1.445-.48 3.205-1.472 4.033-3.494a5.828 5.828 0 0 0 .147-.407Z"></path></svg>Customize a space</p><div class="starlight-aside__content"><p>These files are ordinary Home Manager modules: packages, aliases, git
+configuration, other imported modules. A personal MCP is added there via
+<code dir="auto">programs.mcp.servers.&#x3C;name></code>.</p></div></aside>
+<p>Each member connects their own subscriptions, once: <code dir="auto">claude</code> (then
 <code dir="auto">/login</code>), <code dir="auto">codex login --device-auth</code> and <code dir="auto">opencode auth login</code>. OpenCode
 accepts a ChatGPT subscription or an API key, not the Claude subscription.</p>
 
@@ -585,7 +583,14 @@ accepts a ChatGPT subscription or an API key, not the Claude subscription.</p>
 
 
 
-<table><thead><tr><th>Item</th><th>Rule</th></tr></thead><tbody><tr><td>Address</td><td><code dir="auto">https://openclaw.&#x3C;zone>.&#x3C;domaine></code></td></tr><tr><td>Sign-in</td><td>Kanidm SSO, reserved for the <code dir="auto">space-&#x3C;hôte></code> group</td></tr><tr><td>Device</td><td>Paired on first visit, with no administration or approval rights (owner only, see <a href="#modifiable-configuration">Editable configuration</a>)</td></tr><tr><td>Administration</td><td><code dir="auto">openclaw …</code> on the host, from the <code dir="auto">nix</code> account</td></tr><tr><td>Assistant port</td><td>Reachable from the zone gateway only</td></tr></tbody></table>
+<table><thead><tr><th>Item</th><th>Rule</th></tr></thead><tbody><tr><td>Address</td><td><code dir="auto">https://openclaw.&#x3C;zone>.&#x3C;domain></code></td></tr><tr><td>Login</td><td>Kanidm SSO, restricted to the <code dir="auto">space-&#x3C;host></code> group</td></tr><tr><td>Device</td><td>Paired on first visit, without administration or approval rights (owner only, see <a href="#modifiable-configuration">Editable configuration</a>)</td></tr><tr><td>Administration</td><td><code dir="auto">openclaw</code> CLI on the host</td></tr><tr><td>Assistant port</td><td>Reachable from the zone gateway only</td></tr></tbody></table>
+<p>Alone, <code dir="auto">openclaw</code> opens the assistant’s terminal (like <code dir="auto">openclaw tui</code>). It
+runs under the service user, for the <code dir="auto">nix</code> account and, through a sudo rule,
+for <code dir="auto">darkone.service.openclaw.cliUsers</code> (default: the owner). Other members
+go through the web interface.</p>
+<aside aria-label="The CLI is worth the openclaw account" class="starlight-aside starlight-aside--caution"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 16a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm10.67 1.47-8.05-14a3 3 0 0 0-5.24 0l-8 14A3 3 0 0 0 3.94 22h16.12a3 3 0 0 0 2.61-4.53Zm-1.73 2a1 1 0 0 1-.88.51H3.94a1 1 0 0 1-.88-.51 1 1 0 0 1 0-1l8-14a1 1 0 0 1 1.78 0l8.05 14a1 1 0 0 1 .05 1.02v-.02ZM12 8a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V9a1 1 0 0 0-1-1Z"></path></svg>The CLI is worth the <code dir="auto">openclaw</code> account</p><div class="starlight-aside__content"><p>Subscription logins, administration rights, terminal <code dir="auto">!</code> commands: only add
+to <code dir="auto">cliUsers</code> members to whom the service can be entrusted. With <code dir="auto">sudo</code>
+restricted to the <code dir="auto">wheel</code> group (R38 hardening), <code dir="auto">cliUsers</code> stays empty.</p></div></aside>
 
 <div class="sl-heading-wrapper level-h2"><h2 id="modifiable-configuration">Modifiable configuration</h2><a class="sl-anchor-link" href="#modifiable-configuration"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Modifiable configuration”</span></a></div>
 <p>By default, Nix freezes the assistant’s configuration : the web interface

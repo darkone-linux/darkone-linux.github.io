@@ -111,13 +111,35 @@ relie ton appareil au réseau, comme si tu étais à la maison.</p>
 directement depuis ton navigateur. Cette étape n’est nécessaire que pour les
 services internes à une zone.</p></div></aside>
 <ol role="list" class="sl-steps">
-<li><strong>Installe Tailscale</strong> sur l’appareil (iOS, Android, Windows, macOS, Linux).</li>
-<li><strong>Choisis un serveur personnalisé</strong> dans les réglages de compte de
-l’application, puis saisis l’adresse donnée par ton administrateur (du type
-<code dir="auto">https://headscale.domain.tld</code>).</li>
-<li><strong>Connecte-toi avec ton identifiant habituel</strong> : la page de connexion du réseau
-s’ouvre, comme pour les autres services.</li>
-<li><strong>C’est prêt.</strong> Les services de tes zones répondent à leur adresse habituelle.</li>
+<li>
+<p><strong>Installe Tailscale</strong> sur l’appareil (iOS, Android, Windows, macOS, Linux).</p>
+</li>
+<li>
+<p><strong>Choisis le serveur</strong> : l’adresse donnée par ton administrateur, du type
+<code dir="auto">https://headscale.domain.tld</code>.</p>
+<ul>
+<li><strong>Android</strong> : réglages (en haut à droite) → <em>Accounts</em> → ⋮ → <em>Use an alternate server</em></li>
+<li><strong>iPhone, iPad</strong> : icône du compte → <em>Log in…</em> → menu → <em>Use custom coordination server</em></li>
+<li><strong>Windows</strong> : dans PowerShell, <code dir="auto">tailscale login --login-server &#x3C;adresse></code></li>
+<li><strong>macOS</strong> : Option + clic sur l’icône → <em>Debug</em> → <em>Custom Login Server</em> → <em>Add Account…</em></li>
+<li><strong>Linux</strong> : <code dir="auto">sudo tailscale login --login-server &#x3C;adresse></code></li>
+</ul>
+<p>Ton serveur rappelle la marche à suivre sur <code dir="auto">/windows</code> et <code dir="auto">/apple</code>
+(<code dir="auto">https://headscale.domain.tld/windows</code>).</p>
+</li>
+<li>
+<p><strong>Connecte-toi avec ton identifiant habituel</strong> : la page de connexion du réseau
+s’ouvre, comme pour les autres services. La première fois, autorise
+<em>Headscale VPN</em>.</p>
+</li>
+<li>
+<p><strong>Confirme l’appareil</strong> : la page affiche son nom, clique sur
+<em>Confirm registration</em>.</p>
+</li>
+<li>
+<p><strong>C’est prêt.</strong> Les services web de tes zones répondent à leur adresse
+habituelle ; pour un partage de fichiers, demande l’accès à ton administrateur.</p>
+</li>
 </ol>
 <aside aria-label="La page de connexion ne s’affiche pas ?" class="starlight-aside starlight-aside--tip"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path fill-rule="evenodd" d="M1.44 8.855v-.001l3.527-3.516c.34-.344.802-.541 1.285-.548h6.649l.947-.947c3.07-3.07 6.207-3.072 7.62-2.868a1.821 1.821 0 0 1 1.557 1.557c.204 1.413.203 4.55-2.868 7.62l-.946.946v6.649a1.845 1.845 0 0 1-.549 1.286l-3.516 3.528a1.844 1.844 0 0 1-3.11-.944l-.858-4.275-4.52-4.52-2.31-.463-1.964-.394A1.847 1.847 0 0 1 .98 10.693a1.843 1.843 0 0 1 .46-1.838Zm5.379 2.017-3.873-.776L6.32 6.733h4.638l-4.14 4.14Zm8.403-5.655c2.459-2.46 4.856-2.463 5.89-2.33.134 1.035.13 3.432-2.329 5.891l-6.71 6.71-3.561-3.56 6.71-6.711Zm-1.318 15.837-.776-3.873 4.14-4.14v4.639l-3.364 3.374Z" clip-rule="evenodd"></path><path d="M9.318 18.345a.972.972 0 0 0-1.86-.561c-.482 1.435-1.687 2.204-2.934 2.619a8.22 8.22 0 0 1-1.23.302c.062-.365.157-.79.303-1.229.415-1.247 1.184-2.452 2.62-2.935a.971.971 0 1 0-.62-1.842c-.12.04-.236.084-.35.13-2.02.828-3.012 2.588-3.493 4.033a10.383 10.383 0 0 0-.51 2.845l-.001.016v.063c0 .536.434.972.97.972H2.24a7.21 7.21 0 0 0 .878-.065c.527-.063 1.248-.19 2.02-.447 1.445-.48 3.205-1.472 4.033-3.494a5.828 5.828 0 0 0 .147-.407Z"></path></svg>La page de connexion ne s’affiche pas ?</p><div class="starlight-aside__content"><p>Désactive « Use Tailscale DNS » dans l’application le temps de te connecter, puis
 réactive-le.</p></div></aside>
