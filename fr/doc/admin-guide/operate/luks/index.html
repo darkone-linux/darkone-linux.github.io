@@ -197,9 +197,11 @@ machine, <code dir="auto">just luks &#x3C;hôte> passwd</code> lui en donne une 
 <li>repose la <strong>clé d’initrd</strong> depuis sops si elle manque sur la cible (elle
 n’en régénère jamais une nouvelle, cela invaliderait celle qu’a posée
 l’installation) ;</li>
-<li>sur une <strong>passerelle</strong>, relève l’<strong>IP WAN</strong> courante dans le manifeste
+<li>sur une <strong>passerelle</strong>, relève son <strong>adresse publique</strong> dans le manifeste
 (repli de <code dir="auto">just unlock</code>, voir plus bas), à relancer si le
-fournisseur d’accès renumérote ;</li>
+fournisseur d’accès renumérote. Derrière une box, l’interface WAN ne porte
+qu’une IP privée : l’adresse publique est celle qui a servi à joindre la
+machine, ou se passe en argument (<code dir="auto">just luks &#x3C;hôte> '' auto &#x3C;IP ou nom DDNS></code>) ;</li>
 <li>si <strong>aucune passphrase gérée</strong> ne déverrouille le volume (hôte installé
 avant la bascule vers le formatage partagé), demande sa passphrase
 d’installation une dernière fois et enrôle la partagée avec.</li>
@@ -287,7 +289,8 @@ C’est lui que <code dir="auto">just unlock</code> appelle.</p></div></aside>
 passphrase, seule sa patte WAN est joignable. Son initrd réplique d’ailleurs
 l’adressage de production (IP statique sur le pont <code dir="auto">lan0</code>, DHCP côté WAN),
 puisqu’elle est elle-même le serveur DHCP que son initrd attendrait sinon.
-Les autres hôtes font un simple DHCP sur leurs interfaces filaires.</p></div></aside>
+Les autres hôtes font un simple DHCP sur leurs interfaces filaires. Derrière
+une box, ce repli exige une redirection du port 2222 vers la passerelle.</p></div></aside>
 <aside aria-label="Portables en Wi-Fi" class="starlight-aside starlight-aside--note"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 11a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0v-4a1 1 0 0 0-1-1Zm.38-3.92a1 1 0 0 0-.76 0 1 1 0 0 0-.33.21 1.15 1.15 0 0 0-.21.33 1 1 0 0 0 .21 1.09c.097.088.209.16.33.21A1 1 0 0 0 13 8a1.05 1.05 0 0 0-.29-.71 1 1 0 0 0-.33-.21ZM12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 18a8 8 0 1 1 0-16.001A8 8 0 0 1 12 20Z"></path></svg>Portables en Wi-Fi</p><div class="starlight-aside__content"><p>Pas de réseau en initrd sans câble : un portable chiffré se déverrouille à la
 console (passphrase ou YubiKey), le déverrouillage à distance ne s’applique
 pas.</p></div></aside>
@@ -368,7 +371,7 @@ pouvoir prouver à qui il appartient.</p></div></aside>
 
 
 
-<table><thead><tr><th>Contrôle</th><th>Ce qu’il attrape</th></tr></thead><tbody><tr><td>Hôte présent dans <code dir="auto">luks.json</code></td><td>Le module resterait inerte</td></tr><tr><td>Clé d’initrd sur la cible (+ empreinte)</td><td>Prochain apply sans déverrouillage distant</td></tr><tr><td>Sauvegarde sops de même empreinte</td><td>Une réinstallation perdrait l’accès distant</td></tr><tr><td>sshd d’initrd activé dans la configuration</td><td><code dir="auto">nix.pub</code> manquant, ou hôte hors manifeste</td></tr><tr><td>Chargeur d’amorçage postérieur à la clé</td><td><strong>Le</strong> piège : clé absente de l’initrd qui démarre</td></tr><tr><td>Pilotes des cartes filaires présents dans l’initrd</td><td>Pas de réseau en stage 1 : rien ne répond sur 2222</td></tr><tr><td>Système démarré = configuration auditée</td><td>Un apply en attente rendrait l’audit trompeur</td></tr><tr><td>IP WAN relevée (passerelles)</td><td>Injoignable en initrd une fois le VPN tombé</td></tr></tbody></table>
+<table><thead><tr><th>Contrôle</th><th>Ce qu’il attrape</th></tr></thead><tbody><tr><td>Hôte présent dans <code dir="auto">luks.json</code></td><td>Le module resterait inerte</td></tr><tr><td>Clé d’initrd sur la cible (+ empreinte)</td><td>Prochain apply sans déverrouillage distant</td></tr><tr><td>Sauvegarde sops de même empreinte</td><td>Une réinstallation perdrait l’accès distant</td></tr><tr><td>sshd d’initrd activé dans la configuration</td><td><code dir="auto">nix.pub</code> manquant, ou hôte hors manifeste</td></tr><tr><td>Chargeur d’amorçage postérieur à la clé</td><td><strong>Le</strong> piège : clé absente de l’initrd qui démarre</td></tr><tr><td>Pilotes des cartes filaires présents dans l’initrd</td><td>Pas de réseau en stage 1 : rien ne répond sur 2222</td></tr><tr><td>Système démarré = configuration auditée</td><td>Un apply en attente rendrait l’audit trompeur</td></tr><tr><td>Adresse publique relevée (passerelles)</td><td>Injoignable en initrd une fois le VPN tombé</td></tr></tbody></table>
 
 <div class="sl-heading-wrapper level-h2"><h2 id="sous-le-capot">Sous le capot</h2><a class="sl-anchor-link" href="#sous-le-capot"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section intitulée « Sous le capot »</span></a></div>
 

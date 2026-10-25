@@ -188,10 +188,17 @@ cela publierait le SSH sur Internet.</p>
 
 
 
-<table><thead><tr><th>Hôte</th><th>SSH joignable depuis</th></tr></thead><tbody><tr><td>Passerelle de zone</td><td>son réseau local et le VPN</td></tr><tr><td>Hôte de la zone globale (HCS)</td><td>Internet — décision assumée, il porte le VPN</td></tr><tr><td>Machine de zone (poste, serveur)</td><td>sa seule interface, donc le réseau local</td></tr></tbody></table>
-<p>Conséquence pratique : <strong>une passerelle ne répond pas au SSH depuis
+
+
+
+
+<table><thead><tr><th>Hôte</th><th>SSH joignable depuis</th></tr></thead><tbody><tr><td>Passerelle de zone</td><td>son réseau local et le VPN</td></tr><tr><td>Passerelle pas encore enrôlée</td><td>aussi Internet (WAN)</td></tr><tr><td>Hôte de la zone globale (HCS)</td><td>Internet — décision assumée, il porte le VPN</td></tr><tr><td>Machine de zone (poste, serveur)</td><td>sa seule interface, donc le réseau local</td></tr></tbody></table>
+<p>Conséquence pratique : <strong>une passerelle enrôlée ne répond pas au SSH depuis
 Internet.</strong> L’accès distant passe par le VPN :</p>
 <div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Fenêtre de terminal</span></figcaption><pre data-language="sh"><code><div class="ec-line"><div class="code"><span style="--0:#82AAFF;--1:#3B61B0">just</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">enter</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">gw</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copier dans le presse-papiers" data-copied="Copié !" data-code="just enter gw"><div></div></button></div></figure></div>
+<p>Avant l’enrôlement, le WAN est le seul accès : l’option
+<code dir="auto">darkone.host.gateway.wanSsh.enable</code> y ouvre le port 22 tant que la zone ne
+déclare pas <code dir="auto">gateway.vpn.ipv4</code>. Déclarer l’adresse puis appliquer le referme.</p>
 <aside aria-label="Une passerelle n'ouvre aucun port sans interface" class="starlight-aside starlight-aside--caution"><p class="starlight-aside__title" aria-hidden="true"><svg aria-hidden="true" class="starlight-aside__icon astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M12 16a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm10.67 1.47-8.05-14a3 3 0 0 0-5.24 0l-8 14A3 3 0 0 0 3.94 22h16.12a3 3 0 0 0 2.61-4.53Zm-1.73 2a1 1 0 0 1-.88.51H3.94a1 1 0 0 1-.88-.51 1 1 0 0 1 0-1l8-14a1 1 0 0 1 1.78 0l8.05 14a1 1 0 0 1 .05 1.02v-.02ZM12 8a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V9a1 1 0 0 0-1-1Z"/></svg>Une passerelle n&#39;ouvre aucun port sans interface</p><div class="starlight-aside__content"><p>Le profil <code dir="auto">gateway</code> refuse de construire si un port est ouvert sans nom
 d’interface. Un service de passerelle se déclare sur <code dir="auto">lan0</code> (la zone) ou
 <code dir="auto">tailscale0</code> (le VPN) ; un port réellement public se pose sur l’interface
