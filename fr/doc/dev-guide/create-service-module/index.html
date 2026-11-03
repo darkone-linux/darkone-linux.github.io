@@ -327,7 +327,12 @@ l’enregistrement du service (bloc inconditionnel), via deux options <code dir=
 
 
 
-<table><thead><tr><th>Option</th><th>Défaut</th><th>Rôle</th></tr></thead><tbody><tr><td><code dir="auto">proxy.isProtected</code></td><td><code dir="auto">false</code></td><td>Met le vhost derrière oauth2-proxy (forward auth)</td></tr><tr><td><code dir="auto">proxy.allowedGroups</code></td><td><code dir="auto">[ ]</code></td><td>Groupes Kanidm autorisés (vide : tout utilisateur authentifié)</td></tr><tr><td><code dir="auto">proxy.spaceMembersOnly</code></td><td><code dir="auto">false</code></td><td>Réserve chaque instance aux membres de l’espace IA qui l’héberge (groupe <code dir="auto">space-&#x3C;hôte></code>) ; implique <code dir="auto">isProtected</code></td></tr></tbody></table>
+
+
+
+
+
+<table><thead><tr><th>Option</th><th>Défaut</th><th>Rôle</th></tr></thead><tbody><tr><td><code dir="auto">proxy.isProtected</code></td><td><code dir="auto">false</code></td><td>Met le vhost derrière oauth2-proxy (forward auth)</td></tr><tr><td><code dir="auto">proxy.allowedGroups</code></td><td><code dir="auto">[ ]</code></td><td>Groupes Kanidm autorisés (vide : tout utilisateur authentifié)</td></tr><tr><td><code dir="auto">proxy.spaceMembersOnly</code></td><td><code dir="auto">false</code></td><td>Réserve chaque instance aux membres de l’espace IA qui l’héberge (groupe <code dir="auto">space-&#x3C;hôte></code>) ; implique <code dir="auto">isProtected</code></td></tr><tr><td><code dir="auto">proxy.tailnetIdentity</code></td><td><code dir="auto">false</code></td><td>Reconnaît l’appareil personnel d’un membre par <code dir="auto">tailscaled</code>, sans SSO, pour les clients natifs ; exige <code dir="auto">spaceMembersOnly</code></td></tr></tbody></table>
 <aside aria-label="Ancre et pré-requis" class="starlight-aside starlight-aside--note"><p class="starlight-aside__title" aria-hidden="true"><svg aria-hidden="true" class="starlight-aside__icon astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M12 11a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0v-4a1 1 0 0 0-1-1Zm.38-3.92a1 1 0 0 0-.76 0 1 1 0 0 0-.33.21 1.15 1.15 0 0 0-.21.33 1 1 0 0 0 .21 1.09c.097.088.209.16.33.21A1 1 0 0 0 13 8a1.05 1.05 0 0 0-.29-.71 1 1 0 0 0-.33-.21ZM12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 18a8 8 0 1 1 0-16.001A8 8 0 0 1 12 20Z"/></svg>Ancre et pré-requis</p><div class="starlight-aside__content"><p>Le flux de connexion (<code dir="auto">/oauth2/*</code>) est hébergé sur le FQDN de la page d’accueil de
 la zone : le service <code dir="auto">homepage</code> doit donc être présent dès qu’un service est
 protégé (une assertion le vérifie). Les groupes sont comparés en <strong>SPN</strong>

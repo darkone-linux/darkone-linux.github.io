@@ -127,8 +127,8 @@ new route, new policy) until it is back.</li>
 </ul>
 
 <div class="sl-heading-wrapper level-h2"><h2 id="who-is-on-the-tailnet">Who is on the tailnet</h2><a class="sl-anchor-link" href="#who-is-on-the-tailnet"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Who is on the tailnet”</span></a></div>
-<p>Two kinds of identities coexist: <strong>machines</strong>, identified by a tag that tells
-their role, and <strong>personal devices</strong>, attached to their owner.</p>
+<p>Two kinds of identity coexist : <strong>machines</strong>, identified by a tag
+that states their role, and <strong>personal devices</strong>, attached to their owner.</p>
 
 
 
@@ -164,15 +164,16 @@ their role, and <strong>personal devices</strong>, attached to their owner.</p>
 
 
 
-<table><thead><tr><th>Node</th><th>Identity</th><th>Obtained by</th><th>Expiration</th></tr></thead><tbody><tr><td>HCS</td><td><code dir="auto">tag:hcs</code></td><td>one-time key (<code dir="auto">just tailnet-enroll</code>)</td><td>never</td></tr><tr><td>Zone gateway</td><td><code dir="auto">tag:gw-&#x3C;zone></code></td><td>one-time key</td><td>never</td></tr><tr><td>Admin workstation</td><td><code dir="auto">tag:admin</code></td><td>one-time key</td><td>never</td></tr><tr><td>Personal device</td><td>its owner (<code dir="auto">alice@</code>)</td><td><a href="/en/doc/admin-guide/understand/auth-idm/">Kanidm</a> sign-in</td><td>180 days</td></tr></tbody></table>
+<table><thead><tr><th>Node</th><th>Identity</th><th>Obtained by</th><th>Expiry</th></tr></thead><tbody><tr><td>HCS</td><td><code dir="auto">tag:hcs</code></td><td>single-use key (<code dir="auto">just tailnet-enroll</code>)</td><td>never</td></tr><tr><td>Zone gateway</td><td><code dir="auto">tag:gw-&#x3C;zone></code></td><td>single-use key</td><td>never</td></tr><tr><td>Administration workstation</td><td><code dir="auto">tag:admin</code></td><td>single-use key</td><td>never</td></tr><tr><td>Personal device</td><td>its owner (<code dir="auto">alice@</code>)</td><td>sign-in with <a href="/en/doc/admin-guide/understand/auth-idm/">Kanidm</a></td><td>180 days</td></tr></tbody></table>
 <ul>
-<li>Tags derive from the topology: <code dir="auto">hcs</code> profile, zone gateway, host whose
-<code dir="auto">groups</code> contains <code dir="auto">admin</code> and which enables the Tailscale client.</li>
+<li>Tags are inferred from the topology : profile <code dir="auto">hcs</code>, zone gateway, host
+whose <code dir="auto">groups</code> contains <code dir="auto">admin</code> and which enables the Tailscale client.</li>
 <li>A tagged node belongs to no one (<code dir="auto">tagged-devices</code> in Headscale).</li>
-<li>Only accounts in the Kanidm <code dir="auto">tailnet</code> group connect a device: admins and
-zone members (group <code dir="auto">zone-&#x3C;zone></code>).</li>
-<li>A host’s free <code dir="auto">tags</code> in <code dir="auto">etc/config.yaml</code> grant no rights.</li>
-<li>Each node carries a MagicDNS name: <code dir="auto">&#x3C;node>.tailnet.internal</code>.</li>
+<li>Only accounts of the Kanidm group <code dir="auto">tailnet</code> connect a device :
+administrators, members of a zone (group <code dir="auto">zone-&#x3C;zone></code>) and members of an
+<a href="/en/doc/admin-guide/operate/ai-spaces/">AI space</a>.</li>
+<li>The free-form <code dir="auto">tags</code> of a host in <code dir="auto">etc/config.yaml</code> grant no rights.</li>
+<li>Each node carries a MagicDNS name : <code dir="auto">&#x3C;node>.tailnet.internal</code>.</li>
 </ul>
 
 <div class="sl-heading-wrapper level-h2"><h2 id="routing">Routing</h2><a class="sl-anchor-link" href="#routing"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Routing”</span></a></div>
@@ -439,7 +440,7 @@ Headscale hot-reloads it at deployment.</p>
 
 
 
-<table><thead><tr><th>Block</th><th>Generated content</th></tr></thead><tbody><tr><td><code dir="auto">groups</code></td><td><code dir="auto">group:admins</code> (profiles <code dir="auto">admin</code>, <code dir="auto">nix-admin</code>), <code dir="auto">group:zone-&#x3C;zone></code> (group <code dir="auto">zone-&#x3C;zone></code>)</td></tr><tr><td><code dir="auto">tagOwners</code></td><td><code dir="auto">tag:hcs</code>, <code dir="auto">tag:gw-&#x3C;zone></code>, <code dir="auto">tag:admin</code>, owned by <code dir="auto">group:admins</code></td></tr><tr><td><code dir="auto">hosts</code></td><td><code dir="auto">zone-&#x3C;zone></code> (subnet), <code dir="auto">gateway-&#x3C;zone></code> (LAN address of the gateway), each host of a zone (its LAN address), <code dir="auto">adminDevices</code>, <code dir="auto">extraHosts</code></td></tr><tr><td><code dir="auto">autoApprovers</code></td><td>route of each zone → <code dir="auto">tag:gw-&#x3C;zone></code> ; exit node → <code dir="auto">tag:hcs</code></td></tr><tr><td><code dir="auto">acls</code></td><td>the rules below</td></tr></tbody></table>
+<table><thead><tr><th>Building block</th><th>Generated content</th></tr></thead><tbody><tr><td><code dir="auto">groups</code></td><td><code dir="auto">group:admins</code> (profiles <code dir="auto">admin</code>, <code dir="auto">nix-admin</code>), <code dir="auto">group:zone-&#x3C;zone></code> (group <code dir="auto">zone-&#x3C;zone></code>), <code dir="auto">group:space-&#x3C;host></code> (members of the AI space of a local zone)</td></tr><tr><td><code dir="auto">tagOwners</code></td><td><code dir="auto">tag:hcs</code>, <code dir="auto">tag:gw-&#x3C;zone></code>, <code dir="auto">tag:admin</code>, owned by <code dir="auto">group:admins</code></td></tr><tr><td><code dir="auto">hosts</code></td><td><code dir="auto">zone-&#x3C;zone></code> (subnet), <code dir="auto">gateway-&#x3C;zone></code> (LAN address of the gateway), each host of a zone (its LAN address), <code dir="auto">adminDevices</code>, <code dir="auto">extraHosts</code></td></tr><tr><td><code dir="auto">autoApprovers</code></td><td>route of each zone → <code dir="auto">tag:gw-&#x3C;zone></code> ; exit node → <code dir="auto">tag:hcs</code></td></tr><tr><td><code dir="auto">acls</code></td><td>the rules below</td></tr></tbody></table>
 
 <div class="sl-heading-wrapper level-h3"><h3 id="the-rules">The rules</h3><a class="sl-anchor-link" href="#the-rules"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “The rules”</span></a></div>
 
@@ -501,19 +502,25 @@ Headscale hot-reloads it at deployment.</p>
 
 
 
-<table><thead><tr><th>#</th><th>Source</th><th>Destination</th><th>Purpose</th></tr></thead><tbody><tr><td>1</td><td>tagged machines, zone subnets</td><td>all machines and zones, all ports</td><td>infrastructure: DNS, monitoring, backups, deployment</td></tr><tr><td>2</td><td>personal devices (<code dir="auto">autogroup:member</code>)</td><td>HCS, ports 53 and 443</td><td>internal DNS, global services</td></tr><tr><td>3</td><td><code dir="auto">group:admins</code></td><td>gateways of all zones, port 443</td><td>all zones’ services</td></tr><tr><td>4</td><td><code dir="auto">group:zone-&#x3C;zone></code></td><td>its zone’s gateway, port 443</td><td>its zones’ services</td></tr><tr><td>5</td><td>personal devices</td><td>devices of the same owner</td><td>between one’s own devices</td></tr><tr><td>6</td><td><code dir="auto">tag:admin</code>, admin workstations, <code dir="auto">adminDevices</code></td><td>all machines and zones, port 22</td><td>SSH administration</td></tr><tr><td>7</td><td><code dir="auto">policy.exitNodeSources</code></td><td>Internet</td><td>the HCS exit node, if enabled</td></tr><tr><td>8</td><td><code dir="auto">policy.extraAcls</code></td><td>free</td><td>the network’s own needs</td></tr></tbody></table>
+
+
+
+
+
+
+<table><thead><tr><th>#</th><th>Source</th><th>Destination</th><th>Purpose</th></tr></thead><tbody><tr><td>1</td><td>tagged machines, zone subnets</td><td>all machines and zones, all ports</td><td>infrastructure : DNS, monitoring, backups, deployment</td></tr><tr><td>2</td><td>personal devices (<code dir="auto">autogroup:member</code>)</td><td>HCS, ports 53 and 443</td><td>internal DNS, global services</td></tr><tr><td>3</td><td><code dir="auto">group:admins</code></td><td>gateways of all zones, port 443</td><td>the services of all zones</td></tr><tr><td>4</td><td><code dir="auto">group:zone-&#x3C;zone></code></td><td>gateway of the zone, port 443</td><td>the services of its zones</td></tr><tr><td>5</td><td><code dir="auto">group:space-&#x3C;host></code></td><td>gateway of the space’s zone, port 443</td><td>the services of that zone</td></tr><tr><td>6</td><td>personal devices</td><td>devices of the same owner</td><td>between its own devices</td></tr><tr><td>7</td><td><code dir="auto">tag:admin</code>, administration workstations, <code dir="auto">adminDevices</code></td><td>all machines and zones, port 22</td><td>SSH administration</td></tr><tr><td>8</td><td><code dir="auto">policy.exitNodeSources</code></td><td>Internet</td><td>the HCS exit node, if it is open</td></tr><tr><td>9</td><td><code dir="auto">policy.extraAcls</code></td><td>free</td><td>the network’s own needs</td></tr></tbody></table>
 <ul>
-<li><strong>SSH follows the workstation, not the person</strong>: an admin on their phone has
-no SSH, except for a device declared in <code dir="auto">adminDevices</code>.</li>
-<li><strong><code dir="auto">gateway-&#x3C;zone></code> in addition to the tag</strong>: a zone’s services resolve to the
-LAN address of its gateway, which <code dir="auto">tag:gw-&#x3C;zone></code> does not cover (it only
-designates its tailnet addresses).</li>
-<li><strong>An empty group disappears</strong> from the policy: a rule citing it would get the
-whole policy rejected.</li>
-<li><strong>Open mode</strong> (<code dir="auto">policy.enforce = false</code>): a single rule allows everything.
+<li><strong>SSH follows the workstation, not the person</strong> : an administrator on their phone
+has no SSH, unless the device is declared in <code dir="auto">adminDevices</code>.</li>
+<li><strong><code dir="auto">gateway-&#x3C;zone></code> in addition to the tag</strong> : the services of a zone resolve to
+the LAN address of its gateway, which <code dir="auto">tag:gw-&#x3C;zone></code> does not cover (it designates
+only its tailnet addresses).</li>
+<li><strong>An empty group disappears</strong> from the policy : a rule citing it would
+cause the whole rule to be denied.</li>
+<li><strong>Open mode</strong> (<code dir="auto">policy.enforce = false</code>) : a single rule allows everything.
 Reserved for a migration, while nodes are being tagged.</li>
 </ul>
-<p>The options that fine-tune the policy are described in <a href="/en/doc/admin-guide/operate/vpn/#client-self-repair">Adapting the access
+<p>The options that adjust the policy are described in <a href="/en/doc/admin-guide/operate/vpn/#adapt-the-access-policy">Adapt the access
 policy</a>.</p>
 
 <div class="sl-heading-wrapper level-h2"><h2 id="pre-authorized-keys-and-enrollment">Pre-authorized keys and enrollment</h2><a class="sl-anchor-link" href="#pre-authorized-keys-and-enrollment"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Pre-authorized keys and enrollment”</span></a></div>
