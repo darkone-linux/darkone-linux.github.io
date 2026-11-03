@@ -177,6 +177,7 @@ son empreinte (<code dir="auto">mkpasswd -m sha-512</code>), à coller avec <cod
 </ol>
 <aside aria-label="Seul just passwd fait foi" class="starlight-aside starlight-aside--note"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 11a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0v-4a1 1 0 0 0-1-1Zm.38-3.92a1 1 0 0 0-.76 0 1 1 0 0 0-.33.21 1.15 1.15 0 0 0-.21.33 1 1 0 0 0 .21 1.09c.097.088.209.16.33.21A1 1 0 0 0 13 8a1.05 1.05 0 0 0-.29-.71 1 1 0 0 0-.33-.21ZM12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 18a8 8 0 1 1 0-16.001A8 8 0 0 1 12 20Z"></path></svg>Seul <code dir="auto">just passwd</code> fait foi</p><div class="starlight-aside__content"><ul>
 <li>Pas de session avant <code dir="auto">just passwd &#x3C;login></code>.</li>
+<li>Empreinte absente → ses hôtes ne se construisent pas ; <code dir="auto">just generate</code> (donc <code dir="auto">just clean</code>) liste chaque compte concerné.</li>
 <li>Changé sur un hôte, le mot de passe est écrasé au déploiement suivant.</li>
 <li>Pas de mot de passe par défaut du parc : chaque compte a le sien (<a href="/fr/doc/admin-guide/operate/secrets/">Secrets</a>).</li>
 </ul></div></aside>
