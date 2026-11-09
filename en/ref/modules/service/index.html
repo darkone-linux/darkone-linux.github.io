@@ -376,6 +376,9 @@ the break-glass account passwords (<code dir="auto">kanidm-admin-password</code>
 listener (<code dir="auto">kanidm-tls-chain</code> / <code dir="auto">kanidm-tls-key</code>, 10 years, CN=127.0.0.1) and
 one <code dir="auto">oidc-secret-&#x3C;client></code> per provisioned OAuth2 client. Read them back with
 <code dir="auto">just sops</code> on the rare occasions an admin needs one.</p></div></aside>
+<p>Online backup: one dump per night, 7 kept in <code dir="auto">/var/lib/kanidm/backups</code>
+(<code dir="auto">services.kanidm.server.settings.online_backup</code>). Restorable only by the
+same kanidm minor version: an upgrade still needs a cold copy.</p>
 <p>Sub-modules (<code dir="auto">idm/</code>):</p>
 <ul>
 <li><code dir="auto">replication.nix</code>: multi-zone read-only replication, HCS to zone gateways;</li>

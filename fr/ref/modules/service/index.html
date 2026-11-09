@@ -372,18 +372,20 @@ avec <code dir="auto">clientId = dnfLib.oauth2ClientName</code>.
 <hr>
 
 <div class="sl-heading-wrapper level-h3"><h3 id="-darkoneserviceidm">✨ darkone.service.idm</h3><a class="sl-anchor-link" href="#-darkoneserviceidm"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section intitulée « ✨ darkone.service.idm »</span></a></div>
-<p>Service DNF Kanidm (gestionnaire d’identités).</p>
-<aside aria-label="Les secrets sont générés, pas saisis" class="starlight-aside starlight-aside--note"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 11a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0v-4a1 1 0 0 0-1-1Zm.38-3.92a1 1 0 0 0-.76 0 1 1 0 0 0-.33.21 1.15 1.15 0 0 0-.21.33 1 1 0 0 0 .21 1.09c.097.088.209.16.33.21A1 1 0 0 0 13 8a1.05 1.05 0 0 0-.29-.71 1 1 0 0 0-.33-.21ZM12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 18a8 8 0 1 1 0-16.001A8 8 0 0 1 12 20Z"></path></svg>Les secrets sont générés, pas saisis</p><div class="starlight-aside__content"><p><code dir="auto">just configure-admin-host</code> crée chaque entrée lue par ce module : les mots de
-passe du compte break-glass (<code dir="auto">kanidm-admin-password</code>,
-<code dir="auto">kanidm-idm-admin-password</code>), la paire auto-signée de l’écouteur HTTPS interne
-(<code dir="auto">kanidm-tls-chain</code> / <code dir="auto">kanidm-tls-key</code>, 10 ans, CN=127.0.0.1) et un
-<code dir="auto">oidc-secret-&#x3C;client></code> par client OAuth2 provisionné. Relisez-les avec <code dir="auto">just sops</code>
-aux rares occasions où un admin en a besoin.</p></div></aside>
-<p>Sous-modules (<code dir="auto">idm/</code>) :</p>
+<p>Kanidm (gestionnaire d’identité), service DNF.</p>
+<aside aria-label="Les secrets sont générés, jamais saisis" class="starlight-aside starlight-aside--note"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 11a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0v-4a1 1 0 0 0-1-1Zm.38-3.92a1 1 0 0 0-.76 0 1 1 0 0 0-.33.21 1.15 1.15 0 0 0-.21.33 1 1 0 0 0 .21 1.09c.097.088.209.16.33.21A1 1 0 0 0 13 8a1.05 1.05 0 0 0-.29-.71 1 1 0 0 0-.33-.21ZM12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 18a8 8 0 1 1 0-16.001A8 8 0 0 1 12 20Z"></path></svg>Les secrets sont générés, jamais saisis</p><div class="starlight-aside__content"><p><code dir="auto">just configure-admin-host</code> crée chaque entrée lue par ce module :
+les mots de passe des comptes de secours (<code dir="auto">kanidm-admin-password</code>,
+<code dir="auto">kanidm-idm-admin-password</code>), la paire auto-signée de l’écouteur HTTPS
+interne (<code dir="auto">kanidm-tls-chain</code> / <code dir="auto">kanidm-tls-key</code>, 10 ans, CN=127.0.0.1) et
+un <code dir="auto">oidc-secret-&#x3C;client></code> par client OAuth2 provisionné. Les relire avec
+<code dir="auto">just sops</code> les rares fois où un administrateur en a besoin.</p></div></aside>
+<p>Sauvegarde en ligne : un dump par nuit, 7 conservés dans <code dir="auto">/var/lib/kanidm/backups</code>
+(<code dir="auto">services.kanidm.server.settings.online_backup</code>). Restaurable uniquement par la
+même version mineure de kanidm : une mise à niveau exige encore une copie à froid.</p>
+<p>Sous-modules (<code dir="auto">idm/</code>) :</p>
 <ul>
-<li><code dir="auto">replication.nix</code> : réplication en lecture seule multi-zones, du HCS vers les
-passerelles de zone ;</li>
-<li><code dir="auto">provision.nix</code> : clients OAuth2 (registre de gabarits), groupes et personnes.</li>
+<li><code dir="auto">replication.nix</code> : réplication multi-zone en lecture seule, du HCS vers les passerelles de zone ;</li>
+<li><code dir="auto">provision.nix</code> : clients OAuth2 (registre de modèles), groupes et personnes.</li>
 </ul>
 
 <div class="sl-heading-wrapper level-h4"><h4 id="réplication-replicationnix">Réplication (<code dir="auto">replication.nix</code>)</h4><a class="sl-anchor-link" href="#réplication-replicationnix"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section intitulée « Réplication (replication.nix) »</span></a></div>
