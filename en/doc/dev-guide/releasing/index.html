@@ -247,62 +247,83 @@ repository. The entry then covers the whole history. A template, with no
 version file, requires an explicit <code dir="auto">X.Y.Z</code> (the train passes the framework’s).</p></div></aside>
 
 <div class="sl-heading-wrapper level-h2"><h2 id="the-release-train">The release train</h2><a class="sl-anchor-link" href="#the-release-train"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “The release train”</span></a></div>
-<p><code dir="auto">just release</code> runs at the root of the co-development workspace, which must contain all six repositories. Each repository is processed in order of its dependencies, and only if it has changed since its last tag.</p>
+<p><code dir="auto">just release</code> runs at the root of the co-development workspace, which must
+contain the six repositories. Each repository goes in the order of its
+dependencies, and only if it has moved since its last tag.</p>
 <ol role="list" class="sl-steps">
 <li>
-<p><strong>Pre-checks</strong> : verify required tools are present (<code dir="auto">git-cliff</code>, <code dir="auto">jq</code>,
-<code dir="auto">nix-update</code>), all repositories are clean, on <code dir="auto">main</code>, and up to date with <code dir="auto">origin</code>. No long-running tasks should be active before starting.</p>
+<p><strong>Pre-flight checks</strong> : required tools present (<code dir="auto">git-cliff</code>, <code dir="auto">jq</code>,
+<code dir="auto">nix-update</code>), repositories clean, on <code dir="auto">main</code>, up to date with <code dir="auto">origin</code>.
+Nothing long-running starts before this.</p>
 </li>
 <li>
-<p><strong>Plan</strong> : determine the current and next version for each repository, preview changelog entries, then request <strong>a single</strong> confirmation. If declined, nothing is written.
-From this point onward, everything runs automatically.</p>
+<p><strong>Plan</strong> : current and next version of each repository, preview of
+the changelog entries, then <strong>a single</strong> confirmation. Refusing writes
+nothing. <code dir="auto">YES=1 just release</code> skips it (non-interactive run). After that,
+everything is automatic.</p>
 </li>
 <li>
 <p><strong>Global gate</strong> : <code dir="auto">just check</code> (code and unit tests).</p>
 </li>
 <li>
-<p><strong>Generator</strong>, if it has changed : run <code dir="auto">just gen-test</code>, release, and push. Since it owns the schema <code dir="auto">etc/config.yaml</code>, it runs before anything that depends on it.
-Its tag is then pinned in <code dir="auto">dnf/flake.nix</code> (commit <code dir="auto">chore(deps)</code>),
-so the contract between the framework and the generator is visible in a diff.
-The pinned generator then regenerates <code dir="auto">dnf/config/config.schema.json</code>,
-the schema read by projects via their <code dir="auto">dnf/</code> link (commit
-<code dir="auto">chore(schema)</code> if it changed).</p>
+<p><strong>Generator</strong>, if it has moved : <code dir="auto">just gen-test</code>, release and push. It
+owns the <code dir="auto">etc/config.yaml</code> schema, so it goes before whatever depends on
+it. Its tag is then pinned in <code dir="auto">dnf/flake.nix</code> (commit <code dir="auto">chore(deps)</code>), so
+that the contract between framework and generator reads in a diff. The
+pinned generator finally regenerates <code dir="auto">dnf/config/config.schema.json</code>, the
+schema that projects read through their <code dir="auto">dnf/</code> link (commit
+<code dir="auto">chore(schema)</code> if it changes).</p>
 </li>
 <li>
-<p><strong>fleet-update</strong>, if it has changed : run <code dir="auto">ci</code> and <code dir="auto">audit</code> gates using
-its <code dir="auto">nix develop</code> environment, release, and push. Its tag is then pinned in
-<code dir="auto">dnf/pkgs/fleet-update</code> via <code dir="auto">just pkg-update</code>, and the package is built (commit <code dir="auto">chore(deps)</code>).</p>
+<p><strong>fleet-update</strong>, if it has moved : <code dir="auto">ci</code> and <code dir="auto">audit</code> gates with the
+tooling of its <code dir="auto">nix develop</code>, release and push. Its tag is then pinned in
+<code dir="auto">dnf/pkgs/fleet-update</code> by <code dir="auto">just pkg-update</code>, and the package is built
+(commit <code dir="auto">chore(deps)</code>).</p>
 </li>
 <li>
-<p><strong>Framework</strong> : <code dir="auto">just simulate all</code> runs <strong>after</strong> all pinning,
-so it uses the dependencies that were actually released. These simulations do not run in CI : a failing simulation stops the train here. Next, update <code dir="auto">VERSION</code>, pin the project template
-(<code dir="auto">templates/project/flake.nix</code>), update <code dir="auto">CHANGELOG.md</code>, commit, tag, and push.</p>
+<p><strong>Framework</strong> : <code dir="auto">just simulate all</code> runs <strong>after</strong> the pinning, so on
+the dependencies actually shipped. These scenarios do not run in continuous
+integration : a red scenario stops the train here. Then <code dir="auto">VERSION</code>, the
+project template pin (<code dir="auto">templates/project/flake.nix</code>), <code dir="auto">CHANGELOG.md</code>,
+commit, tag and push.</p>
 </li>
 <li>
-<p><strong>Documentation</strong> : <code dir="auto">just codegen</code> regenerates the reference, then runs translation and normalization. If there is anything to publish, the site is built (before tagging, so any broken link blocks the release), the version is aligned to the framework’s <code dir="auto">MAJOR.MINOR</code> line, and the site is deployed.</p>
+<p><strong>Documentation</strong> : <code dir="auto">just codegen</code> regenerates the reference, then
+translation and normalization. If there is anything to publish, the site is
+built (before the tag, so that a broken link blocks), the version aligns on
+the framework’s <code dir="auto">MAJOR.MINOR</code> line, then the site is deployed.</p>
 </li>
 <li>
 <p><strong>Boilerplate and example</strong> : the boilerplate is first copied from
-<code dir="auto">templates/project/</code> at the framework’s tag (<code dir="auto">CHANGELOG.md</code> and <code dir="auto">flake.lock</code>
-are preserved), with a “published copy” banner placed under the title of its README files.
-As a result, it is never edited manually. For both the boilerplate and the example, the framework’s tag is written to their <code dir="auto">flake.nix</code>, the <code dir="auto">flake.lock</code> is <strong>committed</strong>
-(as this ensures a reproducible clone), then changelog and tag are created to match the framework’s tag.
-Each host in the example is evaluated down to <code dir="auto">system.build.toplevel</code>
-against the new framework, with hardware and secrets replaced by stubs (<code dir="auto">dnf/just/scripts/eval-template-hosts.nix</code>) : a template has neither. The boilerplate, shipped without <code dir="auto">var/generated/</code>, has nothing to evaluate before running <code dir="auto">just generate</code>.</p>
+<code dir="auto">templates/project/</code> at the framework tag (<code dir="auto">CHANGELOG.md</code> and <code dir="auto">flake.lock</code>
+kept), with a “published copy” banner under the title of its READMEs. It is
+therefore never edited by hand. Then, for both, the framework tag is written
+into their <code dir="auto">flake.nix</code>, the <code dir="auto">flake.lock</code> is <strong>committed</strong> (it is what makes a
+clone reproducible), then changelog and a tag identical to the framework’s.
+Each host of the example is evaluated up to <code dir="auto">system.build.toplevel</code>
+against the new framework, with hardware and secrets replaced by stubs
+(<code dir="auto">dnf/just/scripts/eval-template-hosts.nix</code>) : a template has neither.
+The boilerplate, shipped without <code dir="auto">var/generated/</code>, has nothing to evaluate
+before <code dir="auto">just generate</code>.</p>
 </li>
 <li>
-<p><strong>Root</strong> : run <code dir="auto">just update-dnf</code>, commit only the <code dir="auto">flake.lock</code>, then push the current branch (with no tag), last of all : its lockfile points to the releases that were just published. The root repository is never tagged.</p>
+<p><strong>Root</strong> : <code dir="auto">just update-dnf</code>, commit of the single <code dir="auto">flake.lock</code>, then
+push of the current branch (without tag), last of all : its lock points
+to the releases published just before. The root is never tagged.</p>
 </li>
 </ol>
-<p>Only the framework follows the <code dir="auto">level</code> passed to the release command. Generator and
-<code dir="auto">fleet-update</code> always use <code dir="auto">auto</code>, documentation follows the framework’s line, and templates follow its version number.</p>
-<p>Each repository is pushed with <strong>its own</strong> tag only (<code dir="auto">git push --atomic origin main refs/tags/vX.Y.Z</code>), never with <code dir="auto">--tags</code> : any local working tags remain local.</p>
-<aside aria-label="Restarting the train" class="starlight-aside starlight-aside--tip"><p class="starlight-aside__title" aria-hidden="true"><svg aria-hidden="true" class="starlight-aside__icon astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path fill-rule="evenodd" d="M1.44 8.855v-.001l3.527-3.516c.34-.344.802-.541 1.285-.548h6.649l.947-.947c3.07-3.07 6.207-3.072 7.62-2.868a1.821 1.821 0 0 1 1.557 1.557c.204 1.413.203 4.55-2.868 7.62l-.946.946v6.649a1.845 1.845 0 0 1-.549 1.286l-3.516 3.528a1.844 1.844 0 0 1-3.11-.944l-.858-4.275-4.52-4.52-2.31-.463-1.964-.394A1.847 1.847 0 0 1 .98 10.693a1.843 1.843 0 0 1 .46-1.838Zm5.379 2.017-3.873-.776L6.32 6.733h4.638l-4.14 4.14Zm8.403-5.655c2.459-2.46 4.856-2.463 5.89-2.33.134 1.035.13 3.432-2.329 5.891l-6.71 6.71-3.561-3.56 6.71-6.711Zm-1.318 15.837-.776-3.873 4.14-4.14v4.639l-3.364 3.374Z" clip-rule="evenodd"/><path d="M9.318 18.345a.972.972 0 0 0-1.86-.561c-.482 1.435-1.687 2.204-2.934 2.619a8.22 8.22 0 0 1-1.23.302c.062-.365.157-.79.303-1.229.415-1.247 1.184-2.452 2.62-2.935a.971.971 0 1 0-.62-1.842c-.12.04-.236.084-.35.13-2.02.828-3.012 2.588-3.493 4.033a10.383 10.383 0 0 0-.51 2.845l-.001.016v.063c0 .536.434.972.97.972H2.24a7.21 7.21 0 0 0 .878-.065c.527-.063 1.248-.19 2.02-.447 1.445-.48 3.205-1.472 4.033-3.494a5.828 5.828 0 0 0 .147-.407Z"/></svg>Restarting the train</p><div class="starlight-aside__content"><p>The release train is idempotent. If nothing has changed, it stops at the plan with the message:
-“Nothing to release”. After a failure, it resumes where it left off :
-repositories already tagged are skipped, and any committed pinning changes are preserved.
-Only a failed site deployment must be restarted manually :
+<p>Only the framework follows the <code dir="auto">level</code> passed to the recipe. Generator and
+<code dir="auto">fleet-update</code> stay on <code dir="auto">auto</code>, the documentation follows the framework line,
+the templates their number.</p>
+<p>Each repository is pushed with <strong>its</strong> tag alone (<code dir="auto">git push --atomic origin main refs/tags/vX.Y.Z</code>), never with <code dir="auto">--tags</code> : local work tags stay local.</p>
+<aside aria-label="Restarting the train" class="starlight-aside starlight-aside--tip"><p class="starlight-aside__title" aria-hidden="true"><svg aria-hidden="true" class="starlight-aside__icon astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path fill-rule="evenodd" d="M1.44 8.855v-.001l3.527-3.516c.34-.344.802-.541 1.285-.548h6.649l.947-.947c3.07-3.07 6.207-3.072 7.62-2.868a1.821 1.821 0 0 1 1.557 1.557c.204 1.413.203 4.55-2.868 7.62l-.946.946v6.649a1.845 1.845 0 0 1-.549 1.286l-3.516 3.528a1.844 1.844 0 0 1-3.11-.944l-.858-4.275-4.52-4.52-2.31-.463-1.964-.394A1.847 1.847 0 0 1 .98 10.693a1.843 1.843 0 0 1 .46-1.838Zm5.379 2.017-3.873-.776L6.32 6.733h4.638l-4.14 4.14Zm8.403-5.655c2.459-2.46 4.856-2.463 5.89-2.33.134 1.035.13 3.432-2.329 5.891l-6.71 6.71-3.561-3.56 6.71-6.711Zm-1.318 15.837-.776-3.873 4.14-4.14v4.639l-3.364 3.374Z" clip-rule="evenodd"/><path d="M9.318 18.345a.972.972 0 0 0-1.86-.561c-.482 1.435-1.687 2.204-2.934 2.619a8.22 8.22 0 0 1-1.23.302c.062-.365.157-.79.303-1.229.415-1.247 1.184-2.452 2.62-2.935a.971.971 0 1 0-.62-1.842c-.12.04-.236.084-.35.13-2.02.828-3.012 2.588-3.493 4.033a10.383 10.383 0 0 0-.51 2.845l-.001.016v.063c0 .536.434.972.97.972H2.24a7.21 7.21 0 0 0 .878-.065c.527-.063 1.248-.19 2.02-.447 1.445-.48 3.205-1.472 4.033-3.494a5.828 5.828 0 0 0 .147-.407Z"/></svg>Restarting the train</p><div class="starlight-aside__content"><p>The train is idempotent. With nothing new, it stops at the plan :
+“Nothing to release”. After a failure, it resumes where it stopped : the
+already-tagged repositories are skipped, the committed pins remain in place.
+Only a failed site deployment is restarted by hand :
 <code dir="auto">just --justfile doc/Justfile --working-directory doc deploy "Release vX.Y.Z"</code>.</p></div></aside>
-<aside aria-label="A template must never precede the framework" class="starlight-aside starlight-aside--caution"><p class="starlight-aside__title" aria-hidden="true"><svg aria-hidden="true" class="starlight-aside__icon astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M12 16a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm10.67 1.47-8.05-14a3 3 0 0 0-5.24 0l-8 14A3 3 0 0 0 3.94 22h16.12a3 3 0 0 0 2.61-4.53Zm-1.73 2a1 1 0 0 1-.88.51H3.94a1 1 0 0 1-.88-.51 1 1 0 0 1 0-1l8-14a1 1 0 0 1 1.78 0l8.05 14a1 1 0 0 1 .05 1.02v-.02ZM12 8a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V9a1 1 0 0 0-1-1Z"/></svg>A template must never precede the framework</p><div class="starlight-aside__content"><p>A template carries the framework’s version number. If a template changes but the framework does not, the train will report it and leave it as is : it will be released with the next framework release.</p></div></aside>
+<aside aria-label="A template never precedes the framework" class="starlight-aside starlight-aside--caution"><p class="starlight-aside__title" aria-hidden="true"><svg aria-hidden="true" class="starlight-aside__icon astro-hkc32dio" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M12 16a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm10.67 1.47-8.05-14a3 3 0 0 0-5.24 0l-8 14A3 3 0 0 0 3.94 22h16.12a3 3 0 0 0 2.61-4.53Zm-1.73 2a1 1 0 0 1-.88.51H3.94a1 1 0 0 1-.88-.51 1 1 0 0 1 0-1l8-14a1 1 0 0 1 1.78 0l8.05 14a1 1 0 0 1 .05 1.02v-.02ZM12 8a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V9a1 1 0 0 0-1-1Z"/></svg>A template never precedes the framework</p><div class="starlight-aside__content"><p>A template carries the framework number. If it has moved without the framework
+moving, the train reports it and leaves it : it will go with the next
+framework release.</p></div></aside>
 
 <div class="sl-heading-wrapper level-h2"><h2 id="continuous-integration-safeguards">Continuous integration safeguards</h2><a class="sl-anchor-link" href="#continuous-integration-safeguards"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Continuous integration safeguards”</span></a></div>
 <p>On a <code dir="auto">v*</code> tag, <code dir="auto">release.yml</code> refuses to publish if :</p>
