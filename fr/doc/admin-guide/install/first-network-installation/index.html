@@ -86,7 +86,7 @@ un poste suffit pour démarrer.</p>
 <div class="sl-heading-wrapper level-h2"><h2 id="le-parcours">Le parcours</h2><a class="sl-anchor-link" href="#le-parcours"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section intitulée « Le parcours »</span></a></div>
 <ol>
 <li><strong>Un poste</strong> : la machine de l’administrateur (cette page).</li>
-<li><strong>Une passerelle</strong> : créer une <a href="/fr/doc/admin-guide/install/gateway/">zone</a> et y brancher d’autres machines.</li>
+<li><strong>Une passerelle</strong> : créer une <a href="/fr/doc/admin-guide/install/gateway/">zone</a> et y brancher d’autres machines (<code dir="auto">darkone add gateway</code>).</li>
 <li><strong>Serveurs et services</strong> : fichiers, photos, messagerie… voir le <a href="/fr/doc/admin-guide/operate/services/">catalogue des services</a>.</li>
 <li><strong>Internet</strong> : relier les zones par <a href="/fr/doc/admin-guide/install/hcs/">VPN</a> (tailnet).</li>
 </ol>
@@ -188,7 +188,7 @@ le chiffre, puis <code dir="auto">Entrée</code>) :</p>
 
 
 
-<table><thead><tr><th>Choix</th><th>Effet</th></tr></thead><tbody><tr><td><em>1) New network</em></td><td>lance <code dir="auto">darkone new</code> (cette page)</td></tr><tr><td><em>2) Add this machine to an existing network</em></td><td>voir <a href="/fr/doc/admin-guide/install/add-host/">Ajouter une machine</a></td></tr><tr><td><em>3) Shell</em></td><td>invite de commande</td></tr></tbody></table>
+<table><thead><tr><th>Choix</th><th>Effet</th></tr></thead><tbody><tr><td><em>1) New network</em></td><td>lance <code dir="auto">darkone new</code> (cette page)</td></tr><tr><td><em>2) Add this machine to an existing network</em></td><td>affiche un code d’appairage, voir <a href="/fr/doc/admin-guide/install/gateway/">Passerelle</a> et <a href="/fr/doc/admin-guide/install/add-host/">Ajouter une machine</a></td></tr><tr><td><em>3) Shell</em></td><td>invite de commande</td></tr></tbody></table>
 </li>
 <li>
 <p><strong>Répondre à l’assistant</strong></p>
@@ -228,7 +228,8 @@ VM) : <em>Skip for now</em>, à vos risques, puis
 défaut). Disque chiffré : la passphrase est demandée à chaque
 démarrage, avec le clavier choisi. La première session ouvre une page
 d’accueil dans le navigateur : étape 1 sur 4 franchie, la passerelle
-ensuite. Elle reste à portée dans le dossier <strong>Réseau local</strong> des
+ensuite (rouverte plus tard, elle marque l’étape 2 faite dès que la passerelle
+est installée). Elle reste à portée dans le dossier <strong>Réseau local</strong> des
 applications (<em>Premiers pas</em>), avec la documentation (<em>Doc DNF</em>) et un
 terminal dans le projet <code dir="auto">/etc/nixos</code> (<em>Sources du réseau</em>), dont le
 <code dir="auto">README.md</code> résume le quotidien.</p>

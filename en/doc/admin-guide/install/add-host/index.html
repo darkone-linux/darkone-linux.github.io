@@ -93,60 +93,67 @@ differently : see
 <li>
 <p><strong>Get the image</strong></p>
 <div class="expressive-code"><link rel="stylesheet" href="/astro/ec.v4551.css"><script type="module" src="/astro/ec.0vx5m.js"></script><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Fenêtre de terminal</span></figcaption><pre data-language="sh"><code><div class="ec-line"><div class="code"><span style="--0:#82AAFF;--1:#3B61B0">just</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">build-iso</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copier dans le presse-papiers" data-copied="Copié !" data-code="just build-iso"><div></div></button></div></figure></div>
-<p>This image carries your deployment key. Another way, without building :
-the generic ISO, <a href="/en/doc/admin-guide/install/first-network-installation/#prepare-the-key">written to a USB key</a> ;
-the key then authorizes itself at boot (next step).</p>
+<p>This image carries your deployment key. Another option, without building :
+the generic ISO, <a href="/en/doc/admin-guide/install/first-network-installation/#prepare-the-key">written to a USB drive</a> ;
+the key is then authorized with a pairing code (next step).</p>
 </li>
 <li>
-<p><strong>Boot the machine</strong></p>
-<p>Connect the computer to the network <strong>by cable</strong>, then boot from the key.
-The screen shows a DNF welcome message, then the IP address and the MAC
-address of the interface connected to the Internet (served by the local
-gateway or your router) : note them down.</p>
+<p><strong>Start the machine</strong></p>
+<p>Connect the computer to the network <strong>using a wired connection</strong>, then boot from the USB drive.
+The screen displays a DNF welcome message, followed by the IP address and the
+MAC address of the interface connected to the Internet (provided by the local gateway or
+your router) : write them down.</p>
 <div class="expressive-code"><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="text"><code><div class="ec-line"><div class="code"><span style="--0:#d6deeb;--1:#403f53">- IP: 10.0.0.50</span></div></div><div class="ec-line"><div class="code"><span style="--0:#d6deeb;--1:#403f53">- MAC: aa:bb:cc:dd:ee:ff</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copier dans le presse-papiers" data-copied="Copié !" data-code="- IP: 10.0.0.50- MAC: aa:bb:cc:dd:ee:ff"><div></div></button></div></figure></div>
-<p>The <code dir="auto">dnf-netinfo</code> command displays them again.</p>
-<p>With the generic ISO, choose <em>2) Add this machine to an existing network</em> in
-the console menu. The screen lists the network cards and the disks, then
-recalls the procedure : set a password on the machine (<code dir="auto">passwd</code>), then,
-from the administration workstation, authorize the key :</p>
-<div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Fenêtre de terminal</span></figcaption><pre data-language="sh"><code><div class="ec-line"><div class="code"><span style="--0:#82AAFF;--1:#3B61B0">sudo</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#82AAFF;--1:#3B61B0">-i</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#82AAFF;--1:#3B61B0">-u</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">nix</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">ssh-copy-id</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">nixos@10.0.0.50</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copier dans le presse-papiers" data-copied="Copié !" data-code="sudo -i -u nix ssh-copy-id nixos@10.0.0.50"><div></div></button></div></figure></div>
+<p>The <code dir="auto">dnf-netinfo</code> command displays them again, along with the network cards and
+disks.</p>
+<p>With the generic ISO, choose in the console menu
+<em>2) Add this machine to an existing network</em> (or run <code dir="auto">dnf-pair</code>).
+The screen lists the network cards and disks, then displays a <strong>pairing
+code</strong> :</p>
+<div class="expressive-code"><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="text"><code><div class="ec-line"><div class="code"><span style="--0:#d6deeb;--1:#403f53">Pairing code: 123456-7890  (10 min, a new one after)</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copier dans le presse-papiers" data-copied="Copié !" data-code="Pairing code: 123456-7890  (10 min, a new one after)"><div></div></button></div></figure></div>
+<p>Nothing else to do on the machine : the first recipe run against
+it from the administration workstation (<code dir="auto">host-info</code> or <code dir="auto">full-install</code>)
+asks for this code, then authorizes the deployment key. A machine that is already
+paired will not be asked again. In case of a typo : a 10-second wait
+before the next attempt ; after six codes, <code dir="auto">dnf-pair</code> generates another one.
+Details in <a href="/en/doc/admin-guide/install/gateway/#the-pairing-code">Gateway</a>.</p>
 </li>
 <li>
 <p><strong>Set the addresses</strong> (as soon as a zone exists)</p>
-<p>The installation ends with a reboot, and what follows must find the machine
-again. Two cases :</p>
+<p>The installation ends with a reboot, and the following steps must be able to find the
+machine again. Two cases :</p>
 <ul>
-<li><strong>MAC address already declared</strong>: nothing to do, the gateway serves the
-same fixed address to the USB key and to the installed system;</li>
-<li><strong>unknown MAC address</strong>: read it, then declare it.</li>
+<li><strong>MAC address already declared</strong>: nothing to do, the gateway assigns the same
+fixed address to the USB drive and to the installed system;</li>
+<li><strong>unknown MAC address</strong>: note it down, then declare it.</li>
 </ul>
 <div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Fenêtre de terminal</span></figcaption><pre data-language="sh"><code><div class="ec-line"><div class="code"><span style="--0:#919F9F;--1:#5F636F"># just host-info &#x3C;hôte> &#x3C;ip-actuelle></span></div></div><div class="ec-line"><div class="code"><span style="--0:#82AAFF;--1:#3B61B0">just</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">host-info</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">poste</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#F78C6C;--1:#AA0982">10.0.0.50</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copier dans le presse-papiers" data-copied="Copié !" data-code="just host-info poste 10.0.0.50"><div></div></button></div></figure></div>
-<p>Copy the value into <code dir="auto">etc/config.yaml</code>, with a <strong>fixed address</strong>, then
-redeploy the gateway of each affected zone :</p>
+<p>Enter the value in <code dir="auto">etc/config.yaml</code>, with a <strong>fixed address</strong>, then
+redeploy the gateway for each affected zone :</p>
 <div class="expressive-code"><figure class="frame has-title not-content"><figcaption class="header"><span class="title">etc/config.yaml</span></figcaption><pre data-language="yaml"><code><div class="ec-line"><div class="code"><span style="--0:#D6DEEB;--1:#403F53">- </span><span style="--0:#7FDBCA;--1:#111111">hostname</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#ECC48D;--1:#984E4D">poste</span><span style="--0:#D9F5DD;--1:#111111">"</span></div></div><div class="ec-line"><div class="code"><span class="indent">  </span><span style="--0:#7FDBCA;--1:#111111">zone</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#ECC48D;--1:#984E4D">maison:2.1</span><span style="--0:#D9F5DD;--1:#111111">"</span></div></div><div class="ec-line"><div class="code"><span class="indent">  </span><span style="--0:#7FDBCA;--1:#111111">mac</span><span style="--0:#D6DEEB;--1:#403F53">: </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#ECC48D;--1:#984E4D">aa:bb:cc:dd:ee:ff</span><span style="--0:#D9F5DD;--1:#111111">"</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copier dans le presse-papiers" data-copied="Copié !" data-code="- hostname: &#x22;poste&#x22;  zone: &#x22;maison:2.1&#x22;  mac: &#x22;aa:bb:cc:dd:ee:ff&#x22;"><div></div></button></div></figure></div>
-<aside aria-label="Outside the dynamic DHCP range" class="starlight-aside starlight-aside--caution"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 16a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm10.67 1.47-8.05-14a3 3 0 0 0-5.24 0l-8 14A3 3 0 0 0 3.94 22h16.12a3 3 0 0 0 2.61-4.53Zm-1.73 2a1 1 0 0 1-.88.51H3.94a1 1 0 0 1-.88-.51 1 1 0 0 1 0-1l8-14a1 1 0 0 1 1.78 0l8.05 14a1 1 0 0 1 .05 1.02v-.02ZM12 8a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V9a1 1 0 0 0-1-1Z"></path></svg>Outside the dynamic DHCP range</p><div class="starlight-aside__content"><p>The fixed address must be <strong>outside</strong> the zone’s <code dir="auto">dhcp-range</code> (by default
-<code dir="auto">&#x3C;préfixe>.3.200</code> to <code dir="auto">&#x3C;préfixe>.3.249</code>). Inside the range, the reservation is
-honored only as long as the address has not already been lent to someone
-else : the machine then changes address at its first boot, silently. The
-generator refuses this case.</p></div></aside>
+<aside aria-label="Outside the dynamic DHCP range" class="starlight-aside starlight-aside--caution"><p class="starlight-aside__title" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="starlight-aside__icon"><path d="M12 16a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm10.67 1.47-8.05-14a3 3 0 0 0-5.24 0l-8 14A3 3 0 0 0 3.94 22h16.12a3 3 0 0 0 2.61-4.53Zm-1.73 2a1 1 0 0 1-.88.51H3.94a1 1 0 0 1-.88-.51 1 1 0 0 1 0-1l8-14a1 1 0 0 1 1.78 0l8.05 14a1 1 0 0 1 .05 1.02v-.02ZM12 8a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0V9a1 1 0 0 0-1-1Z"></path></svg>Outside the dynamic DHCP range</p><div class="starlight-aside__content"><p>The fixed address must be <strong>outside</strong> the <code dir="auto">dhcp-range</code> of the zone
+(by default <code dir="auto">&#x3C;prefix>.3.200</code> to <code dir="auto">&#x3C;prefix>.3.249</code>). Within the range, the
+reservation is honored only as long as the address has not already been leased to
+someone else : the machine then changes its address on its first
+boot, silently. The generator rejects this case.</p></div></aside>
 <div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Fenêtre de terminal</span></figcaption><pre data-language="sh"><code><div class="ec-line"><div class="code"><span style="--0:#919F9F;--1:#5F636F"># Redéployer la passerelle locale</span></div></div><div class="ec-line"><div class="code"><span style="--0:#82AAFF;--1:#3B61B0">just</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">clean</span></div></div><div class="ec-line"><div class="code"><span style="--0:#82AAFF;--1:#3B61B0">git</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">add</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">.</span><span style="--0:#D6DEEB;--1:#403F53"> &#x26;&#x26; </span><span style="--0:#82AAFF;--1:#3B61B0">git</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">commit</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#82AAFF;--1:#3B61B0">-m</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#ECC48D;--1:#984E4D">host(poste): installation</span><span style="--0:#D9F5DD;--1:#111111">"</span></div></div><div class="ec-line"><div class="code"><span style="--0:#82AAFF;--1:#3B61B0">just</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">apply</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">gw</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copier dans le presse-papiers" data-copied="Copié !" data-code="just cleangit add . &#x26;&#x26; git commit -m &#x22;host(poste): installation&#x22;just apply gw"><div></div></button></div></figure></div>
 </li>
 <li>
 <p><strong>Install the system</strong></p>
-<p>Make sure the machine boots by default on the disk that will hold the
-system, and not on the installation USB key.</p>
+<p>Make sure the machine boots by default from the disk that
+will host the system, and not from the installation USB drive.</p>
 <div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Fenêtre de terminal</span></figcaption><pre data-language="sh"><code><div class="ec-line"><div class="code"><span style="--0:#919F9F;--1:#5F636F"># just full-install &#x3C;hôte> &#x3C;utilisateur> &#x3C;ip></span></div></div><div class="ec-line"><div class="code"><span style="--0:#82AAFF;--1:#3B61B0">just</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">full-install</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">poste</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">nixos</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#F78C6C;--1:#AA0982">10.0.0.50</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copier dans le presse-papiers" data-copied="Copié !" data-code="just full-install poste nixos 10.0.0.50"><div></div></button></div></figure></div>
-<p><code dir="auto">full-install</code> installs the system, the programs, the configurations and
-the users. On the automatic reboot, it probes <strong>all</strong> the machine’s known
-addresses (the installation one, the one from its zone, the transitional
-one, its name) and continues on the one that answers. On an encrypted host,
-it also answers the LUKS prompt by itself. On failure, the detailed steps
-are in the <code dir="auto">Justfile</code>.</p>
+<p><code dir="auto">full-install</code> installs the system, programs, configurations, and
+users. On the automatic reboot, it probes <strong>all</strong> known
+addresses of the machine (the installation address, its zone address,
+the transit address, its name) and continues on the one that responds. On an
+encrypted host, it also answers the LUKS prompt automatically. If it fails, the
+detailed steps are in the <code dir="auto">Justfile</code>.</p>
 </li>
 </ol>
-<p>The system is installed and up to date. A standalone workstation is already
-fully usable ; the <a href="/en/doc/admin-guide/install/gateway/">gateway</a> is only
-needed to create a zone (shared local network).</p>
+<p>The system is installed and up to date. A standalone workstation is already fully
+usable ; the <a href="/en/doc/admin-guide/install/gateway/">gateway</a> is only
+necessary to create a zone (shared local network).</p>
 
 <div class="sl-heading-wrapper level-h2"><h2 id="faq">FAQ</h2><a class="sl-anchor-link" href="#faq"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “FAQ”</span></a></div>
 

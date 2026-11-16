@@ -95,7 +95,7 @@ s’installe autrement : voir
 <div class="expressive-code"><link rel="stylesheet" href="/astro/ec.v4551.css"><script type="module" src="/astro/ec.0vx5m.js"></script><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Fenêtre de terminal</span></figcaption><pre data-language="sh"><code><div class="ec-line"><div class="code"><span style="--0:#82AAFF;--1:#3B61B0">just</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">build-iso</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copier dans le presse-papiers" data-copied="Copié !" data-code="just build-iso"><div></div></button></div></figure></div>
 <p>Cette image porte votre clé de déploiement. Autre voie, sans construction :
 l’ISO générique, <a href="/fr/doc/admin-guide/install/first-network-installation/#pr%C3%A9parer-la-cl%C3%A9">gravée sur une clé USB</a> ;
-la clé s’autorise alors au démarrage (étape suivante).</p>
+la clé s’autorise alors par un code d’appairage (étape suivante).</p>
 </li>
 <li>
 <p><strong>Démarrer la machine</strong></p>
@@ -104,13 +104,19 @@ L’écran affiche un message de bienvenue DNF, puis l’adresse IP et l’adres
 MAC de l’interface reliée à Internet (servies par la passerelle locale ou
 votre routeur) : les noter.</p>
 <div class="expressive-code"><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="text"><code><div class="ec-line"><div class="code"><span style="--0:#d6deeb;--1:#403f53">- IP: 10.0.0.50</span></div></div><div class="ec-line"><div class="code"><span style="--0:#d6deeb;--1:#403f53">- MAC: aa:bb:cc:dd:ee:ff</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copier dans le presse-papiers" data-copied="Copié !" data-code="- IP: 10.0.0.50- MAC: aa:bb:cc:dd:ee:ff"><div></div></button></div></figure></div>
-<p>La commande <code dir="auto">dnf-netinfo</code> les réaffiche.</p>
+<p>La commande <code dir="auto">dnf-netinfo</code> les réaffiche, avec les cartes réseau et les
+disques.</p>
 <p>Avec l’ISO générique, choisir dans le menu de la console
-<em>2) Add this machine to an existing network</em>. L’écran liste les cartes
-réseau et les disques, puis rappelle la marche à suivre : définir un
-mot de passe sur la machine (<code dir="auto">passwd</code>), puis, depuis le poste
-d’administration, autoriser la clé :</p>
-<div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Fenêtre de terminal</span></figcaption><pre data-language="sh"><code><div class="ec-line"><div class="code"><span style="--0:#82AAFF;--1:#3B61B0">sudo</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#82AAFF;--1:#3B61B0">-i</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#82AAFF;--1:#3B61B0">-u</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">nix</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">ssh-copy-id</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">nixos@10.0.0.50</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copier dans le presse-papiers" data-copied="Copié !" data-code="sudo -i -u nix ssh-copy-id nixos@10.0.0.50"><div></div></button></div></figure></div>
+<em>2) Add this machine to an existing network</em> (ou lancer <code dir="auto">dnf-pair</code>).
+L’écran liste les cartes réseau et les disques, puis affiche un <strong>code
+d’appairage</strong> :</p>
+<div class="expressive-code"><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="text"><code><div class="ec-line"><div class="code"><span style="--0:#d6deeb;--1:#403f53">Pairing code: 123456-7890  (10 min, a new one after)</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copier dans le presse-papiers" data-copied="Copié !" data-code="Pairing code: 123456-7890  (10 min, a new one after)"><div></div></button></div></figure></div>
+<p>Rien d’autre à faire sur la machine : la première recette lancée vers
+elle depuis le poste d’administration (<code dir="auto">host-info</code> ou <code dir="auto">full-install</code>)
+demande ce code, puis autorise la clé de déploiement. Une machine déjà
+appairée ne le redemande pas. Faute de frappe : 10 secondes d’attente
+avant le nouvel essai ; après six codes, <code dir="auto">dnf-pair</code> en tire un autre.
+Détails dans <a href="/fr/doc/admin-guide/install/gateway/#le-code-dappairage">Passerelle</a>.</p>
 </li>
 <li>
 <p><strong>Fixer les adresses</strong> (dès qu’une zone existe)</p>
