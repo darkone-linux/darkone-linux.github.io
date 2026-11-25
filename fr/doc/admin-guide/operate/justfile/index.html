@@ -181,6 +181,12 @@ publication.</p>
 <p>Analyse statique avec <code dir="auto">statix</code> et détection du code mort avec <code dir="auto">deadnix</code>, sur
 tous les fichiers <code dir="auto">*.nix</code>. <code dir="auto">shellcheck</code> vérifie les scripts <code dir="auto">*.sh</code> suivis par
 git, ceux de <code dir="auto">dnf/</code> compris en co-développement.</p>
+<p>Les règles <code dir="auto">statix</code> sont dans <code dir="auto">statix.toml</code> à la racine du projet, livré par le
+modèle de projet : <code dir="auto">repeated_keys</code> désactivée, les fichiers de <code dir="auto">usr/</code> regroupant
+les clés <code dir="auto">home.*</code> par sujet. Un projet plus ancien sans ce fichier l’ajoute à la
+main. Le framework a le sien, <code dir="auto">dnf/statix.toml</code>, qui ignore aussi <code dir="auto">backports/</code> ;
+sa CI prend ses outils de lint dans le <code dir="auto">flake.lock</code>, donc dans les mêmes
+versions qu’en local.</p>
 <div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Fenêtre de terminal</span></figcaption><pre data-language="sh"><code><div class="ec-line"><div class="code"><span style="--0:#82AAFF;--1:#3B61B0">just</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">check-code</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copier dans le presse-papiers" data-copied="Copié !" data-code="just check-code"><div></div></button></div></figure></div>
 
 <div class="sl-heading-wrapper level-h3"><h3 id="-check-flake">💠 <code dir="auto">check-flake</code></h3><a class="sl-anchor-link" href="#-check-flake"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section intitulée « 💠 check-flake »</span></a></div>
