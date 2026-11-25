@@ -268,8 +268,9 @@ automatique.</p>
 <p><strong>Barrière globale</strong> : <code dir="auto">just check</code> (code et tests unitaires).</p>
 </li>
 <li>
-<p><strong>Générateur</strong>, s’il a bougé : <code dir="auto">just gen-test</code>, release et poussée. Il
-possède le schéma <code dir="auto">etc/config.yaml</code>, donc il part avant ce qui en dépend.
+<p><strong>Générateur</strong>, s’il a bougé : barrières <code dir="auto">ci</code> et <code dir="auto">audit</code> avec
+l’outillage de son <code dir="auto">nix develop</code>, release et poussée. Il possède le schéma
+<code dir="auto">etc/config.yaml</code>, donc il part avant ce qui en dépend.
 Son tag est ensuite épinglé dans <code dir="auto">dnf/flake.nix</code> (commit <code dir="auto">chore(deps)</code>),
 pour que le contrat entre framework et générateur se lise dans un diff.
 Le générateur épinglé régénère enfin <code dir="auto">dnf/config/config.schema.json</code>,
